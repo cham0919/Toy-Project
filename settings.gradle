@@ -1,1 +1,3 @@
 rootProject.name = 'WCP'
+include 'rest-api','core'
+

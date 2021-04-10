@@ -1,40 +1,59 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.2'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
-}
+buildscript {
+    ext {
+        springBootVersion = '2.4.2'
+    }
 
-group = 'com.wcp'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+    repositories {
+        mavenCentral()
+    }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
     }
 }
 
-repositories {
-    mavenCentral()
+allprojects {
+    group 'com.wcp'
+    version '0.0.1-SNAPSHOT'
 }
 
-dependencies {
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.apache.httpcomponents:httpcore:4.4.1'
-    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'mysql:mysql-connector-java'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'com.google.code.gson:gson:2.8.5'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.apache.httpcomponents:httpcore:4.4.1'
+        implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        runtimeOnly 'mysql:mysql-connector-java'
+
+        compileOnly 'org.projectlombok:lombok'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
 }
 
-test {
-    useJUnitPlatform()
+
+
+project(':rest-api') {
+    dependencies {
+        compile project(':core')
+    }
 }
+
+
+
