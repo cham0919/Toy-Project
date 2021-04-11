@@ -1,6 +1,5 @@
 package com.wcp.board;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wcp.board.dto.MainBoardService;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(value = "/mainboard")
@@ -35,7 +35,8 @@ public class MainController {
      */
     @RequestMapping(value = "/insert", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ResponseEntity<String> insert(HttpServletRequest req){
+    public ResponseEntity<String> insert(HttpServletRequest req,
+                                         HttpServletResponse res){
 
         MainBoard test = new MainBoard();
         test.setSeq(1L);
@@ -57,7 +58,8 @@ public class MainController {
      */
     @RequestMapping(value = "/modify", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ResponseEntity<String> modify(HttpServletRequest req){
+    public ResponseEntity<String> modify(HttpServletRequest req,
+                                         HttpServletResponse res){
 
         MainBoard test = new MainBoard();
         test.setSeq(1L);
@@ -80,7 +82,8 @@ public class MainController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ResponseEntity<String> delete(HttpServletRequest req){
+    public ResponseEntity<String> delete(HttpServletRequest req,
+                                         HttpServletResponse res){
 
         MainBoard test = new MainBoard();
         test.setSeq(1L);
