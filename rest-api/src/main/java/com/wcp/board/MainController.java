@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.CookieValue;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,8 +49,6 @@ public class MainController {
 
         mainBoardService.savePost(test);
 
-        log.debug("들오아여ㅛ??");
-
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
@@ -71,7 +70,6 @@ public class MainController {
 
         mainBoardService.savePost(test);
 
-        log.debug("들오아여ㅛ??");
 
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
@@ -95,7 +93,6 @@ public class MainController {
 
         mainBoardService.savePost(test);
 
-        log.debug("들오아여ㅛ??");
 
         return  new ResponseEntity<String>("success", HttpStatus.OK);
     }
