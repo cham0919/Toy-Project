@@ -1,4 +1,4 @@
-package com.wcp.board.dto;
+package com.wcp.board;
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;

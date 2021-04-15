@@ -1,4 +1,4 @@
-package com.wcp.board.entity;
+package com.wcp.user;
 
 import javax.persistence.*;
 
