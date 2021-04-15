@@ -1,8 +1,6 @@
-package com.wcp.board.dto;
+package com.wcp.board.main;
 
 
-import com.wcp.board.entity.MainBoard;
-import com.wcp.board.repository.BoardRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,11 +8,11 @@ public class MainBoardService {
 
     private BoardRepository boardRepository;
 
-    public MainBoardService(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
-    }
-
     public void savePost(MainBoard mainBoard){
         boardRepository.save(mainBoard);
+    }
+
+    public MainBoardService(BoardRepository boardRepository) {
+        this.boardRepository = boardRepository;
     }
 }

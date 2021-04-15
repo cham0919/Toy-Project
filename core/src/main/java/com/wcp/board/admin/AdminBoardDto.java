@@ -1,5 +1,6 @@
-package com.wcp.board.dto;
+package com.wcp.board.admin;
 
+import com.wcp.board.BoardDto;
 import lombok.Data;
 
 @Data

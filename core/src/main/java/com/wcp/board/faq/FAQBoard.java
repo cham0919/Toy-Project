@@ -1,5 +1,6 @@
-package com.wcp.board.entity;
+package com.wcp.board.faq;
 
+import com.wcp.board.Board;
 import lombok.Data;
 
 import javax.persistence.Entity;
