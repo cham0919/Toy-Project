@@ -1,4 +1,4 @@
-package com.wcp.board;
+package com.wcp.board.main;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
