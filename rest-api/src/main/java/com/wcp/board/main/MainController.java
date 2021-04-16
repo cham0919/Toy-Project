@@ -2,8 +2,6 @@ package com.wcp.board.main;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wcp.board.main.MainBoardService;
-import com.wcp.board.main.MainBoard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MainController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final Gson uploadResultBuilder = new GsonBuilder().setPrettyPrinting()
+    private final Gson gson = new GsonBuilder().setPrettyPrinting()
             .disableHtmlEscaping()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             .create();
