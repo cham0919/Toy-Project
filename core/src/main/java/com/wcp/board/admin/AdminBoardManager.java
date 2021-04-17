@@ -1,8 +1,6 @@
 package com.wcp.board.admin;
 
 
-import com.wcp.board.faq.FAQBoard;
-import com.wcp.board.faq.FAQBoardRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,12 +15,12 @@ public class AdminBoardManager {
 
     private AdminBoardRepository adminBoardRepository;
 
-    public void save(AdminBoard adminBoard){
-        adminBoardRepository.save(adminBoard);
+    public AdminBoardManager(AdminBoardRepository adminBoardRepository) {
+        this.adminBoardRepository = adminBoardRepository;
     }
 
-    public void remove(AdminBoard adminBoard){
-        adminBoardRepository.delete(adminBoard);
+    public void save(AdminBoard adminBoard){
+        adminBoardRepository.save(adminBoard);
     }
 
     public Optional<AdminBoard> fetchById(Long id){
@@ -38,11 +36,8 @@ public class AdminBoardManager {
         fetchAdminBoard = adminBoard;
     }
 
-
-
-
-    public AdminBoardManager(AdminBoardRepository adminBoardRepository) {
-        this.adminBoardRepository = adminBoardRepository;
+    public void remove(AdminBoard adminBoard){
+        adminBoardRepository.delete(adminBoard);
     }
 
 }

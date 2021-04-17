@@ -5,8 +5,8 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 
-@Entity
 @Data
+@Entity
 public class FAQBoard extends Board {
 
 

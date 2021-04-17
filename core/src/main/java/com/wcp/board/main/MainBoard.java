@@ -1,10 +1,12 @@
 package com.wcp.board.main;
 
 import com.wcp.board.Board;
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+@Data
 @Entity
 public class MainBoard extends Board {
 

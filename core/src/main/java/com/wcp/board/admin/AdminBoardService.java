@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,18 +17,27 @@ public class AdminBoardService {
     @Autowired
     private AdminBoardManager adminBoardManager;
 
-    public void savePost(AdminBoard adminBoard){
+    public void save(AdminBoard adminBoard){
         adminBoardManager.save(adminBoard);
     }
 
-    public void deletePost(AdminBoard adminBoard){
+    public void remove(AdminBoard adminBoard){
         adminBoardManager.remove(adminBoard);
     }
 
-    public Optional<AdminBoard> fetchById(String postId){
-        if(!StringUtils.isNumeric(postId)){
+    public Optional<AdminBoard> fetchById(String id){
+        if(!StringUtils.isNumeric(id)){
             throw new IllegalArgumentException();
         }
-        return adminBoardManager.fetchById(Long.valueOf(postId));
+        return adminBoardManager.fetchById(Long.valueOf(id));
     }
+
+    public List<AdminBoard> fetchAll(){
+        return adminBoardManager.fetchAll();
+    }
+
+    public void update(AdminBoard adminBoard) {
+        adminBoardManager.update(adminBoard);
+    }
+
 }
