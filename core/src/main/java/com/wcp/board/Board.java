@@ -1,14 +1,12 @@
 package com.wcp.board;
 
-import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @MappedSuperclass
-public class Board{
+public abstract class Board{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
