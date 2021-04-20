@@ -47,7 +47,6 @@ public class AdminController {
         test.setCategory("fefe");
         test.setCount(1L);
 
-        mainBoardService.savePost(test);
 
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
@@ -68,7 +67,6 @@ public class AdminController {
         test.setCategory("fefe");
         test.setCount(1L);
 
-        mainBoardService.savePost(test);
 
 
         return new ResponseEntity<String>("success", HttpStatus.OK);
@@ -91,7 +89,6 @@ public class AdminController {
         test.setCategory("fefe");
         test.setCount(1L);
 
-        mainBoardService.savePost(test);
 
 
         return  new ResponseEntity<String>("success", HttpStatus.OK);
