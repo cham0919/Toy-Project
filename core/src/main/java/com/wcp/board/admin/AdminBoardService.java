@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminBoardService {
@@ -37,7 +39,7 @@ public class AdminBoardService {
         adminBoardManager.deleteById(Long.valueOf(id));
     }
 
-    public AdminBoard fetchById(String id){
+    public Optional<AdminBoard> fetchById(String id){
         if(!StringUtils.isNumeric(id)){
             throw new IllegalArgumentException();
         }

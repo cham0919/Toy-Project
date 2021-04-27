@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class AdminBoardManager implements BoardManager {
@@ -31,8 +32,8 @@ public class AdminBoardManager implements BoardManager {
         return faqBoards.getContent();
     }
 
-    public AdminBoard fetchById(Long id){
-        return adminBoardRepository.getOne(id);
+    public Optional<AdminBoard> fetchById(Long id){
+        return adminBoardRepository.findById(id);
     }
 
     public List<AdminBoard> fetchAll(){
@@ -40,8 +41,8 @@ public class AdminBoardManager implements BoardManager {
     }
 
     public void update(AdminBoard adminBoard){
-        AdminBoard fetchAdminBoard = fetchById(adminBoard.getSeq());
-        fetchAdminBoard = adminBoard;
+        Optional<AdminBoard> fetchAdminBoard = fetchById(adminBoard.getId());
+        fetchAdminBoard = Optional.of(adminBoard);
     }
 
     public void delete(AdminBoard adminBoard){
