@@ -38,7 +38,7 @@ public class FAQBoardManager implements BoardManager {
     }
 
     public void update(FAQBoard faqBoard){
-        FAQBoard fetchFAQBoard = fetchById(faqBoard.getSeq());
+        FAQBoard fetchFAQBoard = fetchById(faqBoard.getId());
         fetchFAQBoard = faqBoard;
     }
 
