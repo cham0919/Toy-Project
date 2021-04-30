@@ -1,6 +1,8 @@
 package com.wcp.board.main;
 
 
+import com.wcp.board.BoardManager;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class MainBoardManager {
+public class MainBoardManager implements BoardManager {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -24,8 +26,8 @@ public class MainBoardManager {
         mainBoardRepository.save(mainBoard);
     }
 
-    public Optional<MainBoard> fetchById(Long id){
-        return mainBoardRepository.findById(id);
+    public MainBoard fetchById(Long id){
+        return mainBoardRepository.getOne(id);
     }
 
     public List<MainBoard> findAll(){
@@ -39,13 +41,17 @@ public class MainBoardManager {
         return mainBoards.getContent();
     }
 
-    public void update(MainBoard faqBoard){
-        MainBoard fetchMainBoard = fetchById(faqBoard.getSeq()).get();
-        fetchMainBoard = faqBoard;
+    public void update(MainBoard mainBoard){
+        MainBoard fetchMainBoard = fetchById(mainBoard.getId());
+        fetchMainBoard = mainBoard;
     }
 
-    public void remove(MainBoard mainBoard){
+    public void delete(MainBoard mainBoard){
         mainBoardRepository.delete(mainBoard);
+    }
+
+    public void deleteById(Long id){
+        mainBoardRepository.deleteById(id);
     }
 
     public Long count(){
