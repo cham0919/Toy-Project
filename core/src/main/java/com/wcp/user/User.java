@@ -1,30 +1,41 @@
 package com.wcp.user;
 
+import lombok.Data;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Data
+@Table(name = "wcp_user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @Column(name = "user_key")
+    private Long key;
 
-    @Column(length = 20, nullable = false)
+    @Column(name = "user_id", length = 2000, nullable = false)
+    private String id;
+
+    @Column(name = "user_pw",length = 2000, nullable = false)
+    private String password;
+
+    @Column(name = "user_name", length = 100, nullable = false)
     private String name;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(length = 1000)
+    private String email;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(length = 100)
+    private String phone;
 
-    public String getName() {
-        return name;
-    }
+    @Column(length = 100)
+    private String available;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Column(length = 100)
+    private LocalDateTime lastLoginDate;
+
+
+
 }
