@@ -2,21 +2,21 @@ package com.wcp.board.main;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wcp.board.page.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/mainboard")
+@RequestMapping(value = "/wcp/board/main")
 public class MainController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -29,66 +29,91 @@ public class MainController {
     private MainBoardService mainBoardService;
 
     /**
+     * 글 한건 조회
+     */
+    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> fetchById(HttpServletRequest req,
+                                               HttpServletResponse res,
+                                               @PathVariable("postId") String postId)
+    {
+        try{
+            MainBoard mainBoard = mainBoardService.fetchById(postId);
+            return new ResponseEntity<String>(gson.toJson(mainBoard), HttpStatus.OK);
+        }catch (Throwable t){
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * 페이징
+     */
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> fetchByRange(HttpServletRequest req,
+                                         HttpServletResponse res,
+                                         @RequestParam(defaultValue = "1")
+                                                           String currentPage)
+    {
+        try{
+            PageInfo pageInfo = mainBoardService.getPageList(currentPage);
+            Map<String, Object> resultMap = pageInfo.parsePageRangeToMap();
+            return new ResponseEntity<String>(gson.toJson(resultMap), HttpStatus.OK);
+        }catch (Throwable t){
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
      * 글 등록
      */
-    @RequestMapping(value = "/insert", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> insert(HttpServletRequest req,
-                                         HttpServletResponse res){
-
-        MainBoard test = new MainBoard();
-        test.setSeq(1L);
-        test.setReply("Y");
-        test.setTitle("Y");
-        test.setContent("Y");
-        test.setCategory("fefe");
-        test.setCount(1L);
-
-
-        return new ResponseEntity<String>("success", HttpStatus.OK);
+                                         HttpServletResponse res,
+                                         @RequestBody String body)
+    {
+        try{
+            MainBoard mainBoard = gson.fromJson(body, MainBoard.class);
+            mainBoardService.save(mainBoard);
+            return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+        }catch (Throwable t){
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
      * 글 수정
      */
-    @RequestMapping(value = "/modify", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> modify(HttpServletRequest req,
-                                         HttpServletResponse res){
-
-        MainBoard test = new MainBoard();
-        test.setSeq(1L);
-        test.setReply("Y");
-        test.setTitle("Y");
-        test.setContent("Y");
-        test.setCategory("fefe");
-        test.setCount(1L);
-
-
-
-        return new ResponseEntity<String>("success", HttpStatus.OK);
+                                         HttpServletResponse res,
+                                         @RequestBody String body){
+        try{
+            MainBoard mainBoard = gson.fromJson(body, MainBoard.class);
+            mainBoardService.update(mainBoard);
+            return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+        }catch (Throwable t){
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
 
     /**
-     * 글 삭제
+     * id로 글 삭제
      */
-    @RequestMapping(value = "/delete", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ResponseEntity<String> delete(HttpServletRequest req,
-                                         HttpServletResponse res){
+    public ResponseEntity<String> deleteById(HttpServletRequest req,
+                                         HttpServletResponse res,
+                                             @PathVariable("postId") String postId){
 
-        MainBoard test = new MainBoard();
-        test.setSeq(1L);
-        test.setReply("Y");
-        test.setTitle("Y");
-        test.setContent("Y");
-        test.setCategory("fefe");
-        test.setCount(1L);
-
-
-
-        return  new ResponseEntity<String>("success", HttpStatus.OK);
+        try{
+            mainBoardService.deleteById(postId);
+            return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+        }catch (Throwable t){
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
 }

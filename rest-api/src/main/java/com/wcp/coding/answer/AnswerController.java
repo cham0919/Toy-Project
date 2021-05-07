@@ -5,6 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(value = "/coding/answer")
+@RequestMapping(value = "/wcp/coding/answer")
 public class AnswerController {
 }
