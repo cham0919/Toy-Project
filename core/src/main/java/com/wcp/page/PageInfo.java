@@ -1,4 +1,4 @@
-package com.wcp.board.page;
+package com.wcp.page;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.wcp.board.page;
+package com.wcp.page;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
