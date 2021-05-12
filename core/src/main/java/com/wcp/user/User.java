@@ -1,41 +1,96 @@
 package com.wcp.user;
 
+import com.wcp.WCPTable.UserTable;
+import com.wcp.board.Board;
+import com.wcp.coding.board.CodingBoard;
+import com.wcp.commant.BoardCommant;
+import com.wcp.coding.submit.SubmitHistory;
+import com.wcp.like.BoardLike;
+import com.wcp.security.Role;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
-@Data
-@Table(name = "wcp_user")
+@Getter
+@Setter
+@Table(name = UserTable.TABLE_NAME)
 public class User {
 
     @Id
     @GeneratedValue
-    @Column(name = "user_key")
+    @Column(name = UserTable.PK)
     private Long key;
 
-    @Column(name = "user_id", length = 2000, nullable = false)
+    @Column(name = UserTable.ID, nullable = false)
     private String id;
 
-    @Column(name = "user_pw",length = 2000, nullable = false)
+    @Column(name = UserTable.PW, nullable = false)
     private String password;
 
-    @Column(name = "user_name", length = 100, nullable = false)
-    private String name;
-
-    @Column(length = 1000)
+    @Column(name = UserTable.EMAIL)
     private String email;
 
-    @Column(length = 100)
+    @Column(name = UserTable.NAME, nullable = false)
+    private String name;
+
+    @Column(name = UserTable.NICKNAME, length = 100)
+    private String nickname;
+
+    @Column(name = UserTable.PHONE, length = 100)
     private String phone;
 
-    @Column(length = 100)
-    private String available;
+    @Column(name = UserTable.REGISTER_DATETIME)
+    private LocalDateTime register_datetime;
 
-    @Column(length = 100)
-    private LocalDateTime lastLoginDate;
+    @Column(name = UserTable.ROLE)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
+    @Column(name = UserTable.STATUS)
+    private String status;
 
+    @OneToMany(mappedBy = "user")
+    private List<Board> boards = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<BoardCommant> boardCommants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<BoardLike> boardLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<CodingBoard> codingBoards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<SubmitHistory> submitHistories = new ArrayList<>();
+
+    public User setPassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.password = passwordEncoder.encode(password);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "key=" + key +
+                ", id='" + id + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", phone='" + phone + '\'' +
+                ", register_datetime=" + register_datetime +
+                ", role='" + role + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
