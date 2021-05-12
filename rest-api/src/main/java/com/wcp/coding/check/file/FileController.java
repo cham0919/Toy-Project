@@ -1,9 +1,9 @@
-package com.wcp.coding.room;
+package com.wcp.coding.file;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(value = "/coding/room")
-public class RoomController {
+@RequestMapping(value = "/wcp/coding/file")
+public class FileController {
 }
