@@ -5,9 +5,10 @@ import com.wcp.board.Board;
 import com.wcp.coding.board.CodingBoard;
 import com.wcp.commant.BoardCommant;
 import com.wcp.coding.submit.SubmitHistory;
+import com.wcp.convert.UserRoleToValueConverter;
+import com.wcp.convert.UserStatusToValueConverter;
 import com.wcp.like.BoardLike;
 import com.wcp.security.Role;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -51,11 +52,12 @@ public class User {
     private LocalDateTime register_datetime;
 
     @Column(name = UserTable.ROLE)
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = UserRoleToValueConverter.class)
     private Role role;
 
     @Column(name = UserTable.STATUS)
-    private String status;
+    @Convert(converter = UserStatusToValueConverter.class)
+    private UserSataus status;
 
     @OneToMany(mappedBy = "user")
     private List<Board> boards = new ArrayList<>();
