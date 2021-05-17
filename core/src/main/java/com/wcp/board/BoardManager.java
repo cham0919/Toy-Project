@@ -12,17 +12,19 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class BoardManager {
+public class BoardManager implements BoardPersistenceManager {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private BoardRepository boardRepository;
 
-    public void save(Board Board){
-        boardRepository.save(Board);
+    @Override
+    public Board save(Board Board){
+        return boardRepository.save(Board);
     }
 
+    @Override
     public List<Board> fetchByPage(int currentPage){
         Page<Board> boardPage = boardRepository
                 .findAll(PageRequest
@@ -30,25 +32,33 @@ public class BoardManager {
         return boardPage.getContent();
     }
 
+    @Override
     public Optional<Board> fetchById(Long id){
         return boardRepository.findById(id);
     }
 
+    @Override
     public List<Board> fetchAll(){
         return boardRepository.findAll();
     }
 
-    public void update(Board board){
+    @Override
+    public Board update(Board board){
         Optional<Board> fetchBoard = fetchById(board.getKey());
         fetchBoard = Optional.of(board);
+        return fetchBoard.get();
     }
 
-    public void delete(Board board){
+    @Override
+    public Board delete(Board board){
         boardRepository.delete(board);
+        return board;
     }
 
+    @Override
     public void deleteById(Long id){ boardRepository.deleteById(id); }
 
+    @Override
     public Long count(){ return boardRepository.count(); }
 
 }
