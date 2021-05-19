@@ -2,7 +2,7 @@ package com.wcp.board.main;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wcp.board.page.PageInfo;
+import com.wcp.board.BoardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,11 @@ public class MainController {
             .create();
 
     @Autowired
-    private MainBoardService mainBoardService;
-
-    /**
+    private BoardService boardService;
+/*
+    *//**
      * 글 한건 조회
-     */
+     *//*
     @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> fetchById(HttpServletRequest req,
@@ -45,9 +45,9 @@ public class MainController {
         }
     }
 
-    /**
+    *//**
      * 페이징
-     */
+     *//*
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> fetchByRange(HttpServletRequest req,
@@ -65,9 +65,9 @@ public class MainController {
     }
 
 
-    /**
+    *//**
      * 글 등록
-     */
+     *//*
     @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> insert(HttpServletRequest req,
@@ -83,9 +83,9 @@ public class MainController {
         }
     }
 
-    /**
+    *//**
      * 글 수정
-     */
+     *//*
     @RequestMapping(value = "/", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> modify(HttpServletRequest req,
@@ -100,9 +100,9 @@ public class MainController {
         }
     }
 
-    /**
+    *//**
      * id로 글 삭제
-     */
+     *//*
     @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> deleteById(HttpServletRequest req,
@@ -115,5 +115,5 @@ public class MainController {
         }catch (Throwable t){
             return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
 }
