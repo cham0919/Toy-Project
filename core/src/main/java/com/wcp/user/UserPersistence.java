@@ -28,7 +28,7 @@ public class UserPersistence implements UserPersistenceManager{
     @Override
     @Transactional
     public User updateUserName(Long key, String name) {
-        User user = findByMembershipNumber(key);
+        User user = findByMemberNumber(key);
         user.setName(name);
         return user;
     }
@@ -44,7 +44,7 @@ public class UserPersistence implements UserPersistenceManager{
     @Override
     @Transactional
     public User updateUserPassword(Long key, String pw) {
-        User user = findByMembershipNumber(key);
+        User user = findByMemberNumber(key);
         user.setPassword(pw);
         return user;
     }
@@ -60,7 +60,7 @@ public class UserPersistence implements UserPersistenceManager{
     @Override
     @Transactional
     public User updateUserEmail(Long key, String email) {
-        User user = findByMembershipNumber(key);
+        User user = findByMemberNumber(key);
         user.setEmail(email);
         return user;
     }
@@ -76,7 +76,7 @@ public class UserPersistence implements UserPersistenceManager{
     @Override
     @Transactional
     public User updateUserId(Long key, String id) {
-        User user = findByMembershipNumber(key);
+        User user = findByMemberNumber(key);
         user.setId(id);
         return user;
     }
@@ -92,7 +92,7 @@ public class UserPersistence implements UserPersistenceManager{
     @Override
     @Transactional
     public User updateUserPhone(Long key, String phone) {
-        User user = findByMembershipNumber(key);
+        User user = findByMemberNumber(key);
         user.setPhone(phone);
         return user;
     }
@@ -108,7 +108,7 @@ public class UserPersistence implements UserPersistenceManager{
     @Override
     @Transactional
     public User updateUserRole(Long key, Role role) {
-        User user = findByMembershipNumber(key);
+        User user = findByMemberNumber(key);
         user.setRole(role);
         return user;
     }
@@ -123,15 +123,15 @@ public class UserPersistence implements UserPersistenceManager{
 
     @Override
     @Transactional
-    public User updateUserStatus(Long key, String Status) {
-        User user = findByMembershipNumber(key);
+    public User updateUserStatus(Long key, UserSataus Status) {
+        User user = findByMemberNumber(key);
         user.setStatus(Status);
         return user;
     }
 
     @Override
     @Transactional
-    public User updateUserStatus(String id, String Status) {
+    public User updateUserStatus(String id, UserSataus Status) {
         User user = findByUserId(id);
         user.setStatus(Status);
         return user;
@@ -139,7 +139,7 @@ public class UserPersistence implements UserPersistenceManager{
 
     // 회원정보 검색 key로 조회
     @Override
-    public User findByMembershipNumber(Long key){
+    public User findByMemberNumber(Long key){
         //TODO. Optional 활용해 에러 감지
         User user = userRepository.findById(key).get();
         return user;
