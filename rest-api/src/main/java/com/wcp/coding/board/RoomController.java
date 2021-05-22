@@ -1,4 +1,4 @@
-package com.wcp.coding.room;
+package com.wcp.coding.board;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
