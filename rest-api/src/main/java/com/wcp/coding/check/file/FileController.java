@@ -1,4 +1,4 @@
-package com.wcp.coding.file;
+package com.wcp.coding.check.file;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

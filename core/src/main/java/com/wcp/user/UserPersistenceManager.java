@@ -37,14 +37,14 @@ public interface UserPersistenceManager {
 
 
     // 회원 상태 수정
-    User updateUserStatus(Long key, String Status);
-    User updateUserStatus(String id, String Status);
+    User updateUserStatus(Long key, UserSataus Status);
+    User updateUserStatus(String id, UserSataus Status);
 
     // 회원정보 전체 검색
     List<User> findAll();
 
     // 회원정보 검색 key로 조회
-    User findByMembershipNumber(Long key);
+    User findByMemberNumber(Long key);
 
     // 회원정보 검색 id로 조회
     User findByUserId(String id);

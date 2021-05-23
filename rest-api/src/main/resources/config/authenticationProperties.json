@@ -1,0 +1,5 @@
+{
+  "/wcp/admin/**": [
+    "ROLE_ADMIN"
+  ]
+}

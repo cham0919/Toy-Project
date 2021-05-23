@@ -1,4 +1,4 @@
-package com.wcp.coding.answer;
+package com.wcp.coding.content;
 
 
 import org.springframework.stereotype.Controller;
