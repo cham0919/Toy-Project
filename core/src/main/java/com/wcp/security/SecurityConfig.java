@@ -51,7 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.headers().frameOptions().disable();
-        http.formLogin().loginPage("/login").loginProcessingUrl("/login");
+        http.formLogin()
+                .loginPage("/register-page")
+                .loginProcessingUrl("/wcp/signin")
+                .usernameParameter("id")
+                .passwordParameter("pw");
         applyAuthenticationConfig(http);
 
 //        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.AuthorizedUrl anyRequest = http.authorizeRequests()
