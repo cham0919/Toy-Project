@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class BoardCategory {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = BoardCategoryTable.PK)
     private Long key;
 

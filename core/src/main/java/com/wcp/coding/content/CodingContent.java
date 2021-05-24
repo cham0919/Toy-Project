@@ -22,11 +22,11 @@ import java.util.List;
 public class CodingContent {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = CodingContentTable.PK)
     private Long key;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = CodingJoinUserTable.PK)
     private CodingJoinUser codingJoinUser;
 
@@ -43,10 +43,10 @@ public class CodingContent {
     @Column(name = CodingContentTable.SUBMIT_DATETIME)
     private LocalDateTime submitDatetime;
 
-    @OneToMany(mappedBy = "codingContent")
+    @OneToMany(mappedBy = "codingContent", fetch = FetchType.LAZY)
     private List<SubmitHistory> sumitHistories = new ArrayList<>();
 
-    @OneToOne(mappedBy = "codingContent")
+    @OneToOne(mappedBy = "codingContent", fetch = FetchType.LAZY)
     private CheckFile checkFile;
 
 }

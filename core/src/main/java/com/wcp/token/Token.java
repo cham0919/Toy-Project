@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 public class Token {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = TokenTable.PK)
     private Long key;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = UserTable.PK)
     private User user;
 

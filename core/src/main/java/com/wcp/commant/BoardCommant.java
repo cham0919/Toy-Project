@@ -19,15 +19,15 @@ import java.time.LocalDateTime;
 public class BoardCommant {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = BoardCommantTable.PK)
     private Long key;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = UserTable.PK)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = BoardTable.PK)
     private Board board;
 

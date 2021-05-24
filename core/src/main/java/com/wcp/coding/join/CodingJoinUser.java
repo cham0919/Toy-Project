@@ -23,15 +23,15 @@ import java.util.List;
 public class CodingJoinUser {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = CodingJoinUserTable.PK)
     private Long key;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = CodingBoardTable.PK)
     private CodingBoard codingBoard;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = UserTable.PK)
     private User user;
 
@@ -45,6 +45,6 @@ public class CodingJoinUser {
     @Column(name = CodingJoinUserTable.JOIN_DATETIME)
     private LocalDateTime joinDatetime;
 
-    @OneToMany(mappedBy = "codingJoinUser")
+    @OneToMany(mappedBy = "codingJoinUser", fetch = FetchType.LAZY)
     private List<CodingContent> codingContents = new ArrayList<>();
 }

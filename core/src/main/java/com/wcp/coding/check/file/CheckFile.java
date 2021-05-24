@@ -19,11 +19,11 @@ import java.time.LocalDateTime;
 public class CheckFile {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = CheckFileTable.PK)
     private Long key;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = CodingContentTable.PK)
     private CodingContent codingContent;
 

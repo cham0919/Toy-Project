@@ -21,15 +21,15 @@ import java.time.LocalDateTime;
 public class SubmitHistory {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = SubmitHistoryTable.PK)
     private Long key;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = CodingContentTable.PK)
     private CodingContent codingContent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = UserTable.PK)
     private User user;
 

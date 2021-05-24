@@ -23,15 +23,15 @@ import java.util.List;
 public class Board{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = BoardTable.PK)
     private Long key;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = UserTable.PK)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = BoardCategoryTable.PK)
     private BoardCategory boardCategory;
 
@@ -61,7 +61,7 @@ public class Board{
     @Column(name = BoardTable.DELETE)
     private String del;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<BoardCommant> boardCommants = new ArrayList<>();
 
 }
