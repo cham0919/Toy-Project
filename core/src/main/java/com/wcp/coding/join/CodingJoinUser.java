@@ -45,6 +45,4 @@ public class CodingJoinUser {
     @Column(name = CodingJoinUserTable.JOIN_DATETIME)
     private LocalDateTime joinDatetime;
 
-    @OneToMany(mappedBy = "codingJoinUser", fetch = FetchType.LAZY)
-    private List<CodingContent> codingContents = new ArrayList<>();
 }

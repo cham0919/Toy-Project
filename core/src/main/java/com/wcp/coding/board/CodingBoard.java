@@ -3,6 +3,7 @@ package com.wcp.coding.board;
 
 import com.wcp.WCPTable.*;
 import com.wcp.WCPTable.CodingBoardTable;
+import com.wcp.coding.content.CodingContent;
 import com.wcp.coding.join.CodingJoinUser;
 import com.wcp.user.User;
 import lombok.Data;
@@ -40,9 +41,6 @@ public class CodingBoard {
     @Column(name = CodingBoardTable.INTRO)
     private String intro;
 
-    @Column(name = CodingBoardTable.SECRET, nullable = false)
-    private String secret;
-
     @Column(name = CodingBoardTable.PASSWORD)
     private String password;
 
@@ -52,8 +50,7 @@ public class CodingBoard {
     @Column(name = CodingBoardTable.RAMDOM_KEY)
     private String ramdomKey;
 
-    @Column(name = CodingBoardTable.LANGUAGE, nullable = false)
-    private String language;
+
 
     @CreationTimestamp
     @Column(name = CodingBoardTable.CREATE_DATETIME, nullable = false)
@@ -61,4 +58,9 @@ public class CodingBoard {
 
     @OneToMany(mappedBy = "codingBoard", fetch = FetchType.LAZY)
     private List<CodingJoinUser> codingJoinUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "codingBoard", fetch = FetchType.LAZY)
+    private List<CodingContent> codingContents = new ArrayList<>();
+
+
 }

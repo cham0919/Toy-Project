@@ -1,7 +1,10 @@
 package com.wcp.coding.content;
 
+import com.wcp.WCPTable;
 import com.wcp.WCPTable.CodingContentTable;
+import com.wcp.WCPTable.CodingBoardTable;
 import com.wcp.WCPTable.CodingJoinUserTable;
+import com.wcp.coding.board.CodingBoard;
 import com.wcp.coding.check.file.CheckFile;
 import com.wcp.coding.join.CodingJoinUser;
 import com.wcp.coding.submit.SubmitHistory;
@@ -27,14 +30,17 @@ public class CodingContent {
     private Long key;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = CodingJoinUserTable.PK)
-    private CodingJoinUser codingJoinUser;
+    @JoinColumn(name = CodingBoardTable.PK)
+    private CodingBoard codingBoard;
 
     @Column(name = CodingContentTable.TITLE)
     private String title;
 
     @Column(name = CodingContentTable.CONTENT)
     private String content;
+
+    @Column(name = CodingBoardTable.LANGUAGE, nullable = false)
+    private String language;
 
     @Column(name = CodingContentTable.AUTH)
     private String auth;
