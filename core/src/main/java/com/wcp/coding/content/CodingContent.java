@@ -11,6 +11,7 @@ import com.wcp.coding.submit.SubmitHistory;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -45,7 +46,7 @@ public class CodingContent {
     @Column(name = CodingContentTable.AUTH)
     private String auth;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(name = CodingContentTable.SUBMIT_DATETIME)
     private LocalDateTime submitDatetime;
 
