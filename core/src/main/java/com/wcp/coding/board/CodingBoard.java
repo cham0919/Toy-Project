@@ -1,22 +1,22 @@
 package com.wcp.coding.board;
 
 
-import com.wcp.WCPTable.*;
 import com.wcp.WCPTable.CodingBoardTable;
+import com.wcp.WCPTable.UserTable;
 import com.wcp.coding.content.CodingContent;
 import com.wcp.coding.join.CodingJoinUser;
 import com.wcp.user.User;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Entity
 @Getter
@@ -31,8 +31,8 @@ public class CodingBoard {
     private Long key;
 
     @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = UserTable.PK, nullable = false)
-    @JoinColumn(name = UserTable.PK)
+    @JoinColumn(name = UserTable.PK, nullable = false)
+//    @JoinColumn(name = UserTable.PK)
     private User user;
 
     @Column(name = CodingBoardTable.TITLE, nullable = false)
@@ -50,8 +50,6 @@ public class CodingBoard {
     @Column(name = CodingBoardTable.RAMDOM_KEY)
     private String ramdomKey;
 
-
-
     @CreationTimestamp
     @Column(name = CodingBoardTable.CREATE_DATETIME, nullable = false)
     private LocalDateTime createDatetime;
@@ -62,5 +60,10 @@ public class CodingBoard {
     @OneToMany(mappedBy = "codingBoard", fetch = FetchType.LAZY)
     private List<CodingContent> codingContents = new ArrayList<>();
 
+    public CodingBoard addUser(User user){
+        this.user = user;
+        this.user.getCodingBoards().add(this);
+        return this;
+    }
 
 }
