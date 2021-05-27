@@ -44,6 +44,7 @@ public interface UserPersistenceManager {
     List<User> findAll();
 
     // 회원정보 검색 key로 조회
+    User findByMemberNumber(String key);
     User findByMemberNumber(Long key);
 
     // 회원정보 검색 id로 조회

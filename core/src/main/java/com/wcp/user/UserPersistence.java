@@ -1,6 +1,7 @@
 package com.wcp.user;
 
 import com.wcp.security.Role;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,6 +139,15 @@ public class UserPersistence implements UserPersistenceManager{
     }
 
     // 회원정보 검색 key로 조회
+    @Override
+    public User findByMemberNumber(String key){
+        if (StringUtils.isEmpty(key) || !StringUtils.isNumeric(key)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check key : "+ key);
+        }
+        User user = findByMemberNumber(Long.valueOf(key));
+        return user;
+    }
+
     @Override
     public User findByMemberNumber(Long key){
         //TODO. Optional 활용해 에러 감지
