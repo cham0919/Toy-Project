@@ -2,12 +2,11 @@ package com.wcp.coding.board;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wcp.board.BoardService;
+import com.wcp.coding.CodingBoardService;
 import com.wcp.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,12 +35,14 @@ public class CodingBoardController {
     @ResponseBody
     public ResponseEntity<String> save(HttpServletRequest req,
                                             HttpServletResponse res,
+                                            Principal principal,
                                             @RequestBody CodingBoard codingBoard)
     {
         try{
-            codingBoard = codingBoardService.save(codingBoard);
-            return new ResponseEntity<String>(gson.toJson(codingBoard), HttpStatus.OK);
+            codingBoard = codingBoardService.saveCodingPost(codingBoard, principal.getName());
+            return new ResponseEntity<String>(gson.toJson(codingBoard.toMapForOpen()), HttpStatus.OK);
         }catch (Throwable t){
+            t.printStackTrace();
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -53,8 +54,8 @@ public class CodingBoardController {
                                             @PathVariable("postId") String postId)
     {
         try{
-            CodingBoard codingBoard = codingBoardService.fetchById(postId);
-            return new ResponseEntity<String>(gson.toJson(codingBoard), HttpStatus.OK);
+            CodingBoardDto codingBoardDto = codingBoardService.fetchCodingPostById(postId);
+            return new ResponseEntity<String>(gson.toJson(codingBoardDto), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -67,7 +68,7 @@ public class CodingBoardController {
                                             @PathVariable("pageNm") String pageNm)
     {
         try{
-            List<CodingBoard> codingBoards = codingBoardService.fetchByPage(pageNm);
+            List<CodingBoard> codingBoards = codingBoardService.fetchByCodingBoardPage(pageNm);
             return new ResponseEntity<String>(gson.toJson(codingBoards), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,7 +82,7 @@ public class CodingBoardController {
                                         @PathVariable("pageNm") String pageNm)
     {
         try{
-            PageInfo pageInfo = codingBoardService.getPageList(pageNm);
+            PageInfo pageInfo = codingBoardService.fetchCodingBoardPageList(pageNm);
             Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
             return new ResponseEntity<String>(gson.toJson(stringObjectMap),HttpStatus.OK);
         }catch (Throwable t){
@@ -95,7 +96,7 @@ public class CodingBoardController {
                                               HttpServletResponse res)
     {
         try{
-            List<CodingBoard> codingBoards = codingBoardService.fetchAll();
+            List<CodingBoard> codingBoards = codingBoardService.fetchAllCodingBoard();
             return new ResponseEntity<String>(gson.toJson(codingBoards), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -109,8 +110,8 @@ public class CodingBoardController {
                                          @RequestBody CodingBoard codingBoard)
     {
         try{
-            codingBoard = codingBoardService.update(codingBoard);
-            return new ResponseEntity<String>(gson.toJson(codingBoard), HttpStatus.OK);
+            codingBoard = codingBoardService.updateCodingBoard(codingBoard);
+            return new ResponseEntity<String>(gson.toJson(codingBoard.toMapForOpen()), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -123,8 +124,8 @@ public class CodingBoardController {
                                          @RequestBody CodingBoard codingBoard)
     {
         try{
-            codingBoard = codingBoardService.delete(codingBoard);
-            return new ResponseEntity<String>(gson.toJson(codingBoard), HttpStatus.OK);
+            codingBoard = codingBoardService.deleteCodingBoard(codingBoard);
+            return new ResponseEntity<String>(gson.toJson(codingBoard.toMapForOpen()), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -137,7 +138,7 @@ public class CodingBoardController {
                                          @PathVariable("postId") String postId)
     {
         try{
-            codingBoardService.deleteById(postId);
+            codingBoardService.deleteCodingBoardById(postId);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -150,7 +151,7 @@ public class CodingBoardController {
                                          HttpServletResponse res)
     {
         try{
-            Long postCnt = codingBoardService.count();
+            Long postCnt = codingBoardService.codingBoardCount();
             return new ResponseEntity<String>(postCnt.toString(),HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
