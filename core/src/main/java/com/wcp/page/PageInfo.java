@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 import java.util.Map;
 import java.util.TreeMap;
 
-@Accessors(fluent = true)
+@Accessors(chain = true)
 @Getter
 @Setter
 @ToString
