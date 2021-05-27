@@ -66,4 +66,22 @@ public class CodingBoard {
         return this;
     }
 
+    public Map<String, Object> toMapForOpen() {
+        Map<String, Object> map = new TreeMap<String, Object>();
+        map.put("key", this.key);
+        map.put("title", this.title);
+        map.put("intro", this.intro);
+        map.put("password", this.password);
+        map.put("maxUser", this.maxUser);
+        map.put("ramdomKey", this.ramdomKey);
+        map.put("createDatetime", this.createDatetime);
+        map.put("codingJoinUsers", this.codingJoinUsers);
+        map.put("codingContents", this.codingContents);
+        return map;
+    }
+
+    @Override
+    public String toString() {
+        return toMapForOpen().toString();
+    }
 }
