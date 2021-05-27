@@ -19,6 +19,7 @@ public interface CodingContentPersistenceManager {
      * @param currentPage
      * @return List<CodingContent>
      */
+    List<CodingContent> fetchByPage(String currentPage);
     List<CodingContent> fetchByPage(int currentPage);
 
     /**
@@ -26,6 +27,7 @@ public interface CodingContentPersistenceManager {
      * @param id
      * @return Optional<CodingContent>
      */
+    Optional<CodingContent> fetchById(String id);
     Optional<CodingContent> fetchById(Long id);
 
     /**
@@ -52,6 +54,7 @@ public interface CodingContentPersistenceManager {
      * 글 id로 삭제
      * @param id
      */
+    void deleteById(String id);
     void deleteById(Long id);
 
     /**
