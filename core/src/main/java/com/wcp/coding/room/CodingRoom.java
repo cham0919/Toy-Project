@@ -3,7 +3,7 @@ package com.wcp.coding.board;
 
 import com.wcp.WCPTable.CodingRoomTable;
 import com.wcp.WCPTable.UserTable;
-import com.wcp.coding.content.CodingTest;
+import com.wcp.coding.test.CodingTest;
 import com.wcp.coding.join.CodingJoinUser;
 import com.wcp.user.User;
 import lombok.Getter;

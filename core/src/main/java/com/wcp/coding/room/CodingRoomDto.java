@@ -1,6 +1,6 @@
 package com.wcp.coding.board;
 
-import com.wcp.coding.content.CodingTestDto;
+import com.wcp.coding.test.CodingTestDto;
 import com.wcp.coding.join.CodingJoinUserDto;
 import lombok.Getter;
 import lombok.Setter;
