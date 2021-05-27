@@ -1,9 +1,5 @@
 package com.wcp;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import java.time.LocalDateTime;
-
 public class WCPTable {
     public class UserTable {
         public static final String TABLE_NAME = "WCP_User";
@@ -114,6 +110,7 @@ public class WCPTable {
         public static final String PATH = "cf_path";
         public static final String GIVEN_NAME = "cf_given_name";
         public static final String FILE_NAME = "cf_file_name";
+        public static final String FILE_SIZE = "cf_file_size";
         public static final String UPLOAD_DATETIME = "cf_upload_datetime";
     }
 
