@@ -11,13 +11,13 @@ public interface CodingBoardPersistenceManager {
      * @return codingBoard
      */
     CodingBoard save(CodingBoard codingBoard);
-    CodingBoard save(CodingBoard codingBoard, String userId);
 
     /**
      * 한 페이지 리스트 조회
      * @param currentPage
      * @return List<CodingBoard>
      */
+    List<CodingBoard> fetchByPage(String currentPage);
     List<CodingBoard> fetchByPage(int currentPage);
 
     /**
@@ -25,7 +25,9 @@ public interface CodingBoardPersistenceManager {
      * @param id
      * @return Optional<codingBoard>
      */
+    Optional<CodingBoard> fetchById(String id);
     Optional<CodingBoard> fetchById(Long id);
+
 
     /**
      * 글 전체 조회
@@ -52,6 +54,7 @@ public interface CodingBoardPersistenceManager {
      * @param id
      * @return codingBoard
      */
+    void deleteById(String id);
     void deleteById(Long id);
 
     /**

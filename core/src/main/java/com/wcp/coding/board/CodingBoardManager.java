@@ -4,6 +4,7 @@ import com.wcp.page.PageService;
 import com.wcp.user.User;
 import com.wcp.user.UserPersistenceManager;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,20 +24,18 @@ public class CodingBoardManager implements CodingBoardPersistenceManager {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final CodingBoardRepository codingBoardRepository;
-    private final UserPersistenceManager userPersistenceManager;
-
-    @Override
-    @Transactional
-    public CodingBoard save(CodingBoard codingBoard, String userId) {
-//        User user = userPersistenceManager.findByUserId(userId);
-//        codingBoard.setUser(user);
-        codingBoard.getUser().setKey(Long.valueOf(userId));
-        return save(codingBoard);
-    }
 
     @Override
     public CodingBoard save(CodingBoard codingBoard) {
         return codingBoardRepository.save(codingBoard);
+    }
+
+    @Override
+    public List<CodingBoard> fetchByPage(String currentPage) {
+        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : "+ currentPage);
+        }
+        return fetchByPage(Integer.valueOf(currentPage));
     }
 
     @Override
@@ -45,6 +44,14 @@ public class CodingBoardManager implements CodingBoardPersistenceManager {
                 .findAll(PageRequest
                         .of(currentPage - 1, CODE_BOARD_POST_COUNT, Sort.by(Sort.Direction.ASC, "key")));
         return codingBoardPage.getContent();
+    }
+
+    @Override
+    public Optional<CodingBoard> fetchById(String id) {
+        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
+        }
+        return fetchById(Long.valueOf(id));
     }
 
     @Override
@@ -69,6 +76,14 @@ public class CodingBoardManager implements CodingBoardPersistenceManager {
     public CodingBoard delete(CodingBoard codingBoard) {
         codingBoardRepository.delete(codingBoard);
         return codingBoard;
+    }
+
+    @Override
+    public void deleteById(String id){
+        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
+        }
+        deleteById(Long.valueOf(id));
     }
 
     @Override
