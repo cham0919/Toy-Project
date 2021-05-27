@@ -3,6 +3,7 @@ package com.wcp.coding.check.file;
 
 import com.wcp.WCPTable.*;
 import com.wcp.WCPTable.CheckFileTable;
+import com.wcp.coding.board.CodingBoard;
 import com.wcp.coding.content.CodingContent;
 import lombok.Data;
 import lombok.Getter;
@@ -36,8 +37,18 @@ public class CheckFile {
     @Column(name = CheckFileTable.FILE_NAME)
     private String fileName;
 
+    @Column(name = CheckFileTable.FILE_SIZE)
+    private Long fileSize;
+
     @CreatedDate
     @Column(name = CheckFileTable.UPLOAD_DATETIME)
     private LocalDateTime uploadDatetime;
+
+    public CheckFile addCodingContent(CodingContent codingContent){
+        this.codingContent = codingContent;
+        codingContent.setCheckFile(this);
+        return this;
+    }
+
 
 }
