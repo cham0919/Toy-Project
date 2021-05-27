@@ -1,18 +1,15 @@
 package com.wcp.coding.content;
 
-import com.wcp.WCPTable;
-import com.wcp.WCPTable.CodingContentTable;
 import com.wcp.WCPTable.CodingBoardTable;
-import com.wcp.WCPTable.CodingJoinUserTable;
+import com.wcp.WCPTable.CodingContentTable;
 import com.wcp.coding.board.CodingBoard;
 import com.wcp.coding.check.file.CheckFile;
-import com.wcp.coding.join.CodingJoinUser;
 import com.wcp.coding.submit.SubmitHistory;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,6 +19,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Accessors(chain = true)
 @Table(name = CodingContentTable.TABLE_NAME)
 public class CodingContent {
 
@@ -55,5 +53,11 @@ public class CodingContent {
 
     @OneToOne(mappedBy = "codingContent", fetch = FetchType.LAZY)
     private CheckFile checkFile;
+
+    public CodingContent addCodingBoard(CodingBoard codingBoard){
+        this.codingBoard = codingBoard;
+        codingBoard.getCodingContents().add(this);
+        return this;
+    }
 
 }
