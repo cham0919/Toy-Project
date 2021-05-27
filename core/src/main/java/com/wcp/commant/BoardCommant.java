@@ -4,7 +4,6 @@ import com.wcp.WCPTable.*;
 import com.wcp.WCPTable.BoardCommantTable;
 import com.wcp.board.Board;
 import com.wcp.user.User;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -35,18 +34,18 @@ public class BoardCommant {
     private String content;
 
     @CreatedDate
-    @Column(name = BoardCommantTable.UPLOAD_DATETIME)
-    private LocalDateTime uploadDatetime;
+    @Column(name = BoardCommantTable.UPLOAD_AT)
+    private LocalDateTime uploadAt;
 
     @CreatedDate
-    @Column(name = BoardCommantTable.UPDATE_DATETIME)
-    private LocalDateTime updateDatetime;
+    @Column(name = BoardCommantTable.UPDATED_AT)
+    private LocalDateTime updatedAt;
 
     @Column(name = BoardCommantTable.LIKE)
-    private Long like;
+    private Long likeCnt;
 
     @Column(name = BoardCommantTable.DISLIKE)
-    private Long disLike;
+    private Long disLikeCnt;
 
     @Column(name = BoardCommantTable.DELETE)
     private String delete;

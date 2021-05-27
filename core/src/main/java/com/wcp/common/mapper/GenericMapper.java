@@ -1,7 +1,6 @@
 package com.wcp.common.mapper;
 
 import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 

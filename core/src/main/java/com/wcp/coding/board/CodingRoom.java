@@ -1,9 +1,9 @@
 package com.wcp.coding.board;
 
 
-import com.wcp.WCPTable.CodingBoardTable;
+import com.wcp.WCPTable.CodingRoomTable;
 import com.wcp.WCPTable.UserTable;
-import com.wcp.coding.content.CodingContent;
+import com.wcp.coding.content.CodingTest;
 import com.wcp.coding.join.CodingJoinUser;
 import com.wcp.user.User;
 import lombok.Getter;
@@ -22,12 +22,12 @@ import java.util.TreeMap;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(name = CodingBoardTable.TABLE_NAME)
-public class CodingBoard {
+@Table(name = CodingRoomTable.TABLE_NAME)
+public class CodingRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = CodingBoardTable.PK)
+    @Column(name = CodingRoomTable.PK)
     private Long key;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,34 +35,34 @@ public class CodingBoard {
 //    @JoinColumn(name = UserTable.PK)
     private User user;
 
-    @Column(name = CodingBoardTable.TITLE, nullable = false)
+    @Column(name = CodingRoomTable.TITLE, nullable = false)
     private String title;
 
-    @Column(name = CodingBoardTable.INTRO)
+    @Column(name = CodingRoomTable.INTRO)
     private String intro;
 
-    @Column(name = CodingBoardTable.PASSWORD)
+    @Column(name = CodingRoomTable.PASSWORD)
     private String password;
 
-    @Column(name = CodingBoardTable.MAX_USER, nullable = false)
+    @Column(name = CodingRoomTable.MAX_USER, nullable = false)
     private Long maxUser;
 
-    @Column(name = CodingBoardTable.RAMDOM_KEY)
+    @Column(name = CodingRoomTable.RAMDOM_KEY)
     private String ramdomKey;
 
     @CreationTimestamp
-    @Column(name = CodingBoardTable.CREATE_DATETIME, nullable = false)
-    private LocalDateTime createDatetime;
+    @Column(name = CodingRoomTable.CREATED_AT, nullable = false)
+    private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "codingBoard", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "codingRoom", fetch = FetchType.LAZY)
     private List<CodingJoinUser> codingJoinUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "codingBoard", fetch = FetchType.LAZY)
-    private List<CodingContent> codingContents = new ArrayList<>();
+    @OneToMany(mappedBy = "codingRoom", fetch = FetchType.LAZY)
+    private List<CodingTest> codingTests = new ArrayList<>();
 
-    public CodingBoard addUser(User user){
+    public CodingRoom addUser(User user){
         this.user = user;
-        this.user.getCodingBoards().add(this);
+        this.user.getCodingRooms().add(this);
         return this;
     }
 
@@ -74,9 +74,9 @@ public class CodingBoard {
         map.put("password", this.password);
         map.put("maxUser", this.maxUser);
         map.put("ramdomKey", this.ramdomKey);
-        map.put("createDatetime", this.createDatetime);
+        map.put("createDatetime", this.createdAt);
         map.put("codingJoinUsers", this.codingJoinUsers);
-        map.put("codingContents", this.codingContents);
+        map.put("codingTests", this.codingTests);
         return map;
     }
 

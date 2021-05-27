@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class MultiPartCodingContentDto extends CodingContentDto{
+public class MultiPartCodingTestDto extends CodingTestDto {
 
     private MultipartFile file;
 

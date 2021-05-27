@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class CodingContentDto{
+public class CodingTestDto {
 
     private String key;
     private String postId;
@@ -17,7 +17,7 @@ public class CodingContentDto{
     private String content;
     private String language;
     private String auth;
-    private LocalDateTime submitDatetime;
+    private LocalDateTime submitAt;
 
 
 }

@@ -1,8 +1,5 @@
-package com.wcp.coding.content;
+package com.wcp.coding.board;
 
-import com.wcp.coding.board.CodingBoard;
-import com.wcp.coding.board.CodingBoardRepository;
-import com.wcp.page.PageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,23 +13,22 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.wcp.page.Page.CODE_CONTENT_POST_COUNT;
+import static com.wcp.page.Page.CODE_BOARD_POST_COUNT;
 
 @Component
 @RequiredArgsConstructor
-public class CodingContentManager implements CodingContentPersistenceManager {
+public class CodingRoomPersistenceManager implements CodingRoomManager {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final CodingContentRepository codingContentRepository;
+    private final CodingRoomRepository codingRoomRepository;
 
     @Override
-    public CodingContent save(CodingContent codingBoard) {
-        return codingContentRepository.save(codingBoard);
+    public CodingRoom save(CodingRoom codingRoom) {
+        return codingRoomRepository.save(codingRoom);
     }
 
-
     @Override
-    public List<CodingContent> fetchByPage(String currentPage) {
+    public List<CodingRoom> fetchByPage(String currentPage) {
         if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : "+ currentPage);
         }
@@ -40,16 +36,15 @@ public class CodingContentManager implements CodingContentPersistenceManager {
     }
 
     @Override
-    public List<CodingContent> fetchByPage(int currentPage) {
-        Page<CodingContent> codingContentPage = codingContentRepository
+    public List<CodingRoom> fetchByPage(int currentPage) {
+        Page<CodingRoom> codingRoomPage = codingRoomRepository
                 .findAll(PageRequest
-                        .of(currentPage - 1, CODE_CONTENT_POST_COUNT, Sort.by(Sort.Direction.ASC, "key")));
-        return codingContentPage.getContent();
+                        .of(currentPage - 1, CODE_BOARD_POST_COUNT, Sort.by(Sort.Direction.ASC, "key")));
+        return codingRoomPage.getContent();
     }
 
-
     @Override
-    public Optional<CodingContent> fetchById(String id){
+    public Optional<CodingRoom> fetchById(String id) {
         if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
@@ -57,27 +52,27 @@ public class CodingContentManager implements CodingContentPersistenceManager {
     }
 
     @Override
-    public Optional<CodingContent> fetchById(Long id) {
-        return codingContentRepository.findById(id);
+    public Optional<CodingRoom> fetchById(Long id) {
+        return codingRoomRepository.findById(id);
     }
 
     @Override
-    public List<CodingContent> fetchAll() {
-        return codingContentRepository.findAll();
+    public List<CodingRoom> fetchAll() {
+        return codingRoomRepository.findAll();
     }
 
     @Override
     @Transactional
-    public CodingContent update(CodingContent codingContent) {
-        Optional<CodingContent> fetchBoard = fetchById(codingContent.getKey());
-        fetchBoard = Optional.of(codingContent);
-        return fetchBoard.get();
+    public CodingRoom update(CodingRoom codingRoom) {
+        Optional<CodingRoom> fetchCodingRoom = fetchById(codingRoom.getKey());
+        fetchCodingRoom = Optional.of(codingRoom);
+        return fetchCodingRoom.get();
     }
 
     @Override
-    public CodingContent delete(CodingContent codingContent) {
-        codingContentRepository.delete(codingContent);
-        return codingContent;
+    public CodingRoom delete(CodingRoom codingRoom) {
+        codingRoomRepository.delete(codingRoom);
+        return codingRoom;
     }
 
     @Override
@@ -90,11 +85,11 @@ public class CodingContentManager implements CodingContentPersistenceManager {
 
     @Override
     public void deleteById(Long id) {
-        codingContentRepository.deleteById(id);
+        codingRoomRepository.deleteById(id);
     }
 
     @Override
     public Long count() {
-        return codingContentRepository.count();
+        return codingRoomRepository.count();
     }
 }

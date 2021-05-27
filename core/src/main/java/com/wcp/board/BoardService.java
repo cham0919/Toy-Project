@@ -13,7 +13,7 @@ public class BoardService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private BoardManager boardManager;
+    private BoardPersistenceManager boardPersistenceManager;
 
     @Autowired
     private PageService pageService;

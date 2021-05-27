@@ -1,29 +1,27 @@
-package com.wcp.coding.content;
-
+package com.wcp.coding.board;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wcp.coding.CodingBoardService;
+import com.wcp.coding.CodingRoomService;
 import com.wcp.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/wcp/coding/content")
+@RequestMapping(value = "/wcp/coding/board")
 @RequiredArgsConstructor
-public class CodingContentController {
+public class CodingRoomController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final Gson gson = new GsonBuilder().setPrettyPrinting()
@@ -31,21 +29,20 @@ public class CodingContentController {
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             .create();
 
-    private final CodingBoardService codingBoardService;
+    private final CodingRoomService codingRoomService;
 
-    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.POST,
-            produces = "application/json; charset=utf-8",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> save(HttpServletRequest req,
-                                       HttpServletResponse res,
-                                       @PathVariable("postId") String postId,
-                                       @ModelAttribute("formData") MultiPartCodingContentDto multiPartCodingContentDto)
+                                            HttpServletResponse res,
+                                            Principal principal,
+                                            @RequestBody CodingRoom codingRoom)
     {
         try{
-            codingBoardService.registerContent(multiPartCodingContentDto,postId);
-            return new ResponseEntity<String>(HttpStatus.OK);
+            codingRoom = codingRoomService.saveCodingPost(codingRoom, principal.getName());
+            return new ResponseEntity<String>(gson.toJson(codingRoom.toMapForOpen()), HttpStatus.OK);
         }catch (Throwable t){
+            t.printStackTrace();
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -54,11 +51,11 @@ public class CodingContentController {
     @ResponseBody
     public ResponseEntity<String> fetchById(HttpServletRequest req,
                                             HttpServletResponse res,
-                                            @PathVariable("contentId") String contentId)
+                                            @PathVariable("postId") String postId)
     {
         try{
-            CodingContent codingContent = codingBoardService.fetchCodingContentById(contentId);
-            return new ResponseEntity<String>(gson.toJson(codingContent), HttpStatus.OK);
+            CodingRoomDto codingRoomDto = codingRoomService.fetchCodingPostById(postId);
+            return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -67,12 +64,12 @@ public class CodingContentController {
     @RequestMapping(value = "/page/{pageNm:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> fetchByPage(HttpServletRequest req,
-                                              HttpServletResponse res,
-                                              @PathVariable("pageNm") String pageNm)
+                                            HttpServletResponse res,
+                                            @PathVariable("pageNm") String pageNm)
     {
         try{
-            List<CodingContent> codingContents = codingBoardService.fetchByCodingContentPage(pageNm);
-            return new ResponseEntity<String>(gson.toJson(codingContents), HttpStatus.OK);
+            List<CodingRoom> codingRooms = codingRoomService.fetchByCodingRoomPage(pageNm);
+            return new ResponseEntity<String>(gson.toJson(codingRooms), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -85,7 +82,7 @@ public class CodingContentController {
                                         @PathVariable("pageNm") String pageNm)
     {
         try{
-            PageInfo pageInfo = codingBoardService.fetchCodingContentPageList(pageNm);
+            PageInfo pageInfo = codingRoomService.fetchCodingRoomPageList(pageNm);
             Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
             return new ResponseEntity<String>(gson.toJson(stringObjectMap),HttpStatus.OK);
         }catch (Throwable t){
@@ -96,11 +93,11 @@ public class CodingContentController {
     @RequestMapping(value = "/all", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> fetchAll(HttpServletRequest req,
-                                           HttpServletResponse res)
+                                              HttpServletResponse res)
     {
         try{
-            List<CodingContent> codingContents = codingBoardService.fetchAllCodingContent();
-            return new ResponseEntity<String>(gson.toJson(codingContents), HttpStatus.OK);
+            List<CodingRoom> codingRooms = codingRoomService.fetchAllCodingRoom();
+            return new ResponseEntity<String>(gson.toJson(codingRooms), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -109,12 +106,12 @@ public class CodingContentController {
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> update(HttpServletRequest req,
-                                         HttpServletResponse res,
-                                         @RequestBody CodingContent codingContent)
+                                           HttpServletResponse res,
+                                         @RequestBody CodingRoom codingRoom)
     {
         try{
-            codingContent = codingBoardService.updateCodingContent(codingContent);
-            return new ResponseEntity<String>(gson.toJson(codingContent), HttpStatus.OK);
+            codingRoom = codingRoomService.updateCodingRoom(codingRoom);
+            return new ResponseEntity<String>(gson.toJson(codingRoom.toMapForOpen()), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -124,11 +121,11 @@ public class CodingContentController {
     @ResponseBody
     public ResponseEntity<String> delete(HttpServletRequest req,
                                          HttpServletResponse res,
-                                         @RequestBody CodingContent codingContent)
+                                         @RequestBody CodingRoom codingRoom)
     {
         try{
-            codingContent = codingBoardService.deleteCodingContent(codingContent);
-            return new ResponseEntity<String>(gson.toJson(codingContent), HttpStatus.OK);
+            codingRoom = codingRoomService.deleteCodingRoom(codingRoom);
+            return new ResponseEntity<String>(gson.toJson(codingRoom.toMapForOpen()), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -141,7 +138,7 @@ public class CodingContentController {
                                          @PathVariable("postId") String postId)
     {
         try{
-            codingBoardService.deleteCodingContentById(postId);
+            codingRoomService.deleteCodingRoomById(postId);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -151,15 +148,13 @@ public class CodingContentController {
     @RequestMapping(value = "/cnt", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> count(HttpServletRequest req,
-                                        HttpServletResponse res)
+                                         HttpServletResponse res)
     {
         try{
-            Long postCnt = codingBoardService.codingContentCount();
+            Long postCnt = codingRoomService.codingRoomCount();
             return new ResponseEntity<String>(postCnt.toString(),HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 }

@@ -4,7 +4,6 @@ package com.wcp.like;
 import com.wcp.WCPTable.*;
 import com.wcp.WCPTable.BoardLikeTable;
 import com.wcp.user.User;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,7 +27,7 @@ public class BoardLike {
     private User user;
 
     @Column(name = BoardLikeTable.TARGET_ID)
-    private String id;
+    private String targetId;
 
     @Column(name = BoardLikeTable.TARGET_TYPE)
     private String targetType;
@@ -37,8 +36,8 @@ public class BoardLike {
     private String type;
 
     @CreatedDate
-    @Column(name = BoardLikeTable.DATETIME)
-    private LocalDateTime dateTime;
+    @Column(name = BoardLikeTable.LIKE_AT)
+    private LocalDateTime likeAt;
 
 
 }

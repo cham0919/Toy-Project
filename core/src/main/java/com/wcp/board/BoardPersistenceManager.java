@@ -1,65 +1,66 @@
 package com.wcp.board;
 
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BoardPersistenceManager {
+@Component
+@RequiredArgsConstructor
+public class BoardPersistenceManager implements BoardManager {
 
-    /**
-     * 글 등록
-     * @param Board
-     * @return Board
-     */
-    Board save(Board Board);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    /**
-     * 한 페이지 리스트 조회
-     * @param currentPage
-     * @return List<Board>
-     */
-    List<Board> fetchByPage(int currentPage);
+    @Autowired
+    private BoardRepository boardRepository;
 
-    /**
-     * 글 id로 조회
-     * @param id
-     * @return Optional<Board>
-     */
-    Optional<Board> fetchById(Long id);
+    @Override
+    public Board save(Board Board){
+        return boardRepository.save(Board);
+    }
 
-    /**
-     * 글 전체 조회
-     * @return List<Board>
-     */
-    List<Board> fetchAll();
+    @Override
+    public List<Board> fetchByPage(int currentPage){
+        Page<Board> boardPage = boardRepository
+                .findAll(PageRequest
+                        .of(currentPage - 1, 10, Sort.by(Sort.Direction.ASC, "key")));
+        return boardPage.getContent();
+    }
 
-    /**
-     * 글 수정
-     * @param board
-     * @return Board
-     */
-    Board update(Board board);
+    @Override
+    public Optional<Board> fetchById(Long id){
+        return boardRepository.findById(id);
+    }
 
-    /**
-     * 글 삭제
-     * @param board
-     * @return Board
-     */
-    public Board delete(Board board);
+    @Override
+    public List<Board> fetchAll(){
+        return boardRepository.findAll();
+    }
 
-    /**
-     * 글 id로 삭제
-     * @param id
-     * @return Board
-     */
-    void deleteById(Long id);
+    @Override
+    public Board update(Board board){
+        Optional<Board> fetchBoard = fetchById(board.getKey());
+        fetchBoard = Optional.of(board);
+        return fetchBoard.get();
+    }
 
-    /**
-     * 글 갯수 조회
-     * @return Long
-     */
-    Long count();
+    @Override
+    public Board delete(Board board){
+        boardRepository.delete(board);
+        return board;
+    }
+
+    @Override
+    public void deleteById(Long id){ boardRepository.deleteById(id); }
+
+    @Override
+    public Long count(){ return boardRepository.count(); }
+
 }

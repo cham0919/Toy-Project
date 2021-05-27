@@ -6,7 +6,6 @@ import com.wcp.WCPTable.BoardCategoryTable;
 import com.wcp.commant.BoardCommant;
 import com.wcp.user.User;
 import com.wcp.category.BoardCategory;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -42,24 +41,24 @@ public class Board{
     private String content;
 
     @CreatedDate
-    @Column(name = BoardTable.UPLOAD_DATETIME)
-    private LocalDateTime uploadDatetime;
+    @Column(name = BoardTable.UPLOAD_AT)
+    private LocalDateTime uploadAt;
 
     @CreatedDate
-    @Column(name = BoardTable.UPDATE_DATETIME)
-    private LocalDateTime updateDatetime;
+    @Column(name = BoardTable.UPDATED_AT)
+    private LocalDateTime updatedAt;
 
     @Column(name = BoardTable.HIT)
     private Long hit;
 
     @Column(name = BoardTable.LIKE)
-    private Long like;
+    private Long likeCnt;
 
     @Column(name = BoardTable.DISLIKE)
-    private Long disLike;
+    private Long disLikeCnt;
 
     @Column(name = BoardTable.DELETE)
-    private String del;
+    private String delete;
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<BoardCommant> boardCommants = new ArrayList<>();

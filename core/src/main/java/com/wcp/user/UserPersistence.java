@@ -60,22 +60,6 @@ public class UserPersistence implements UserPersistenceManager{
 
     @Override
     @Transactional
-    public User updateUserEmail(Long key, String email) {
-        User user = findByMemberNumber(key);
-        user.setEmail(email);
-        return user;
-    }
-
-    @Override
-    @Transactional
-    public User updateUserEmail(String id, String email) {
-        User user = findByUserId(id);
-        user.setEmail(email);
-        return user;
-    }
-
-    @Override
-    @Transactional
     public User updateUserId(Long key, String id) {
         User user = findByMemberNumber(key);
         user.setId(id);

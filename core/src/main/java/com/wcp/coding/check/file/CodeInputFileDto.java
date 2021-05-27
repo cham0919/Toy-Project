@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 @Builder
-public class CheckFileDto {
+public class CodeInputFileDto {
 
     private String key;
     private String contentId;
@@ -17,6 +17,6 @@ public class CheckFileDto {
     private String givenName;
     private String fileName;
     private Long fileSize;
-    private LocalDateTime uploadDatetime;
+    private LocalDateTime uploadAt;
 
 }

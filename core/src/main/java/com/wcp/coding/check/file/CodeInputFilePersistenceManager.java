@@ -12,18 +12,18 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class CheckFileManager implements CheckFilePersistenceManager {
+public class CodeInputFilePersistenceManager implements CodeInputFileManager {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final CheckFileRepository checkFileRepository;
+    private final CodeInputFileRepository codeInputFileRepository;
 
     @Override
-    public CheckFile save(CheckFile checkFile) {
-        return checkFileRepository.save(checkFile);
+    public CodeInputFile save(CodeInputFile codeInputFile) {
+        return codeInputFileRepository.save(codeInputFile);
     }
 
     @Override
-    public Optional<CheckFile> fetchById(String id) {
+    public Optional<CodeInputFile> fetchById(String id) {
         if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
@@ -31,27 +31,27 @@ public class CheckFileManager implements CheckFilePersistenceManager {
     }
 
     @Override
-    public Optional<CheckFile> fetchById(Long id) {
-        return checkFileRepository.findById(id);
+    public Optional<CodeInputFile> fetchById(Long id) {
+        return codeInputFileRepository.findById(id);
     }
 
     @Override
-    public List<CheckFile> fetchAll() {
-        return checkFileRepository.findAll();
+    public List<CodeInputFile> fetchAll() {
+        return codeInputFileRepository.findAll();
     }
 
     @Override
     @Transactional
-    public CheckFile update(CheckFile checkFile) {
-        Optional<CheckFile> fetchBoard = fetchById(checkFile.getKey());
-        fetchBoard = Optional.of(checkFile);
+    public CodeInputFile update(CodeInputFile codeInputFile) {
+        Optional<CodeInputFile> fetchBoard = fetchById(codeInputFile.getKey());
+        fetchBoard = Optional.of(codeInputFile);
         return fetchBoard.get();
     }
 
     @Override
-    public CheckFile delete(CheckFile checkFile) {
-        checkFileRepository.delete(checkFile);
-        return checkFile;
+    public CodeInputFile delete(CodeInputFile codeInputFile) {
+        codeInputFileRepository.delete(codeInputFile);
+        return codeInputFile;
     }
 
     @Override
@@ -64,11 +64,11 @@ public class CheckFileManager implements CheckFilePersistenceManager {
 
     @Override
     public void deleteById(Long id) {
-        checkFileRepository.deleteById(id);
+        codeInputFileRepository.deleteById(id);
     }
 
     @Override
     public Long count() {
-        return checkFileRepository.count();
+        return codeInputFileRepository.count();
     }
 }

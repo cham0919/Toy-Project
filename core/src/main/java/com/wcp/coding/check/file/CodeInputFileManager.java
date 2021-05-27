@@ -3,42 +3,42 @@ package com.wcp.coding.check.file;
 import java.util.List;
 import java.util.Optional;
 
-public interface CheckFilePersistenceManager {
+public interface CodeInputFileManager {
 
     /**
      * 코딩 답변 파일 등록
-     * @param checkFile
-     * @return CheckFile
+     * @param codeInputFile
+     * @return CodeInputFile
      */
-    CheckFile save(CheckFile checkFile);
+    CodeInputFile save(CodeInputFile codeInputFile);
 
     /**
      * 코딩 답변 파일 id로 조회
      * @param id
-     * @return Optional<CheckFile>
+     * @return Optional<CodeInputFile>
      */
-    Optional<CheckFile> fetchById(String id);
-    Optional<CheckFile> fetchById(Long id);
+    Optional<CodeInputFile> fetchById(String id);
+    Optional<CodeInputFile> fetchById(Long id);
 
     /**
      * 코딩 답변 파일 전체 조회
-     * @return List<CheckFile>
+     * @return List<CodeInputFile>
      */
-    List<CheckFile> fetchAll();
+    List<CodeInputFile> fetchAll();
 
     /**
      * 코딩 답변 파일 수정
-     * @param checkFile
-     * @return CheckFile
+     * @param codeInputFile
+     * @return CodeInputFile
      */
-    CheckFile update(CheckFile checkFile);
+    CodeInputFile update(CodeInputFile codeInputFile);
 
     /**
      * 코딩 답변 파일 삭제
-     * @param checkFile
-     * @return CheckFile
+     * @param codeInputFile
+     * @return CodeInputFile
      */
-    CheckFile delete(CheckFile checkFile);
+    CodeInputFile delete(CodeInputFile codeInputFile);
 
     /**
      * 파일 id로 삭제

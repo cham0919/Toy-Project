@@ -1,8 +1,6 @@
 package com.wcp.coding.board;
 
-import com.wcp.coding.content.CodingContent;
-import com.wcp.coding.content.CodingContentDto;
-import com.wcp.coding.join.CodingJoinUser;
+import com.wcp.coding.content.CodingTestDto;
 import com.wcp.coding.join.CodingJoinUserDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class CodingBoardDto {
+public class CodingRoomDto {
 
     private String key;
     private String title;
@@ -23,8 +21,8 @@ public class CodingBoardDto {
     private String password;
     private Long maxUser;
     private String ramdomKey;
-    private LocalDateTime createDatetime;
+    private LocalDateTime createdAt;
     private List<CodingJoinUserDto> codingJoinUsers = new ArrayList<>();
-    private List<CodingContentDto> codingContents = new ArrayList<>();
+    private List<CodingTestDto> codingTestDtos = new ArrayList<>();
 
 }
