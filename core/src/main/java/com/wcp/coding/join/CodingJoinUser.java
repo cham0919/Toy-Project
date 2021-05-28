@@ -4,7 +4,7 @@ package com.wcp.coding.join;
 import com.wcp.WCPTable.CodingJoinUserTable;
 import com.wcp.WCPTable.CodingRoomTable;
 import com.wcp.WCPTable.UserTable;
-import com.wcp.coding.board.CodingRoom;
+import com.wcp.coding.room.CodingRoom;
 import com.wcp.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +40,6 @@ public class CodingJoinUser {
 
     @CreatedDate
     @Column(name = CodingJoinUserTable.JOIN_AT)
-    private LocalDateTime joinDatetime;
+    private LocalDateTime joinAt;
 
 }

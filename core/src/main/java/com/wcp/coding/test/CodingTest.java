@@ -1,9 +1,9 @@
-package com.wcp.coding.content;
+package com.wcp.coding.test;
 
 import com.wcp.WCPTable.CodingRoomTable;
 import com.wcp.WCPTable.CodingTestTable;
-import com.wcp.coding.board.CodingRoom;
-import com.wcp.coding.check.file.CodeInputFile;
+import com.wcp.coding.room.CodingRoom;
+import com.wcp.coding.inputFile.CodeInputFile;
 import com.wcp.coding.submit.SubmitHistory;
 import lombok.Getter;
 import lombok.Setter;

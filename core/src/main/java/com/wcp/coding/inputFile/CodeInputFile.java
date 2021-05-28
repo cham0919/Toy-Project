@@ -1,9 +1,9 @@
-package com.wcp.coding.check.file;
+package com.wcp.coding.inputFile;
 
 
 import com.wcp.WCPTable.*;
 import com.wcp.WCPTable.CodeInputFileTable;
-import com.wcp.coding.content.CodingTest;
+import com.wcp.coding.test.CodingTest;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;

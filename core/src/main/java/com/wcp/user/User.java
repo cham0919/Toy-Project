@@ -2,7 +2,7 @@ package com.wcp.user;
 
 import com.wcp.WCPTable.UserTable;
 import com.wcp.board.Board;
-import com.wcp.coding.board.CodingRoom;
+import com.wcp.coding.room.CodingRoom;
 import com.wcp.coding.submit.SubmitHistory;
 import com.wcp.commant.BoardCommant;
 import com.wcp.convert.UserRoleToValueConverter;

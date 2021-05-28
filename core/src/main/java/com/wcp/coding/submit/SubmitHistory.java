@@ -4,7 +4,7 @@ package com.wcp.coding.submit;
 import com.wcp.WCPTable.CodingTestTable;
 import com.wcp.WCPTable.SubmitHistoryTable;
 import com.wcp.WCPTable.UserTable;
-import com.wcp.coding.content.CodingTest;
+import com.wcp.coding.test.CodingTest;
 import com.wcp.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,7 +43,7 @@ public class SubmitHistory {
 
     @CreatedDate
     @Column(name = SubmitHistoryTable.SUBMIT_AT)
-    private LocalDateTime submitDateTime;
+    private LocalDateTime submitAt;
 
     @Column(name = SubmitHistoryTable.RUN_TIME)
     private String runTime;
