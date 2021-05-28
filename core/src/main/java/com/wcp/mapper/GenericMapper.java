@@ -1,4 +1,4 @@
-package com.wcp.common.mapper;
+package com.wcp.mapper;
 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.MappingTarget;
