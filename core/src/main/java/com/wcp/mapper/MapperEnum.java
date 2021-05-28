@@ -1,0 +1,17 @@
+package com.wcp.mapper;
+
+public enum MapperEnum {
+
+    BOARDCATEGORY,
+    BOARDCOMMANT,
+    BOARDLIKE,
+    BOARD,
+    CERTIFICATIONTOKEN,
+    CODEINPUTFILE,
+    CODINGJOINUSER,
+    CODINGROOM,
+    CODINGTEST,
+    SUBMITHISTORY,
+    USER
+
+}
