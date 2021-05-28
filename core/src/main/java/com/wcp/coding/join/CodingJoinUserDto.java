@@ -1,6 +1,6 @@
 package com.wcp.coding.join;
 
-import com.wcp.coding.board.CodingRoom;
+import com.wcp.coding.room.CodingRoomDto;
 import com.wcp.user.UserDto;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -12,10 +12,9 @@ import java.time.LocalDateTime;
 public class CodingJoinUserDto {
 
     private String key;
-    private CodingRoom codingRoom;
+    private CodingRoomDto codingRoom;
     private UserDto user;
     private String status;
     private String role;
-    private LocalDateTime joinDatetime;
-
+    private LocalDateTime joinAt;
 }

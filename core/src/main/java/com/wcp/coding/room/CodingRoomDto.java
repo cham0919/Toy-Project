@@ -1,4 +1,4 @@
-package com.wcp.coding.board;
+package com.wcp.coding.room;
 
 import com.wcp.coding.test.CodingTestDto;
 import com.wcp.coding.join.CodingJoinUserDto;
@@ -23,6 +23,6 @@ public class CodingRoomDto {
     private String ramdomKey;
     private LocalDateTime createdAt;
     private List<CodingJoinUserDto> codingJoinUsers = new ArrayList<>();
-    private List<CodingTestDto> codingTestDtos = new ArrayList<>();
+    private List<CodingTestDto> codingTests = new ArrayList<>();
 
 }

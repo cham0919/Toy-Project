@@ -1,14 +1,14 @@
-package com.wcp.coding.check.file;
+package com.wcp.coding.inputFile;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-@Builder
 public class CodeInputFileDto {
 
     private String key;
