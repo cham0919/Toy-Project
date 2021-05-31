@@ -1,4 +1,4 @@
-package com.wcp.coding.content;
+package com.wcp.coding.test;
 
 
 import com.google.gson.Gson;
@@ -20,9 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/wcp/coding/content")
+@RequestMapping(value = "/wcp/coding/test")
 @RequiredArgsConstructor
 public class CodingTestController {
+
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final Gson gson = new GsonBuilder().setPrettyPrinting()
@@ -53,11 +54,11 @@ public class CodingTestController {
     @ResponseBody
     public ResponseEntity<String> fetchById(HttpServletRequest req,
                                             HttpServletResponse res,
-                                            @PathVariable("contentId") String contentId)
+                                            @PathVariable("postId") String postId)
     {
         try{
-            CodingTest codingTest = codingRoomService.fetchCodingTestById(contentId);
-            return new ResponseEntity<String>(gson.toJson(codingTest), HttpStatus.OK);
+            CodingTestDto dto = codingRoomService.fetchCodingTestById(postId);
+            return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
