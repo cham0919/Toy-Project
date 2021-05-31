@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.io.File;
 import java.time.LocalDateTime;
 
 @Entity
@@ -48,5 +49,8 @@ public class CodeInputFile {
         return this;
     }
 
+    public String getFullPath(){
+        return this.path + File.separator + this.fileName;
+    }
 
 }
