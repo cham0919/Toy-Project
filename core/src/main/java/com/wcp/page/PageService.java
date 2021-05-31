@@ -9,27 +9,29 @@ public class PageService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public void getPageList(PageInfo pageInfo){
-        calcEndPage(pageInfo);
+    public PageInfo getPageList(PageInfo pageInfo){
+        pageInfo = calcEndPage(pageInfo);
         log.info(pageInfo.toString());
-        calcStartPage(pageInfo);
+        pageInfo = calcStartPage(pageInfo);
         log.info(pageInfo.toString());
+        return pageInfo;
     }
 
-    private void calcEndPage(PageInfo pageInfo){
-        int endPage = (int) ((Math.ceil(pageInfo.currentPage() / (double)pageInfo.pageCount()) * pageInfo.pageCount()));
-        int tmpEndPage = (int)(Math.ceil(pageInfo.totalPostCount()/ (double) pageInfo.postCount()));
+    private PageInfo calcEndPage(PageInfo pageInfo){
+        int endPage = (int) ((Math.ceil(pageInfo.getCurrentPage() / (double)pageInfo.getPageCount()) * pageInfo.getPageCount()));
+        int tmpEndPage = (int)(Math.ceil(pageInfo.getTotalPostCount()/ (double) pageInfo.getPostCount()));
 
         if( endPage > tmpEndPage ){ endPage =  tmpEndPage; }
 
-        pageInfo.endPage(endPage);
+        return pageInfo.setEndPage(endPage);
     }
 
-    private void calcStartPage(PageInfo pageInfo){
-        int startPage = (pageInfo.endPage() - pageInfo.pageCount()) + 1;
+    private PageInfo calcStartPage(PageInfo pageInfo){
+        int startPage = (pageInfo.getEndPage() - pageInfo.getPageCount()) + 1;
         startPage = startPage <= 0 ? 1 : startPage;
-        pageInfo.startPage(startPage);
+        pageInfo.setStartPage(startPage);
 
-        if( startPage > pageInfo.endPage() ){ pageInfo.endPage(startPage); }
+        if( startPage > pageInfo.getEndPage() ){ pageInfo.setEndPage(startPage); }
+        return pageInfo;
     }
 }

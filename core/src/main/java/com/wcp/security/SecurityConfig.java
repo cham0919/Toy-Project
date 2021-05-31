@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wcp.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +14,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URI;
@@ -27,10 +29,11 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final DataSource dataSource;
 
     @Value("${authenticationPropertiesPath}")
     private String authenticationPropertiesPath;
@@ -39,6 +42,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public LoginSuccessHandler successHandler() {
+        return new LoginSuccessHandler();
+    }
+
+    @Bean
+    public LoginFailHandler failHandler() {
+        return new LoginFailHandler();
+    }
+
+    @Bean
+    public PersistentTokenRepository tokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        return jdbcTokenRepository;
+    }
+
 
     @Override
     public void configure(WebSecurity web) throws Exception
@@ -50,9 +71,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
+
+
         http.headers().frameOptions().disable();
-        http.formLogin().loginPage("/login").loginProcessingUrl("/login");
+        http.formLogin()
+                .loginProcessingUrl("/wcp/signin")
+                .usernameParameter("id")
+                .passwordParameter("pw")
+                .successHandler(successHandler())
+                .failureHandler(failHandler());
+
         applyAuthenticationConfig(http);
+
+        http.rememberMe()
+                .key("uniqueAndSecret")
+                .userDetailsService(userService)
+                .tokenRepository(tokenRepository()); // username, 토큰, 시리즈를 조합한 토큰 정보를 DB에 저장(rememberMe 쿠키랑 일치하는 지 확인하기 위함)
+
+
+        http.logout()
+                .logoutUrl("/wcp/logout")
+                .invalidateHttpSession(true).deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("http://localhost:3000/");
+
+
+
 
 //        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.AuthorizedUrl anyRequest = http.authorizeRequests()
 //                .anyRequest();
@@ -108,5 +151,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
+
 
 }

@@ -1,12 +1,11 @@
 package com.wcp.coding.submit;
 
 
-import com.wcp.WCPTable.CodingContentTable;
+import com.wcp.WCPTable.CodingTestTable;
 import com.wcp.WCPTable.SubmitHistoryTable;
 import com.wcp.WCPTable.UserTable;
-import com.wcp.coding.content.CodingContent;
+import com.wcp.coding.test.CodingTest;
 import com.wcp.user.User;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,15 +20,15 @@ import java.time.LocalDateTime;
 public class SubmitHistory {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = SubmitHistoryTable.PK)
     private Long key;
 
-    @ManyToOne
-    @JoinColumn(name = CodingContentTable.PK)
-    private CodingContent codingContent;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = CodingTestTable.PK)
+    private CodingTest codingTest;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = UserTable.PK)
     private User user;
 
@@ -43,8 +42,8 @@ public class SubmitHistory {
     private String code;
 
     @CreatedDate
-    @Column(name = SubmitHistoryTable.SUBMIT_DATETIME)
-    private LocalDateTime submitDateTime;
+    @Column(name = SubmitHistoryTable.SUBMIT_AT)
+    private LocalDateTime submitAt;
 
     @Column(name = SubmitHistoryTable.RUN_TIME)
     private String runTime;

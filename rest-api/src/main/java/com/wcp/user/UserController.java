@@ -1,6 +1,5 @@
 package com.wcp.user;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.security.Principal;
 
 @Controller
 @RequestMapping(value = "/wcp/user")
@@ -25,15 +26,23 @@ public class UserController {
             .disableHtmlEscaping()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             .create();
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "/check", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> checkUser(HttpServletRequest req,
-                                            HttpServletResponse res)
+                                            HttpServletResponse res,
+                                            Principal principal)
     {
         try{
-            log.info("success");
-            return new ResponseEntity<String>(HttpStatus.OK);
+            if(principal == null)
+                return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+            else
+            return new ResponseEntity<String>("test", HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -47,25 +56,76 @@ public class UserController {
                                          @RequestBody User user)
     {
         try{
-            log.info("success");
-            return new ResponseEntity<String>(HttpStatus.OK);
+            user = userService.signUp(user);
+            return new ResponseEntity<String>(gson.toJson(user), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // 회원탈퇴
+    @RequestMapping(value = "/deactivate", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> deactivateUser(HttpServletRequest req,
+                                         HttpServletResponse res,
+                                         @RequestBody String id)
+    {
+        try{
+            userService.deactivateUserById(id);
+            return new ResponseEntity<String>(HttpStatus.OK);
+        }catch (Throwable t){
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     // 로그인
 
     // 로그아웃
 
     // 아이디 찾기
-
-    // 비밀번호 찾기
+    @RequestMapping(value = "/findId", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> findId(HttpServletRequest req,
+                                     HttpServletResponse res,
+                                     @RequestBody String id)
+    {
+        try{
+            id = userService.findById(id);
+            return new ResponseEntity<String>(gson.toJson(id), HttpStatus.OK);
+        }catch (Throwable t){
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     // 비밀번호 수정
+    @RequestMapping(value = "/findPW", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> findPW(HttpServletRequest req,
+                                         HttpServletResponse res,
+                                         @RequestBody User user)
+    {
+        try{
+            userService.changePasswordByUserId(user.getId(), user.getPassword());
+            return new ResponseEntity<String>(HttpStatus.OK);
+        }catch (Throwable t){
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     // 회원정보 조회
-
+    @RequestMapping(value = "/find/info", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> findUser(HttpServletRequest req,
+                                         HttpServletResponse res,
+                                         @RequestBody User user)
+    {
+        try{
+            user = userService.findUserById(user.getId());
+            return new ResponseEntity<String>(gson.toJson(user),HttpStatus.OK);
+        }catch (Throwable t){
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

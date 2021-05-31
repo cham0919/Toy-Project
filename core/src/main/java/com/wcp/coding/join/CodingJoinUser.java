@@ -1,20 +1,17 @@
 package com.wcp.coding.join;
 
 
-import com.wcp.WCPTable.*;
 import com.wcp.WCPTable.CodingJoinUserTable;
-import com.wcp.coding.board.CodingBoard;
-import com.wcp.coding.content.CodingContent;
+import com.wcp.WCPTable.CodingRoomTable;
+import com.wcp.WCPTable.UserTable;
+import com.wcp.coding.room.CodingRoom;
 import com.wcp.user.User;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -23,15 +20,15 @@ import java.util.List;
 public class CodingJoinUser {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = CodingJoinUserTable.PK)
     private Long key;
 
-    @ManyToOne
-    @JoinColumn(name = CodingBoardTable.PK)
-    private CodingBoard codingBoard;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = CodingRoomTable.PK)
+    private CodingRoom codingRoom;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = UserTable.PK)
     private User user;
 
@@ -42,9 +39,7 @@ public class CodingJoinUser {
     private String role;
 
     @CreatedDate
-    @Column(name = CodingJoinUserTable.JOIN_DATETIME)
-    private LocalDateTime joinDatetime;
+    @Column(name = CodingJoinUserTable.JOIN_AT)
+    private LocalDateTime joinAt;
 
-    @OneToMany(mappedBy = "codingJoinUser")
-    private List<CodingContent> codingContents = new ArrayList<>();
 }

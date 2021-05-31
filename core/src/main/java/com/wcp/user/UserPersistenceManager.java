@@ -17,10 +17,6 @@ public interface UserPersistenceManager {
     User updateUserPassword(Long key, String pw);
     User updateUserPassword(String id, String pw);
 
-    // 회원 이메일 수정
-    User updateUserEmail(Long key, String email);
-    User updateUserEmail(String id, String email);
-
     // 회원 아이디 수정
     User updateUserId(Long key, String id);
     User updateUserId(String id, String updateId);
@@ -44,6 +40,7 @@ public interface UserPersistenceManager {
     List<User> findAll();
 
     // 회원정보 검색 key로 조회
+    User findByMemberNumber(String key);
     User findByMemberNumber(Long key);
 
     // 회원정보 검색 id로 조회

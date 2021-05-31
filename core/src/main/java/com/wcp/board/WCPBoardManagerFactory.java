@@ -11,7 +11,7 @@ public class WCPBoardManagerFactory implements BoardManagerFactory {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public BoardManager create(String boardType) {
+    public BoardPersistenceManager create(String boardType) {
         if(boardType == null || boardType.length()==0){ throw new IllegalArgumentException("Given boardType is null or empty."); }
         log.debug("boardType : {}",boardType);
 

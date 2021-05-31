@@ -24,7 +24,12 @@ public class UserService implements UserDetailsService {
 
     // 회원가입
     public User signUp(User user){
-        user = userPersistenceManager.save(user);
+        try {
+            user = userPersistenceManager.save(user);
+        }catch (Throwable t){
+            log.error("{}",t);
+            throw new IllegalArgumentException();
+        }
         return user;
     }
 
@@ -84,7 +89,9 @@ public class UserService implements UserDetailsService {
     // 로그인
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+
         User user = userPersistenceManager.findByUserId(id);
+        if(user == null) { throw new UsernameNotFoundException("id is not exist");}
         List<GrantedAuthority> authoritie = new ArrayList<>();
         authoritie.add(new SimpleGrantedAuthority(user.getRole().getValue()));
         return new org.springframework.security.core.userdetails.
