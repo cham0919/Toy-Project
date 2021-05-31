@@ -1,4 +1,4 @@
-package com.wcp.coding.content;
+package com.wcp.coding.test;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;

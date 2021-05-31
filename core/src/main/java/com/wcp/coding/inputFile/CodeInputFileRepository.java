@@ -1,4 +1,4 @@
-package com.wcp.coding.check.file;
+package com.wcp.coding.inputFile;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package com.wcp.coding.content;
+package com.wcp.coding.test;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package com.wcp.coding.check.file;
+package com.wcp.coding.inputFile;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
