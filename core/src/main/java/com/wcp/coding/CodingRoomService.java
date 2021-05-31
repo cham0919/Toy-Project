@@ -1,14 +1,13 @@
 package com.wcp.coding;
 
-import com.wcp.coding.board.CodingRoomDto;
-import com.wcp.coding.board.CodingRoomMapper;
-import com.wcp.coding.board.CodingRoomManager;
-import com.wcp.coding.board.CodingRoom;
-import com.wcp.coding.check.file.CodeInputFile;
-import com.wcp.coding.check.file.CodeInputFileDto;
-import com.wcp.coding.check.file.CodeInputFileMapper;
-import com.wcp.coding.check.file.CodeInputFileManager;
-import com.wcp.coding.content.*;
+import com.wcp.coding.room.CodingRoomDto;
+import com.wcp.mapper.*;
+import com.wcp.coding.room.CodingRoomManager;
+import com.wcp.coding.room.CodingRoom;
+import com.wcp.coding.inputFile.CodeInputFile;
+import com.wcp.coding.inputFile.CodeInputFileDto;
+import com.wcp.coding.inputFile.CodeInputFileManager;
+import com.wcp.coding.test.*;
 import com.wcp.common.FileUtils;
 import com.wcp.page.Page;
 import com.wcp.page.PageInfo;
@@ -21,6 +20,7 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +34,7 @@ import java.util.UUID;
 public class CodingRoomService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    @Autowired
     private final CodingRoomManager codingRoomManager;
     private final CodingTestManager codingTestManager;
     private final CodeInputFileManager codeInputFileManager;
@@ -73,17 +74,20 @@ public class CodingRoomService {
 
     private CodeInputFileDto registerFile(MultipartFile file) throws Exception {
         //TODO.file 검증
-        String fileName = UUID.randomUUID().toString()+"."+FileUtils.getExtension(file.getOriginalFilename());
+        String fileKey = UUID.randomUUID().toString();
+        String fileName = fileKey + "." + FileUtils.getExtension(file.getOriginalFilename());
         File uploadFile = new File(FileUtils.resourceDirToday("C:\\git\\file"),
-                fileName);
+                fileKey);
+        uploadFile.mkdirs();
+        uploadFile = new File(uploadFile, fileName);
+//        uploadFile.mkdirs();
         file.transferTo(uploadFile);
 
-        return CodeInputFileDto.builder()
-                .givenName(file.getOriginalFilename())
-                .fileName(fileName)
-                .fileSize(file.getSize())
-                .path(uploadFile.getPath())
-                .build();
+        CodeInputFileDto codeInputFileDto = new CodeInputFileDto();
+        return codeInputFileDto.setGivenName(file.getOriginalFilename())
+                .setFileName(fileName)
+                .setFileSize(file.getSize())
+                .setPath(uploadFile.getParent());
     }
 
     @Transactional
@@ -110,11 +114,13 @@ public class CodingRoomService {
 
     public CodingRoomDto fetchCodingPostById(String id){
         CodingRoom codingRoom = codingRoomManager.fetchById(id).get();
+//        CodingRoomMapper codingRoomMapper = mapperFactory.create(MapperEnum.CODINGROOM);
         return codingRoomMapper.toDto(codingRoom);
     }
 
-    public CodingTest fetchCodingTestById(String id){
-        return codingTestManager.fetchById(id).get();
+    public CodingTestDto fetchCodingTestById(String id){
+        CodingTest codingTest = codingTestManager.fetchById(id).get();
+        return CodingTestMapper.INSTANCE.toDto(codingTest);
     }
 
     public List<CodingRoom> fetchAllCodingRoom(){
