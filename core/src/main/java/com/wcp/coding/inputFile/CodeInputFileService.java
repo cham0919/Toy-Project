@@ -1,5 +1,6 @@
 package com.wcp.coding.inputFile;
 
+import com.wcp.common.Base64Utils;
 import com.wcp.common.FileUtils;
 import com.wcp.judge.JudgeRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -19,33 +20,33 @@ public class CodeInputFileService {
     private final CodeInputFileManager codeInputFileManager;
 
 
-    public Map<Integer, JudgeRequestDto> fetchCodingTestIOData(Long fileId){
+    public List<JudgeRequestDto> fetchCodingTestIOData(Long fileId){
         CodeInputFile codeInputFile = codeInputFileManager.fetchById(fileId).get();
         checkUnZip(codeInputFile);
         return fetchIOData(codeInputFile);
     }
 
-    private Map<Integer, JudgeRequestDto> fetchIOData(CodeInputFile codeInputFile) {
+    private List<JudgeRequestDto> fetchIOData(CodeInputFile codeInputFile) {
         File dir = new File(codeInputFile.getPath());
-        List<File> fileList = Arrays.asList(dir.listFiles());
-        Map<Integer, JudgeRequestDto> fileIODtos = new HashMap<>();
-        for ( File file : fileList ) {
-            if(FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("zip")) { continue;}
-            JudgeRequestDto dto;
-            String fileIdx = FilenameUtils.getBaseName(file.getName()).trim();
+        File[] files = sortFileList(dir.listFiles());
+        List<JudgeRequestDto> judgeRequestDtos = new ArrayList<>();
+        JudgeRequestDto dto = null;
+        for (File file : files) {
+            String extenstion = FilenameUtils.getExtension(file.getName());
+            if(extenstion.equalsIgnoreCase("zip")){ continue; }
+
             String content = FileUtils.readFileToString(file);
-
-            dto = fileIODtos.getOrDefault(Integer.valueOf(fileIdx), new JudgeRequestDto());
-
-            if(FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("in")){
-                dto.setStdin(content);
-            }else{
-                dto.setExpected_output(content);
+            if(extenstion.equalsIgnoreCase("in")) {
+                dto = new JudgeRequestDto().setStdin(
+                        Base64Utils.encode(content));
+                judgeRequestDtos.add(dto);
+            }else if(extenstion.equalsIgnoreCase("out")){
+                dto.setExpected_output(
+                        Base64Utils.encode(content));
             }
-
-            fileIODtos.put(Integer.valueOf(fileIdx), dto);
         }
-        return fileIODtos;
+
+        return judgeRequestDtos;
     }
 
     public void checkUnZip(CodeInputFile codeInputFile){
@@ -62,7 +63,19 @@ public class CodeInputFileService {
         return dir.listFiles().length;
     }
 
-
-
-
+    public File[] sortFileList(File[] files){
+        Arrays.sort(files,
+                new Comparator<Object>()
+                {
+                    @Override
+                    public int compare(Object object1, Object object2) {
+                        String s1 = "";
+                        String s2 = "";
+                        s1 = ((File)object1).getName();
+                        s2 = ((File)object2).getName();
+                        return s1.compareTo(s2);
+                    }
+                });
+        return files;
+    }
 }
