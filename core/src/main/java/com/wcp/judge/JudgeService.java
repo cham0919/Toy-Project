@@ -2,6 +2,7 @@ package com.wcp.judge;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.wcp.coding.inputFile.CodeInputFileService;
 import com.wcp.coding.test.CodingTest;
 import com.wcp.coding.test.CodingTestDto;
@@ -23,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,64 +37,98 @@ public class JudgeService {
     private final CodingTestManager codingTestManager;
     private final CodeInputFileService codeInputFileService;
 
-    /**
-     * 코드 제출
-     * input format
-     *"{\n" +
-     *             "  \"language_id\": 52,\n" +
-     *             "  \"source_code\": \"I2luY2x1ZGUgPHN0ZGlvLmg+CgppbnQgbWFpbih2b2lkKSB7CiAgY2hhciBuYW1lWzEwXTsKICBzY2FuZigiJXMiLCBuYW1lKTsKICBwcmludGYoImhlbGxvLCAlc1xuIiwgbmFtZSk7CiAgcmV0dXJuIDA7Cn0=\",\n" +
-     *             "  \"stdin\": \"SnVkZ2Uw\"\n" +
-     *             "}";
-     * return format
-     * {"token":"2cd6d536-db67-427a-b5e8-1a77d05e3ef9"}
-     * @param dto
-     * @throws Throwable
-     */
-    public List<JudegeResponseDto> getSubmission(JudgeRequestDto dto, String postId) throws Throwable {
-        dto.setUri(createSubmissionUri());
+
+    public List<JudegeResponseDto> createBatchedSubmission(JudgeRequestDto dto, String postId) throws Throwable {
         CodingTest codingTest =  codingTestManager.fetchById(postId).get();
-        Map<Integer, JudgeRequestDto> map =  codeInputFileService.fetchCodingTestIOData(codingTest.getCodeInputFile().getKey());
-        List<JudegeResponseDto> resps = new ArrayList<>();
-        for (Integer i : map.keySet()) {
-            log.info(map.get(i).toString());
-            synchronizeDto(dto, map.get(i));
-            resps.add(connectSubmit(dto));
+        List<JudgeRequestDto> dtos =  codeInputFileService.fetchCodingTestIOData(codingTest.getCodeInputFile().getKey());
+        String params = createBatchedSubmissionJson(dtos, dto);
+        List<JudegeResponseDto> responseDtos = createBatchedSubmission(params);
+        return responseDtos;
+    }
+
+    private String createBatchedSubmissionJson(List<JudgeRequestDto> dtos, JudgeRequestDto dto) {
+        for (JudgeRequestDto ioDto : dtos) {
+            log.info(ioDto.toString());
+            updateFromDto(dto, ioDto);
         }
-        return resps;
-    }
-
-    private void synchronizeDto(JudgeRequestDto baseDto, JudgeRequestDto dto){
-        baseDto.setStdin(Base64Utils.encode(dto.getStdin()));
-        baseDto.setExpected_output(Base64Utils.encode(dto.getExpected_output()));
+        Map<String, List> map = new HashMap<>();
+        map.put("submissions", dtos);
+        return gson.toJson(map);
     }
 
 
-    public URI createSubmissionUri(){
+    public URI getSubmissionUri(String token){
         return UriComponentsBuilder.fromHttpUrl(Judge.SUBMISSION)
+                .path(token)
                 .queryParam("base64_encoded","true")
-                .queryParam("wait","true")
                 .queryParam("fields","*")
                 .build()
                 .toUri();
     }
 
-    private JudegeResponseDto connectSubmit(JudgeRequestDto dto) throws Throwable {
+    public URI createBatchedSubmissionUri(){
+        return UriComponentsBuilder.fromHttpUrl(Judge.BATCHSUBMISSION)
+                .queryParam("base64_encoded","true")
+                .queryParam("fields","*")
+                .build()
+                .toUri();
+    }
 
+
+    public JudegeResponseDto getSubmission(String token) throws Throwable {
         HttpResponse resp =HttpRequest.of()
-                .post(dto.getUri())
-                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .post(getSubmissionUri(token))
                 .addHeader(Judge.TOKEN_KEY, Judge.TOKEN_VALUE)
                 .addHeader(Judge.HOST_KEY,  Judge.HOST_VALUE)
-                .setEntity(new StringEntity(gson.toJson(dto)))
                 .execute();
 
 //        if(resp.getStatusLine().getStatusCode())
-
+        //TODO. 상태코드에 따른 에러 분기 처리
         ResponseHandler<String> handler = new BasicResponseHandler();
         String result =  handler.handleResponse(resp);
-        return gson.fromJson(result, JudegeResponseDto.class);
 
+        return gson.fromJson(result, JudegeResponseDto.class);
     }
 
+
+    private List<JudegeResponseDto> createBatchedSubmission(String param) throws Throwable {
+        HttpResponse resp =HttpRequest.of()
+                .post(createBatchedSubmissionUri())
+                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .addHeader(Judge.TOKEN_KEY, Judge.TOKEN_VALUE)
+                .addHeader(Judge.HOST_KEY,  Judge.HOST_VALUE)
+                .setEntity(new StringEntity(param))
+                .execute();
+
+//        if(resp.getStatusLine().getStatusCode())
+        //TODO. 상태코드에 따른 에러 분기 처리
+        ResponseHandler<String> handler = new BasicResponseHandler();
+        String result =  handler.handleResponse(resp);
+
+        return gson.fromJson(result, new TypeToken<List<JudegeResponseDto>>() {}.getType());
+    }
+
+
+    public void updateFromDto(JudgeRequestDto fromDto, JudgeRequestDto toDto) {
+        if ( fromDto == null ) {
+            return;
+        }
+
+        if ( fromDto.getUri() != null ) {
+            toDto.setUri( fromDto.getUri() );
+        }
+        if ( fromDto.getLanguage_id() != 0 ) {
+            toDto.setLanguage_id( fromDto.getLanguage_id() );
+        }
+        if ( fromDto.getExpected_output() != null ) {
+            toDto.setExpected_output(fromDto.getExpected_output());
+        }
+        if ( fromDto.getSource_code() != null ) {
+            toDto.setSource_code(fromDto.getSource_code());
+        }
+        if ( fromDto.getStdin() != null ) {
+            toDto.setStdin(fromDto.getStdin());
+        }
+    }
 
 }
