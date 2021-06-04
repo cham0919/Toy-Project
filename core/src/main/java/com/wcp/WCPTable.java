@@ -120,4 +120,12 @@ public class WCPTable {
         public static final String TOKEN = "token";
         public static final String LASTUSED = "lastUsed";
     }
+
+    public class RefreshTokenTable {
+        public static final String TABLE_NAME = "wcp_refresh_token";
+        public static final String PK = "rt_key";
+        public static final String REFRESH_TOKEN = "refresh_token";
+        public static final String ACCESS_TOKEN = "access_token";
+        public static final String EXPIRATION_DATE = "expiration_date";
+    }
 }
