@@ -3,6 +3,7 @@ package com.wcp.security;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.wcp.filter.JwtAuthenticationFilter;
 import com.wcp.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -34,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
     private final DataSource dataSource;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Value("${authenticationPropertiesPath}")
     private String authenticationPropertiesPath;
@@ -70,16 +75,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http
+                .httpBasic().disable() // rest api 만을 고려하여 기본 설정은 해제하겠습니다.
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.;
 
 
-        http.headers().frameOptions().disable();
-        http.formLogin()
-                .loginProcessingUrl("/wcp/signin")
-                .usernameParameter("id")
-                .passwordParameter("pw")
-                .successHandler(successHandler())
-                .failureHandler(failHandler());
+
+//        http.headers().frameOptions().disable();
+//        http.formLogin()
+//                .loginProcessingUrl("/wcp/signin")
+//                .usernameParameter("id")
+//                .passwordParameter("pw")
+//                .successHandler(successHandler())
+//                .failureHandler(failHandler());
 
         applyAuthenticationConfig(http);
 
@@ -91,23 +100,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.logout()
                 .logoutUrl("/wcp/logout")
-                .invalidateHttpSession(true).deleteCookies("JSESSIONID")
+//                .invalidateHttpSession(true).deleteCookies("JSESSIONID")
                 .logoutSuccessUrl("http://localhost:3000/");
 
 
 
 
-//        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.AuthorizedUrl anyRequest = http.authorizeRequests()
-//                .anyRequest();
+        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.AuthorizedUrl anyRequest = http.authorizeRequests()
+                .anyRequest();
+
 
 //        anyRequest.authenticated()
-//                .and()
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//                .exceptionHandling()
+        anyRequest.permitAll()
+                .and()
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//                .exceptionHandling();
 //                .authenticationEntryPoint(jwtAuthEndPoint)
 //        ;
-//
-//        http.addFilterBefore(licenseFilter, JwtAuthFilter.class);
+
     }
 
     private void applyAuthenticationConfig(HttpSecurity http) throws Exception {
