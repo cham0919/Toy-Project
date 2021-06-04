@@ -1,4 +1,4 @@
-package com.wcp.token;
+package com.wcp.token.cert;
 
 import com.wcp.WCPTable.*;
 import com.wcp.user.User;
