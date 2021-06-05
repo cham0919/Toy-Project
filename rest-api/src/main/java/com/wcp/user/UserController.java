@@ -2,10 +2,13 @@ package com.wcp.user;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wcp.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.LinkedList;
 
 @Controller
 @RequestMapping(value = "/wcp/user")
+@RequiredArgsConstructor
 public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -27,10 +32,8 @@ public class UserController {
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             .create();
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @RequestMapping(value = "/check", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
@@ -80,7 +83,21 @@ public class UserController {
 
 
     // 로그인
-
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> login(HttpServletRequest req,
+                                         HttpServletResponse res,
+                                        @RequestBody UserDto dto)
+    {
+        try{
+//            UserDetails user = userService.loadUserByUsername(dto.getId());
+            String token = jwtTokenProvider.createToken("test", new LinkedList(){{ add("ROLE_USER");}});
+            return new ResponseEntity<String>(token, HttpStatus.OK);
+        }catch (Throwable t){
+            log.error("error",t);
+            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // 로그아웃
 
     // 아이디 찾기
