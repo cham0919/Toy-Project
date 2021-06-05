@@ -11,6 +11,7 @@ import com.wcp.like.BoardLike;
 import com.wcp.security.Role;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -25,6 +26,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Accessors(chain = true)
 @Table(name = UserTable.TABLE_NAME)
 @DynamicInsert
 public class User {
