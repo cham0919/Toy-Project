@@ -1,6 +1,7 @@
-package com.wcp.common;
+package com.wcp.common.file;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
+import com.wcp.common.Closer;
+import com.wcp.common.DateUtils;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -8,8 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.file.FileSystemException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -38,7 +40,6 @@ public final class FileUtils {
             Closer.close(in);
         }
     }
-
 
     /**
      * 대상 파일을 FileInputStream으로 반환한다.<br/>
@@ -93,36 +94,6 @@ public final class FileUtils {
         return path;
     }
 
-
-    public static String getExtension(String filename) {
-        if (filename == null) {
-            return null;
-        } else {
-            int index = indexOfExtension(filename);
-            return index == -1 ? "" : filename.substring(index + 1);
-        }
-    }
-
-    public static int indexOfExtension(String filename) {
-        if (filename == null) {
-            return -1;
-        } else {
-            int extensionPos = filename.lastIndexOf(46);
-            int lastSeparator = indexOfLastSeparator(filename);
-            return lastSeparator > extensionPos ? -1 : extensionPos;
-        }
-    }
-
-    public static int indexOfLastSeparator(String filename) {
-        if (filename == null) {
-            return -1;
-        } else {
-            int lastUnixPos = filename.lastIndexOf(47);
-            int lastWindowsPos = filename.lastIndexOf(92);
-            return Math.max(lastUnixPos, lastWindowsPos);
-        }
-    }
-
     private static String resourceRootOf(String prefix) {
         return (StringUtils.isEmpty(prefix) ? "" : prefix + File.separator);
     }
@@ -170,5 +141,29 @@ public final class FileUtils {
             }
         }
         return true;
+    }
+
+
+    public static File[] sortFileList(File[] files){
+        Arrays.sort(files,
+                new Comparator<Object>()
+                {
+                    @Override
+                    public int compare(Object object1, Object object2) {
+                        String s1 = ((File)object1).getName();
+                        String s2 = ((File)object2).getName();
+                        return s1.compareTo(s2);
+                    }
+                });
+        return files;
+    }
+
+    public static int countFilesInDir(String dirPath){
+        return countFilesInDir(new File(dirPath));
+    }
+
+
+    public static int countFilesInDir(File dir){
+        return dir.listFiles().length;
     }
 }
