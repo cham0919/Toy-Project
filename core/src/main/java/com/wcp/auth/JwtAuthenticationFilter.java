@@ -1,9 +1,6 @@
-package com.wcp.filter;
+package com.wcp.auth;
 
-import com.wcp.security.JwtAuthentication;
-import com.wcp.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -18,6 +15,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
+//public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
