@@ -5,10 +5,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PageService {
+public class BoardPageCalculator implements PageCalculator {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(BoardPageCalculator.class);
 
+
+    @Override
+    public PageInfo fetchPageList(PageInfo pageInfo, PageCount pageCount){
+        pageInfo.setPageCount(pageCount.getPageCount())
+                .setPostCount(pageCount.getPostCount());
+        log.debug(pageInfo.toString());
+        return getPageList(pageInfo);
+    }
+
+    @Override
     public PageInfo getPageList(PageInfo pageInfo){
         pageInfo = calcEndPage(pageInfo);
         log.info(pageInfo.toString());
