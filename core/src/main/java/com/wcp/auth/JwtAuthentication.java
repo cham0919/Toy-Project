@@ -18,19 +18,21 @@ public class JwtAuthentication implements Authentication {
 
 	private final String token;
 	private User user;
+	private String role;
 	private boolean isAuthenticated;
 
-	public JwtAuthentication(String token) {
-		this.token = token;
+	public JwtAuthentication(TokenDto dto) {
+		this.token = dto.getToken();
 		this.user = null;
-		this.isAuthenticated = false;
+		this.role = dto.getRole();
+		this.isAuthenticated = true;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		logger.debug("Getting authorities");
-		if (user != null && isAuthenticated) {
-				return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getValue()));
+		if (isAuthenticated) {
+				return Collections.singletonList(new SimpleGrantedAuthority(role));
 		}
 		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
 	}
