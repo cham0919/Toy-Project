@@ -3,7 +3,7 @@ package com.wcp.coding.test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wcp.coding.CodingRoomService;
+import com.wcp.coding.room.CodingRoomService;
 import com.wcp.page.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -32,6 +32,7 @@ public class CodingTestController {
             .create();
 
     private final CodingRoomService codingRoomService;
+    private final CodingTestService codingTestService;
 
     @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.POST,
             produces = "application/json; charset=utf-8",
@@ -40,10 +41,10 @@ public class CodingTestController {
     public ResponseEntity<String> save(HttpServletRequest req,
                                        HttpServletResponse res,
                                        @PathVariable("postId") String postId,
-                                       @ModelAttribute("formData") MultiPartCodingTestDto multiPartCodingTestDto)
+                                       @ModelAttribute("formData") MultiPartDto multiPartDto)
     {
         try{
-            codingRoomService.registerContent(multiPartCodingTestDto,postId);
+            codingTestService.registerContent(multiPartDto,postId);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -57,7 +58,7 @@ public class CodingTestController {
                                             @PathVariable("postId") String postId)
     {
         try{
-            CodingTestDto dto = codingRoomService.fetchCodingTestById(postId);
+            CodingTestDto dto = codingTestService.fetchDtoById(postId);
             return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,7 +72,7 @@ public class CodingTestController {
                                               @PathVariable("pageNm") String pageNm)
     {
         try{
-            List<CodingTest> codingTests = codingRoomService.fetchByCodingTestPage(pageNm);
+            List<CodingTest> codingTests = codingTestService.fetchByPage(pageNm);
             return new ResponseEntity<String>(gson.toJson(codingTests), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,7 +86,7 @@ public class CodingTestController {
                                         @PathVariable("pageNm") String pageNm)
     {
         try{
-            PageInfo pageInfo = codingRoomService.fetchCodingTestPageList(pageNm);
+            PageInfo pageInfo = codingTestService.fetchPageList(pageNm);
             Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
             return new ResponseEntity<String>(gson.toJson(stringObjectMap),HttpStatus.OK);
         }catch (Throwable t){
@@ -99,7 +100,7 @@ public class CodingTestController {
                                            HttpServletResponse res)
     {
         try{
-            List<CodingTest> codingTests = codingRoomService.fetchAllCodingTest();
+            List<CodingTest> codingTests = codingTestService.fetchAll();
             return new ResponseEntity<String>(gson.toJson(codingTests), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -113,7 +114,7 @@ public class CodingTestController {
                                          @RequestBody CodingTest codingTest)
     {
         try{
-            codingTest = codingRoomService.updateCodingTest(codingTest);
+            codingTest = codingTestService.update(codingTest);
             return new ResponseEntity<String>(gson.toJson(codingTest), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -127,7 +128,7 @@ public class CodingTestController {
                                          @RequestBody CodingTest codingTest)
     {
         try{
-            codingTest = codingRoomService.deleteCodingTest(codingTest);
+            codingTest = codingTestService.delete(codingTest);
             return new ResponseEntity<String>(gson.toJson(codingTest), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -141,7 +142,7 @@ public class CodingTestController {
                                          @PathVariable("postId") String postId)
     {
         try{
-            codingRoomService.deleteCodingTestById(postId);
+            codingTestService.deleteById(postId);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -154,7 +155,7 @@ public class CodingTestController {
                                         HttpServletResponse res)
     {
         try{
-            Long postCnt = codingRoomService.codingTestCount();
+            Long postCnt = codingTestService.count();
             return new ResponseEntity<String>(postCnt.toString(),HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
