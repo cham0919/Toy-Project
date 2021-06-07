@@ -1,7 +1,7 @@
 package com.wcp.mapper;
 
-import com.wcp.token.CertificationToken;
-import com.wcp.token.CertificationTokenDto;
+import com.wcp.token.cert.CertificationToken;
+import com.wcp.token.cert.CertificationTokenDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

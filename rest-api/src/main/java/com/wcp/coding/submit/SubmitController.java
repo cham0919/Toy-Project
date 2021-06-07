@@ -30,22 +30,55 @@ public class SubmitController {
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             .create();
 
-    private final CodingRoomService codingRoomService;
+    private final SubmitHistoryService submitHistoryService;
     private final JudgeService judgeService;
+
+    @RequestMapping(value = "/final/{postId:[0-9]+}", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> registerResult(HttpServletRequest req,
+                                                HttpServletResponse res,
+                                                 @PathVariable("postId") String postId,
+                                                 @RequestBody SubmitHistoryDto dto)
+    {
+        try{
+            String roomId = submitHistoryService.registerSubmitHistory(dto, postId);
+            return new ResponseEntity<String>(roomId, HttpStatus.OK);
+        }catch (Throwable t){
+            log.error("submission error",t);
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ResponseEntity<String> submission(HttpServletRequest req,
+    public ResponseEntity<String> createBatchedSubmission(HttpServletRequest req,
                                              HttpServletResponse res,
                                              @PathVariable("postId") String postId,
                                              @RequestBody JudgeRequestDto dto)
     {
         try{
-            List<JudegeResponseDto> resps = judgeService.getSubmission(dto, postId);
+            List<JudegeResponseDto> resps = judgeService.createBatchedSubmission(dto, postId);
             return new ResponseEntity<String>(gson.toJson(resps), HttpStatus.OK);
         }catch (Throwable t){
             log.error("submission error",t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @RequestMapping(value = "/{token}/{postId:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> getSubmission(HttpServletRequest req,
+                                                   HttpServletResponse res,
+                                                   @PathVariable("token") String token)
+    {
+        try{
+            JudegeResponseDto resp = judgeService.getSubmission(token);
+            return new ResponseEntity<String>(gson.toJson(resp), HttpStatus.OK);
+        }catch (Throwable t){
+            log.error("submission error",t);
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

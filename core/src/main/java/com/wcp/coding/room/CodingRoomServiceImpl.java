@@ -1,5 +1,11 @@
 package com.wcp.coding.room;
 
+import com.wcp.mapper.CodingRoomMapper;
+import com.wcp.page.PageCalculator;
+import com.wcp.page.PageCount;
+import com.wcp.page.PageInfo;
+import com.wcp.user.User;
+import com.wcp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -7,24 +13,49 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.wcp.page.Page.CODE_BOARD_POST_COUNT;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class CodingRoomPersistenceManager implements CodingRoomManager {
+public class CodingRoomServiceImpl implements CodingRoomService{
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(CodingRoomServiceImpl.class);
     private final CodingRoomRepository codingRoomRepository;
+    private final UserRepository userRepository;
+    private final PageCalculator pageCalculator;
+
 
     @Override
-    public CodingRoom save(CodingRoom codingRoom) {
-        return codingRoomRepository.save(codingRoom);
+    public CodingRoomDto fetchDtoById(String id){
+        CodingRoom codingRoom = fetchById(id).get();
+        return CodingRoomMapper.INSTANCE.toDto(codingRoom);
+    }
+
+    @Transactional
+    public CodingRoom save(CodingRoom codingRoom, String userKey){
+        if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
+            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check userKey : "+ userKey);
+        }
+        User user = userRepository.getOne(Long.valueOf(userKey));
+        codingRoom.setUser(user);
+        return save(codingRoom);
+    }
+
+
+    @Override
+    public PageInfo fetchPageList(String currentPage){
+        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
+            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check currentPage : "+ currentPage);
+        }
+        PageInfo pageInfo = PageInfo.of()
+                .setCurrentPage(Integer.valueOf(currentPage))
+                .setTotalPostCount(count());
+        return pageCalculator.fetchPageList(pageInfo, PageCount.CODING_ROOM);
     }
 
     @Override
@@ -39,8 +70,13 @@ public class CodingRoomPersistenceManager implements CodingRoomManager {
     public List<CodingRoom> fetchByPage(int currentPage) {
         Page<CodingRoom> codingRoomPage = codingRoomRepository
                 .findAll(PageRequest
-                        .of(currentPage - 1, CODE_BOARD_POST_COUNT, Sort.by(Sort.Direction.ASC, "key")));
+                        .of(currentPage - 1, PageCount.CODING_ROOM.getPostCount(), Sort.by(Sort.Direction.ASC, "key")));
         return codingRoomPage.getContent();
+    }
+
+    @Override
+    public CodingRoom save(CodingRoom codingRoom) {
+        return codingRoomRepository.save(codingRoom);
     }
 
     @Override
