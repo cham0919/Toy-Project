@@ -1,6 +1,7 @@
 package com.wcp.auth;
 
 
+import com.wcp.common.AESUtils;
 import com.wcp.mapper.UserMapper;
 import com.wcp.user.User;
 import com.wcp.user.UserDto;
@@ -23,6 +24,7 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider JwtTokenProvider;
 
+
     @Override
     public String signIn(UserDto userDto, String ip) throws Throwable {
         User user = UserMapper.INSTANCE.toEntity(userDto);
@@ -35,11 +37,11 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
-    private TokenDto initTokenDto(User user, String ip) {
+    private TokenDto initTokenDto(User user, String ip) throws Throwable {
         return TokenDto.builder()
                 .id(user.getId())
                 .role(user.getRole().getValue())
-                .ip(ip)
+                .ip(AESUtils.encrypt(ip))
                 .uuid(String.valueOf(UUID.randomUUID()))
                 .build();
     }

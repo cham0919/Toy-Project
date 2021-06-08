@@ -1,5 +1,6 @@
 package com.wcp.auth;
 
+import com.wcp.common.AESUtils;
 import com.wcp.common.Base64Utils;
 import com.wcp.user.User;
 import com.wcp.user.UserService;
@@ -78,7 +79,7 @@ public class JwtTokenProvider {
     public boolean validateWebToken(TokenDto dto) {
         try {
             Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(dto.getToken()).getBody();
-            String tokenIP = String.valueOf(claims.get(IP));
+            String tokenIP = AESUtils.decrypt(String.valueOf(claims.get(IP)));
             String reqIP = dto.getIp();
             if(tokenIP.equalsIgnoreCase(reqIP)){
                 dto.setRole(String.valueOf(claims.get(ROLE)));
