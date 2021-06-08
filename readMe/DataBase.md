@@ -26,13 +26,22 @@
   
  ###회원 관리
     
- ---
+![image](https://user-images.githubusercontent.com/61372486/121095124-b3767a80-c82a-11eb-8d95-bcf0d6323b51.png)
+    
+    
+    
+ 
   
 <br/>
   
  ###게시판 관리
     
  ---
+ 
+ ![image](https://user-images.githubusercontent.com/61372486/121095205-d6a12a00-c82a-11eb-9011-4ddcbdf93664.png)
+ 
+ 
+ 
  
 <br/>
   
@@ -41,4 +50,4 @@
  ---
   
 
- 
+ ![image](https://user-images.githubusercontent.com/61372486/121095277-018b7e00-c82b-11eb-803b-a5f94ed9e423.png)
