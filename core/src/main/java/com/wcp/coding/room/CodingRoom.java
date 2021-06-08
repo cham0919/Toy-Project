@@ -6,6 +6,7 @@ import com.wcp.WCPTable.UserTable;
 import com.wcp.coding.test.CodingTest;
 import com.wcp.coding.join.CodingJoinUser;
 import com.wcp.user.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -31,8 +32,8 @@ public class CodingRoom {
     private Long key;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = UserTable.PK, nullable = false)
-//    @JoinColumn(name = UserTable.PK)
+//    @JoinColumn(name = UserTable.PK, nullable = false)
+    @JoinColumn(name = UserTable.PK)
     private User user;
 
     @Column(name = CodingRoomTable.TITLE, nullable = false)
@@ -61,8 +62,8 @@ public class CodingRoom {
     private List<CodingTest> codingTests = new ArrayList<>();
 
     public CodingRoom addUser(User user){
-        this.user = user;
-        this.user.getCodingRooms().add(this);
+        setUser(user);
+        getUser().getCodingRooms().add(this);
         return this;
     }
 
