@@ -1,50 +1,107 @@
-# 프로젝트 개요
+# 기능 소개
 
-##[목차]
+## [목차]
 
-1. [프로젝트 소개](#프로젝트-소개)
-2. [개발 동기 및 필요성](#개발-동기-및-필요성)
-3. [시스템 구성도](#시스템-구성도)
-4. [시스템 구현](#시스템-구현)
+
+1. [모듈 괸리](#모듈-관리)
+2. [테스트 환경](#테스트-환경)
+3. [로그인 및 권한 체크](#로그인-및-권한-체크)
+4. [인가 및 인증](#인가-및-인증)
+5. [코딩 룸 게시판](#코딩-룸-게시판)
+6. [코딩 테스트](#코딩-테스트)
 
 
 
 <br/><br/><br/>
 
-###프로젝트 소개
+### 모듈 관리
 
 ---
- - 코딩 테스트 홈페이지로 자유로운 방 개설, 실시간 화면 공유, 채팅, 제출 코드에 대한 피드백 제공으로 누구나 쉽게 그룹을 형성해 코딩 테스트를 즐길 수 있는 홈페이지입니다    
+ 
+ - core와 rest-api로 모듈 관리
+    - core : 도메인 및 비즈니스 로직 관리
+    - rest-api : view layer와 config 관리   
  
  
  <br/>
 
-###개발 동기 및 필요성
+### 테스트 환경
 
 ---
- - 목표 : 코딩 테스트 홈페이지로 원하는 목표를 가진 방에서 코딩을 즐길 수 있는 홈페이지 구현 
- - 기대 효과 : 공개/비공개 방 개설로 인해 학교, 회사, 스터디에게 온라인 코딩 테스트 서비스 제공
+ 
+ - Junit5 기반 단위 테스트, 통합 테스트 환경 구성
+
 
  <br/>
 
-###시스템 구성도
+### 로그인 및 권한 체크
 
 ---
 
-![image](https://user-images.githubusercontent.com/61372486/120635879-ea096980-c4a7-11eb-91a3-3e6cd0c9746e.png)
- 
+ - Spring Security, JWT 토큰 기반  
+ - 접근 제한 Url은 authenticationProperties.json 으로 따로 관리 
+ - JWT Token 생성 시, 보안 강화 및 모바일 지원 위한 ip, uuid 값 추가
+ - Token 인증 시, db 조회없이 즉시 Authentication에 권한 부여
+
+ ![image](https://user-images.githubusercontent.com/61372486/121284067-3117b480-c917-11eb-9b0e-4a7fe7ab06d6.png)
+
+1. JwtTokenProvider 초기화시, DefaultSecretKeyProvider 통해 SecretKey 생성
+2. 로그인이 되면 User PK, 권한, AES 암호화된 유저 IP, UUID v4 기반 생성하여 JWT 토큰과 UUID v4 Cookie 부여
+3. 접근시, JwtAuthenticationFilter에서 토큰 검증 - 브라우저일 시, JWT Hash 및 IP 동일한지 검증 / 모바일일 시, 내부 UUID와 Cookie UUID가 일치하는지 검증
+4. 권한에 따라 Authentication 생성 및 부여  
+
+
+
+
+
  <br/><br/>
  
-###시스템 구현
+### 페이징
 
 ---
-- 사용 기술
-  - React, Axios, JQuery, Spring Boot 2.4.2, Spring Security 
-- 사용 도구
-   - 소프트웨어 개발 도구 : IntelliJ
-   - 데이터베이스: MySQL 8.0.23
-   - WAS : Tomcat 9.0.41
-   - 배포 도구 : Gradle
-   - 형상관리 도구 : Github
 
+![image](https://user-images.githubusercontent.com/61372486/121287555-bc477900-c91c-11eb-8704-c03f98e6d6b8.png)
+
+ - 페이징은 재사용성을 고려해 PageCalculator와 PageService로 관리
+ 
+ ```java
+public interface PageService<T> {
+
+
+    List<T> fetchByPage(int currentPage);
+    List<T> fetchByPage(String currentPage);
+    PageInfo fetchPageList(String currentPage);
+
+
+}
+```
+
+- Service에 PageService 상속받은 후 PageCalculator 호출하면 페이징 구현 완료
+ 
+ 
+
+
+
+ <br/><br/>
+ 
+### 코딩 룸 게시판
+
+---
+![image](https://user-images.githubusercontent.com/61372486/121285341-31b14a80-c919-11eb-8130-9845593da175.png)
+
+
+ - Controller, Service, Repository layer 
+ - JPA 활용한 방 개설, 삭제 변경 기능
+ 
+
+<br/><br/>
+
+### 코딩 테스트
+
+---
+
+![image](https://user-images.githubusercontent.com/61372486/121287458-8c987100-c91c-11eb-9d1d-3bd161f27917.png)
+
+ - Controller, Service, Repository layer
+ - 채점 zip 파일 체크 후 File과 함께 저장
 
