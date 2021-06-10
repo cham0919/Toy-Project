@@ -37,11 +37,11 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
-    private TokenDto initTokenDto(User user, String ip) throws Throwable {
+    private TokenDto initTokenDto(User user, String ip){
         return TokenDto.builder()
                 .id(user.getId())
                 .role(user.getRole().getValue())
-                .ip(AESUtils.encrypt(ip))
+                .ip(ip)
                 .uuid(String.valueOf(UUID.randomUUID()))
                 .build();
     }

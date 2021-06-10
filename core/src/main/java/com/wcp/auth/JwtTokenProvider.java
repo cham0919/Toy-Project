@@ -52,7 +52,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims(); // JWT payload 에 저장되는 정보단위
         claims.put(ROLE, tokenDto.getRole()); // 정보는 key / value 쌍으로 저장된다.
         claims.put(ID, tokenDto.getId()); // 정보는 key / value 쌍으로 저장된다.
-        claims.put(IP, tokenDto.getIp()); // 정보는 key / value 쌍으로 저장된다.
+        claims.put(IP, AESUtils.encrypt(tokenDto.getIp())); // 정보는 key / value 쌍으로 저장된다.
         claims.put(UUID, tokenDto.getUuid()); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
         return Jwts.builder()
@@ -67,7 +67,7 @@ public class JwtTokenProvider {
 
     // 토큰에서 회원 정보 추출
     public String getUserPk(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
+        return (String)Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().get(ID);
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
