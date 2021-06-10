@@ -4,8 +4,10 @@ import com.wcp.coding.inputFile.CodeInputFile;
 import com.wcp.coding.inputFile.CodeInputFileRepository;
 import com.wcp.coding.inputFile.CodeInputFileService;
 import com.wcp.coding.room.CodingRoom;
+import com.wcp.coding.room.CodingRoomDto;
 import com.wcp.coding.room.CodingRoomRepository;
 import com.wcp.coding.room.CodingRoomService;
+import com.wcp.mapper.CodingRoomMapper;
 import com.wcp.mapper.CodingTestMapper;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,12 +40,6 @@ public class CodingTestServiceImpl implements CodingTestService{
     private final CodingTestRepository codingTestRepository;
     private final CodingRoomRepository codingRoomRepository;
 
-
-    @Override
-    public CodingTestDto fetchDtoById(String id){
-        CodingTest codingTest = fetchById(id).get();
-        return CodingTestMapper.INSTANCE.toDto(codingTest);
-    }
 
     @Override
     public void registerContent(MultiPartDto multiPartDto, String postId) throws Exception {
@@ -64,36 +61,35 @@ public class CodingTestServiceImpl implements CodingTestService{
         // CodingTest 등록
         CodingRoom codingRoom = codingRoomRepository.getOne(Long.valueOf(postId));
         codingTest.setCodingRoom(codingRoom);
-        save(codingTest);
+        codingTestRepository.save(codingTest);
 
         //CodeInputFile 등록
         codeInputFile.setCodingTest(codingTest);
         codeInputFileRepository.save(codeInputFile);
     }
 
-    @Transactional
-    public CodingTest saveCodingTest(CodingTest codingTest, String codingRoomId){
-        if (StringUtils.isEmpty(codingRoomId) || !StringUtils.isNumeric(codingRoomId)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check codingRoomId : "+ codingRoomId);
-        }
-        CodingRoom codingRoom = codingRoomRepository.getOne(Long.valueOf(codingRoomId));
-        codingTest.setCodingRoom(codingRoom);
-        return save(codingTest);
+
+    @Override
+    public CodingTestDto save(CodingTestDto dto){
+        CodingTest codingTest = CodingTestMapper.INSTANCE.toEntity(dto);
+        codingTestRepository.save(codingTest);
+        return dto;
     }
 
 
     @Override
-    public CodingTest save(CodingTest codingTest) {
-        return codingTestRepository.save(codingTest);
-    }
-
-
-    @Override
-    public List<CodingTest> fetchByPage(String currentPage) {
+    public List<CodingTestDto> fetchByPage(String currentPage) {
         if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : "+ currentPage);
         }
-        return fetchByPage(Integer.valueOf(currentPage));
+        List<CodingTest> codingTests = fetchByPage(Integer.valueOf(currentPage));
+        List<CodingTestDto> dtos = new ArrayList<>();
+        codingTests.forEach(v -> {
+            dtos.add(
+                    CodingTestMapper.INSTANCE.toDto(v)
+            );
+        });
+        return dtos;
     }
 
     @Override
@@ -117,35 +113,47 @@ public class CodingTestServiceImpl implements CodingTestService{
 
 
     @Override
-    public Optional<CodingTest> fetchById(String id){
+    public CodingTestDto fetchById(String id){
         if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
-        return fetchById(Long.valueOf(id));
+        CodingTest codingTest = fetchById(Long.valueOf(id));
+        return CodingTestMapper.INSTANCE.toDto(codingTest);
+    }
+
+    public CodingTest fetchById(Long id) {
+        return codingTestRepository.findById(id).get();
     }
 
     @Override
-    public Optional<CodingTest> fetchById(Long id) {
-        return codingTestRepository.findById(id);
-    }
-
-    @Override
-    public List<CodingTest> fetchAll() {
-        return codingTestRepository.findAll();
+    public List<CodingTestDto> fetchAll() {
+        List<CodingTest> codingTests = codingTestRepository.findAll();
+        List<CodingTestDto> dtos = new ArrayList<>();
+        codingTests.forEach(v -> {
+            dtos.add(
+                    CodingTestMapper.INSTANCE.toDto(v)
+            );
+        });
+        return dtos;
     }
 
     @Override
     @Transactional
-    public CodingTest update(CodingTest codingTest) {
-        Optional<CodingTest> fetchBoard = fetchById(codingTest.getKey());
-        fetchBoard = Optional.of(codingTest);
-        return fetchBoard.get();
+    public CodingTestDto update(CodingTestDto dto) {
+        String id = dto.getKey();
+        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
+        }
+        CodingTest codingTest = fetchById(Long.valueOf(id));
+        CodingTestMapper.INSTANCE.updateFromDto(dto, codingTest);
+        return dto;
     }
 
     @Override
-    public CodingTest delete(CodingTest codingTest) {
+    public CodingTestDto delete(CodingTestDto dto) {
+        CodingTest codingTest = CodingTestMapper.INSTANCE.toEntity(dto);
         codingTestRepository.delete(codingTest);
-        return codingTest;
+        return dto;
     }
 
     @Override
@@ -156,8 +164,7 @@ public class CodingTestServiceImpl implements CodingTestService{
         deleteById(Long.valueOf(id));
     }
 
-    @Override
-    public void deleteById(Long id) {
+    private void deleteById(Long id) {
         codingTestRepository.deleteById(id);
     }
 

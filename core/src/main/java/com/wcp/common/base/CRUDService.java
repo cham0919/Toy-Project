@@ -5,20 +5,18 @@ import com.wcp.coding.inputFile.CodeInputFile;
 import java.util.List;
 import java.util.Optional;
 
-public interface CRUDService<T> {
+public interface CRUDService<T, D> {
 
-    T save(T entity);
+    D save(D dto);
 
-    Optional<T> fetchById(String id);
-    Optional<T> fetchById(Long id);
-    List<T> fetchAll();
+    D fetchById(String id);
+    List<D> fetchAll();
 
-    T update(T entity);
+    D update(D dto);
 
-    T delete(T entity);
+    D delete(D dto);
 
     void deleteById(String id);
-    void deleteById(Long id);
 
     Long count();
 
