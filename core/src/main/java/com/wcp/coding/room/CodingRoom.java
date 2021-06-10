@@ -67,22 +67,16 @@ public class CodingRoom {
         return this;
     }
 
-    public Map<String, Object> toMapForOpen() {
-        Map<String, Object> map = new TreeMap<String, Object>();
-        map.put("key", this.key);
-        map.put("title", this.title);
-        map.put("intro", this.intro);
-        map.put("password", this.password);
-        map.put("maxUser", this.maxUser);
-        map.put("ramdomKey", this.ramdomKey);
-        map.put("createDatetime", this.createdAt);
-        map.put("codingJoinUsers", this.codingJoinUsers);
-        map.put("codingTests", this.codingTests);
-        return map;
-    }
-
     @Override
     public String toString() {
-        return toMapForOpen().toString();
+        return "CodingRoom{" +
+                "key=" + key +
+                ", title='" + title + '\'' +
+                ", intro='" + intro + '\'' +
+                ", password='" + password + '\'' +
+                ", maxUser=" + maxUser +
+                ", ramdomKey='" + ramdomKey + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
