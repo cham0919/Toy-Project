@@ -2,6 +2,7 @@ package com.wcp.coding.submit;
 
 
 import com.wcp.coding.test.CodingTest;
+import com.wcp.coding.test.CodingTestRepository;
 import com.wcp.coding.test.CodingTestService;
 import com.wcp.mapper.SubmitHistoryMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class SubmitHistoryService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final SubmitHistoryRepository submitHistoryRepository;
-    private final CodingTestService codingTestService;
+    private final CodingTestRepository codingTestRepository;
 
 
 
@@ -26,9 +27,12 @@ public class SubmitHistoryService {
 //    public void registerSubmitHistory(SubmitHistoryDto dto, String postId, String userKey){
     @Transactional
     public String registerSubmitHistory(SubmitHistoryDto dto, String postId){
+        if (StringUtils.isEmpty(postId) || !StringUtils.isNumeric(postId)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check postId : "+ postId);
+        }
         SubmitHistory submitHistory = SubmitHistoryMapper.INSTANCE.toEntity(dto);
 //        submitHistory.setUser(new User().setKey(verifyKey(userKey)));
-        CodingTest codingTest =  codingTestService.fetchById(postId).get();
+        CodingTest codingTest =  codingTestRepository.findById(Long.valueOf(postId)).get();
         submitHistory.setCodingTest(codingTest);
         submitHistoryRepository.save(submitHistory);
         return codingTest.getCodingRoom().getKey().toString();
