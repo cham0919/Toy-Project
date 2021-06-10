@@ -2,13 +2,16 @@ package com.wcp.coding.room;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wcp.coding.CodingRoomService;
 import com.wcp.page.PageInfo;
+import com.wcp.user.User;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,16 +33,17 @@ public class CodingRoomController {
             .create();
 
     private final CodingRoomService codingRoomService;
+    private SecurityContext securityContext = SecurityContextHolder.getContext();
 
     @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseEntity<String> save(HttpServletRequest req,
                                             HttpServletResponse res,
-                                            Principal principal,
                                             @RequestBody CodingRoom codingRoom)
     {
         try{
-            codingRoom = codingRoomService.saveCodingPost(codingRoom, principal.getName());
+//            codingRoom = codingRoomService.save(codingRoom, principal.getName());
+            codingRoom = codingRoomService.save(codingRoom, "11");
             return new ResponseEntity<String>(gson.toJson(codingRoom.toMapForOpen()), HttpStatus.OK);
         }catch (Throwable t){
             t.printStackTrace();
@@ -54,7 +58,7 @@ public class CodingRoomController {
                                             @PathVariable("postId") String postId)
     {
         try{
-            CodingRoomDto codingRoomDto = codingRoomService.fetchCodingPostById(postId);
+            CodingRoomDto codingRoomDto = codingRoomService.fetchDtoById(postId);
             return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -68,7 +72,7 @@ public class CodingRoomController {
                                             @PathVariable("pageNm") String pageNm)
     {
         try{
-            List<CodingRoom> codingRooms = codingRoomService.fetchByCodingRoomPage(pageNm);
+            List<CodingRoom> codingRooms = codingRoomService.fetchByPage(pageNm);
             return new ResponseEntity<String>(gson.toJson(codingRooms), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -82,7 +86,7 @@ public class CodingRoomController {
                                         @PathVariable("pageNm") String pageNm)
     {
         try{
-            PageInfo pageInfo = codingRoomService.fetchCodingRoomPageList(pageNm);
+            PageInfo pageInfo = codingRoomService.fetchPageList(pageNm);
             Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
             return new ResponseEntity<String>(gson.toJson(stringObjectMap),HttpStatus.OK);
         }catch (Throwable t){
@@ -96,7 +100,7 @@ public class CodingRoomController {
                                               HttpServletResponse res)
     {
         try{
-            List<CodingRoom> codingRooms = codingRoomService.fetchAllCodingRoom();
+            List<CodingRoom> codingRooms = codingRoomService.fetchAll();
             return new ResponseEntity<String>(gson.toJson(codingRooms), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -110,7 +114,7 @@ public class CodingRoomController {
                                          @RequestBody CodingRoom codingRoom)
     {
         try{
-            codingRoom = codingRoomService.updateCodingRoom(codingRoom);
+            codingRoom = codingRoomService.update(codingRoom);
             return new ResponseEntity<String>(gson.toJson(codingRoom.toMapForOpen()), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -124,7 +128,7 @@ public class CodingRoomController {
                                          @RequestBody CodingRoom codingRoom)
     {
         try{
-            codingRoom = codingRoomService.deleteCodingRoom(codingRoom);
+            codingRoom = codingRoomService.delete(codingRoom);
             return new ResponseEntity<String>(gson.toJson(codingRoom.toMapForOpen()), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -138,7 +142,7 @@ public class CodingRoomController {
                                          @PathVariable("postId") String postId)
     {
         try{
-            codingRoomService.deleteCodingRoomById(postId);
+            codingRoomService.deleteById(postId);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -151,7 +155,7 @@ public class CodingRoomController {
                                          HttpServletResponse res)
     {
         try{
-            Long postCnt = codingRoomService.codingRoomCount();
+            Long postCnt = codingRoomService.count();
             return new ResponseEntity<String>(postCnt.toString(),HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
