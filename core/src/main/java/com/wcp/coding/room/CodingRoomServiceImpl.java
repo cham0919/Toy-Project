@@ -1,5 +1,6 @@
 package com.wcp.coding.room;
 
+import com.wcp.WCPTable;
 import com.wcp.mapper.CodingRoomMapper;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
@@ -16,8 +17,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
 import java.util.Optional;
+import static com.wcp.WCPTable.CodingRoomTable.*;
 
 
 @Service
@@ -48,6 +51,14 @@ public class CodingRoomServiceImpl implements CodingRoomService{
 
 
     @Override
+    public List<CodingRoom> fetchByPage(String currentPage) {
+        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : " + currentPage);
+        }
+        return fetchByPage(Integer.valueOf(currentPage));
+    }
+
+    @Override
     public PageInfo fetchPageList(String currentPage){
         if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
             throw new IllegalArgumentException("currentPage should not be empty or String. Please Check currentPage : "+ currentPage);
@@ -59,18 +70,10 @@ public class CodingRoomServiceImpl implements CodingRoomService{
     }
 
     @Override
-    public List<CodingRoom> fetchByPage(String currentPage) {
-        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : "+ currentPage);
-        }
-        return fetchByPage(Integer.valueOf(currentPage));
-    }
-
-    @Override
     public List<CodingRoom> fetchByPage(int currentPage) {
         Page<CodingRoom> codingRoomPage = codingRoomRepository
                 .findAll(PageRequest
-                        .of(currentPage - 1, PageCount.CODING_ROOM.getPostCount(), Sort.by(Sort.Direction.ASC, "key")));
+                        .of(currentPage - 1, PageCount.CODING_ROOM.getPostCount(), Sort.by(Sort.Direction.ASC, PK)));
         return codingRoomPage.getContent();
     }
 
