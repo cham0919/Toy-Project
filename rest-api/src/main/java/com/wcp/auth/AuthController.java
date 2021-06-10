@@ -35,7 +35,7 @@ public class AuthController {
 
     @RequestMapping(value = {"/", ""}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ResponseEntity<String> checkUser(HttpServletRequest req,
+    public ResponseEntity<String> signIn(HttpServletRequest req,
                                             HttpServletResponse res,
                                             @RequestBody UserDto userDto)
     {

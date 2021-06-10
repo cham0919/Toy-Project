@@ -2,9 +2,8 @@ package com.wcp.coding.submit;
 
 
 import com.wcp.coding.test.CodingTest;
-import com.wcp.coding.test.CodingTestManager;
+import com.wcp.coding.test.CodingTestService;
 import com.wcp.mapper.SubmitHistoryMapper;
-import com.wcp.user.User;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,7 +18,7 @@ public class SubmitHistoryService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final SubmitHistoryRepository submitHistoryRepository;
-    private final CodingTestManager codingTestManager;
+    private final CodingTestService codingTestService;
 
 
 
@@ -29,7 +28,7 @@ public class SubmitHistoryService {
     public String registerSubmitHistory(SubmitHistoryDto dto, String postId){
         SubmitHistory submitHistory = SubmitHistoryMapper.INSTANCE.toEntity(dto);
 //        submitHistory.setUser(new User().setKey(verifyKey(userKey)));
-        CodingTest codingTest =  codingTestManager.fetchById(postId).get();
+        CodingTest codingTest =  codingTestService.fetchById(postId).get();
         submitHistory.setCodingTest(codingTest);
         submitHistoryRepository.save(submitHistory);
         return codingTest.getCodingRoom().getKey().toString();
