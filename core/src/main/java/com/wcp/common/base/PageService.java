@@ -4,11 +4,11 @@ import com.wcp.page.PageInfo;
 
 import java.util.List;
 
-public interface PageService<T> {
+public interface PageService<T, D> {
 
 
     List<T> fetchByPage(int currentPage);
-    List<T> fetchByPage(String currentPage);
+    List<D> fetchByPage(String currentPage);
     PageInfo fetchPageList(String currentPage);
 
 

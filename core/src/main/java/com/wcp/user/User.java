@@ -4,6 +4,7 @@ import com.wcp.WCPTable.UserTable;
 import com.wcp.board.Board;
 import com.wcp.coding.room.CodingRoom;
 import com.wcp.coding.submit.SubmitHistory;
+import com.wcp.coding.test.CodingTest;
 import com.wcp.commant.BoardCommant;
 import com.wcp.convert.UserRoleToValueConverter;
 import com.wcp.convert.UserStatusToValueConverter;
@@ -15,7 +16,6 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,8 +27,8 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(name = UserTable.TABLE_NAME)
 @DynamicInsert
+@Table(name = UserTable.TABLE_NAME)
 public class User {
 
     @Id
@@ -64,26 +64,23 @@ public class User {
     @Convert(converter = UserStatusToValueConverter.class)
     private UserSataus status;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<Board> boards = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<BoardCommant> boardCommants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<BoardLike> boardLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<CodingRoom> codingRooms = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<SubmitHistory> submitHistories = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<CodingTest> codingTests = new ArrayList<>();
 
-    public User setPassword(String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        this.password = passwordEncoder.encode(password);
-        return this;
-    }
+    @OneToMany(mappedBy = "user")
+    private List<SubmitHistory> submitHistories = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -94,7 +91,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", phone='" + phone + '\'' +
-                ", register_at=" + registerAt +
+                ", registerAt=" + registerAt +
                 ", role=" + role +
                 ", status=" + status +
                 '}';

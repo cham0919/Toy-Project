@@ -1,12 +1,9 @@
 package com.wcp.board;
 
-import com.wcp.coding.inputFile.CodeInputFileManager;
-import com.wcp.coding.inputFile.CodeInputFileService;
-import com.wcp.page.PageService;
+import com.wcp.page.PageCalculator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -19,7 +16,7 @@ public class BoardService {
 
     private BoardPersistenceManager boardPersistenceManager;
 
-    private PageService pageService;
+    private PageCalculator pageCalculator;
 
 
     /*

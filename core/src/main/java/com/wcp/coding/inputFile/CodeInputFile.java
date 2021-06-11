@@ -6,6 +6,7 @@ import com.wcp.WCPTable.CodeInputFileTable;
 import com.wcp.coding.test.CodingTest;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Accessors(chain = true)
 @Table(name = CodeInputFileTable.TABLE_NAME)
 public class CodeInputFile {
 
@@ -50,7 +52,13 @@ public class CodeInputFile {
     }
 
     public String getFullPath(){
-        return this.path + File.separator + this.fileName;
+        return getPath() + File.separator + getFileName();
     }
+
+    public File getInputFile(){
+        return new File(getFullPath());
+    }
+
+    public File getDir() { return new File(getPath());}
 
 }

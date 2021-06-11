@@ -3,14 +3,13 @@ package com.wcp.security;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.wcp.filter.JwtAuthenticationFilter;
+import com.wcp.auth.JwtAuthenticationFilter;
 import com.wcp.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,7 +35,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService userService;
     private final DataSource dataSource;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -78,45 +76,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .httpBasic().disable() // rest api 만을 고려하여 기본 설정은 해제하겠습니다.
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.;
-
-
-
-//        http.headers().frameOptions().disable();
-//        http.formLogin()
-//                .loginProcessingUrl("/wcp/signin")
-//                .usernameParameter("id")
-//                .passwordParameter("pw")
-//                .successHandler(successHandler())
-//                .failureHandler(failHandler());
+                .formLogin().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         applyAuthenticationConfig(http);
 
-        http.rememberMe()
-                .key("uniqueAndSecret")
-                .userDetailsService(userService)
-                .tokenRepository(tokenRepository()); // username, 토큰, 시리즈를 조합한 토큰 정보를 DB에 저장(rememberMe 쿠키랑 일치하는 지 확인하기 위함)
 
-
-        http.logout()
-                .logoutUrl("/wcp/logout")
-//                .invalidateHttpSession(true).deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("http://localhost:3000/");
-
-
-
-
-        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.AuthorizedUrl anyRequest = http.authorizeRequests()
-                .anyRequest();
-
-
-//        anyRequest.authenticated()
-        anyRequest.permitAll()
+        http.authorizeRequests()
+                .anyRequest()
+                .permitAll()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//                .exceptionHandling();
-//                .authenticationEntryPoint(jwtAuthEndPoint)
-//        ;
 
     }
 
@@ -157,10 +127,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
-    }
 
 
 }

@@ -2,9 +2,7 @@ package com.wcp.judge.widget;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.wcp.judge.Judge;
-import com.wcp.judge.subscription.JudgeSubscriptionDetailTest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -19,9 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 public class JudgeWidgetTest {

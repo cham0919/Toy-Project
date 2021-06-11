@@ -12,7 +12,7 @@ import java.util.TreeMap;
 @Getter
 @Setter
 @ToString
-public class PageInfo implements Page{
+public class PageInfo {
 
     private int startPage;
     private int endPage;

@@ -2,6 +2,7 @@ package com.wcp.coding.room;
 
 import com.wcp.coding.test.CodingTestDto;
 import com.wcp.coding.join.CodingJoinUserDto;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -10,8 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Accessors(chain = true)
 public class CodingRoomDto {
 

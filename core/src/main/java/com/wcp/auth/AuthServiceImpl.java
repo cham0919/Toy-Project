@@ -23,6 +23,7 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider JwtTokenProvider;
 
+
     @Override
     public String signIn(UserDto userDto, String ip) throws Throwable {
         User user = UserMapper.INSTANCE.toEntity(userDto);
@@ -35,9 +36,9 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
-    private TokenDto initTokenDto(User user, String ip) {
+    private TokenDto initTokenDto(User user, String ip){
         return TokenDto.builder()
-                .id(user.getId())
+                .key(String.valueOf(user.getKey()))
                 .role(user.getRole().getValue())
                 .ip(ip)
                 .uuid(String.valueOf(UUID.randomUUID()))

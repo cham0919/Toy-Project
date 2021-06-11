@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +24,15 @@ public class UserServiceImpl implements UserService {
     public UserDto signUp(UserDto userDto){
         User user = UserMapper.INSTANCE.toEntity(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        save(user);
+        userRepository.save(user);
         return UserMapper.INSTANCE.toDto(user);
     }
 
     @Override
-    public User save(User user){
-        return userRepository.save(user);
+    public UserDto save(UserDto dto){
+        User user = UserMapper.INSTANCE.toEntity(dto);
+        userRepository.save(user);
+        return dto;
     }
 
     @Override
@@ -38,35 +41,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> fetchById(String userKey) {
-        if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ userKey);
+    public UserDto fetchById(String userKey) {
+//        if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
+//            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ userKey);
+//        }
+        User user = fetchById(Long.valueOf(userKey));
+        return UserMapper.INSTANCE.toDto(user);
+    }
+
+    private User fetchById(Long userKey) {
+        return userRepository.findById(userKey).get();
+    }
+
+    @Override
+    public List<UserDto> fetchAll() {
+        List<User> users = userRepository.findAll();
+        List<UserDto> dtos = new ArrayList<>();
+        users.forEach(v -> {
+            dtos.add(
+                    UserMapper.INSTANCE.toDto(v)
+            );
+        });
+        return dtos;
+    }
+
+    @Override
+    public UserDto update(UserDto dto) {
+        String id = dto.getKey();
+        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
-        return fetchById(Long.valueOf(userKey));
-    }
-
-    @Override
-    public Optional<User> fetchById(Long userKey) {
-        return userRepository.findById(userKey);
-    }
-
-    @Override
-    public List<User> fetchAll() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public User update(User user) {
-        User fetchUser = fetchById(user.getKey()).get();
-        fetchUser = user;
-        return user;
+        User user = fetchById(Long.valueOf(id));
+        UserMapper.INSTANCE.updateFromDto(dto, user);
+        return dto;
     }
 
     // 회원데이터 삭제 delete
     @Override
-    public User delete(User user){
+    public UserDto delete(UserDto dto){
+        User user = UserMapper.INSTANCE.toEntity(dto);
         userRepository.delete(user);
-        return user;
+        return dto;
     }
 
     @Override
@@ -77,8 +92,7 @@ public class UserServiceImpl implements UserService {
         deleteById(Long.valueOf(id));
     }
 
-    @Override
-    public void deleteById(Long id) {
+    private void deleteById(Long id) {
         userRepository.deleteById(id);
     }
 

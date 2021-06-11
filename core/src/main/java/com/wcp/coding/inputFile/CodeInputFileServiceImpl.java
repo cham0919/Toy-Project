@@ -1,9 +1,14 @@
 package com.wcp.coding.inputFile;
 
 import com.wcp.common.file.FileUtils;
+import com.wcp.common.file.MimeType;
+import com.wcp.env.Config;
+import com.wcp.mapper.CodeInputFileMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.mime.MimeTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,9 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.wcp.coding.inputFile.InputFileExtension.IN;
@@ -29,11 +33,13 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
 
     @Override
-    public CodeInputFile multiPartToEntity(MultipartFile file) throws IOException {
-        //TODO.file 검증
+    public CodeInputFile multiPartToEntity(MultipartFile file) throws Throwable {
+        if(!FileUtils.checkMimeType(file, MimeType.ZIP)){
+            throw new MimeTypeException("Upload is only possible as a zip file");
+        };
         String fileKey = UUID.randomUUID().toString();
         String fileName = fileKey + FilenameUtils.EXTENSION_SEPARATOR + FilenameUtils.getExtension(file.getOriginalFilename());
-        File uploadFile = new File(FileUtils.resourceDirToday("C:\\git\\file"),
+        File uploadFile = new File(FileUtils.resourceDirToday(Config.getProperty("com.wcp.default.dir")),
                 fileKey);
         if(!uploadFile.exists()){ uploadFile.mkdirs(); }
         uploadFile = new File(uploadFile, fileName);
@@ -47,22 +53,26 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
 
     @Override
-    public File[] fetchIOFilesById(Long fileId){
-        CodeInputFile codeInputFile = fetchById(fileId).get();
+    public File[] fetchIOFilesById(Long fileId) throws FileExistsException {
+        CodeInputFile codeInputFile = fetchById(fileId);
         checkUnZip(codeInputFile);
         File dir = codeInputFile.getDir();
         return FileUtils.sortFileList(dir.listFiles());
     }
 
     @Override
-    public void checkUnZip(CodeInputFile codeInputFile){
+    public void checkUnZip(CodeInputFile codeInputFile) throws FileExistsException {
         File zip = codeInputFile.getInputFile();
         File dir = codeInputFile.getDir();
         File[] files = fetchIOFiles(dir);
 
-        if( zip.exists() &&
-                files.length == 0 ){
-            FileUtils.unZip(zip);
+        if( zip.exists() ) {
+           if(files.length == 0){
+               FileUtils.unZip(zip);
+           }
+        } else {
+            log.error("No Exist File {}", zip.getAbsolutePath());
+            throw new FileExistsException();
         }
     }
 
@@ -82,40 +92,54 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
     }
 
     @Override
-    public CodeInputFile save(CodeInputFile codeInputFile) {
-        return codeInputFileRepository.save(codeInputFile);
+    public CodeInputFileDto save(CodeInputFileDto dto){
+        CodeInputFile codeInputFile = CodeInputFileMapper.INSTANCE.toEntity(dto);
+        codeInputFileRepository.save(codeInputFile);
+        return dto;
     }
 
     @Override
-    public Optional<CodeInputFile> fetchById(String id) {
+    public CodeInputFileDto fetchById(String id) {
         if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
-        return fetchById(Long.valueOf(id));
+        CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
+        return CodeInputFileMapper.INSTANCE.toDto(codeInputFile);
+    }
+
+    public CodeInputFile fetchById(Long id) {
+        return codeInputFileRepository.findById(id).get();
     }
 
     @Override
-    public Optional<CodeInputFile> fetchById(Long id) {
-        return codeInputFileRepository.findById(id);
-    }
-
-    @Override
-    public List<CodeInputFile> fetchAll() {
-        return codeInputFileRepository.findAll();
+    public List<CodeInputFileDto> fetchAll(){
+        List<CodeInputFile> codeInputFiles = codeInputFileRepository.findAll();
+        List<CodeInputFileDto> dtos = new ArrayList<>();
+        codeInputFiles.forEach(v -> {
+            dtos.add(
+                    CodeInputFileMapper.INSTANCE.toDto(v)
+            );
+        });
+        return dtos;
     }
 
     @Override
     @Transactional
-    public CodeInputFile update(CodeInputFile codeInputFile) {
-        Optional<CodeInputFile> fetchBoard = fetchById(codeInputFile.getKey());
-        fetchBoard = Optional.of(codeInputFile);
-        return fetchBoard.get();
+    public CodeInputFileDto update(CodeInputFileDto dto) {
+        String id = dto.getKey();
+        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
+        }
+        CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
+        CodeInputFileMapper.INSTANCE.updateFromDto(dto, codeInputFile);
+        return dto;
     }
 
     @Override
-    public CodeInputFile delete(CodeInputFile codeInputFile) {
+    public CodeInputFileDto delete(CodeInputFileDto dto) {
+        CodeInputFile codeInputFile = CodeInputFileMapper.INSTANCE.toEntity(dto);
         codeInputFileRepository.delete(codeInputFile);
-        return codeInputFile;
+        return dto;
     }
 
     @Override
@@ -126,8 +150,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
         deleteById(Long.valueOf(id));
     }
 
-    @Override
-    public void deleteById(Long id) {
+    private void deleteById(Long id) {
         codeInputFileRepository.deleteById(id);
     }
 

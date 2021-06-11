@@ -1,9 +1,8 @@
 package com.wcp.auth;
 
-import com.wcp.user.User;
+import com.wcp.security.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,19 +10,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;
 import java.util.Collections;
 
-@Scope("prototype")
 public class JwtAuthentication implements Authentication {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthentication.class);
 
 	private final String token;
-	private User user;
+	private String key;
 	private String role;
 	private boolean isAuthenticated;
 
 	public JwtAuthentication(TokenDto dto) {
 		this.token = dto.getToken();
-		this.user = null;
+		this.key = dto.getKey();
 		this.role = dto.getRole();
 		this.isAuthenticated = true;
 	}
@@ -34,7 +32,7 @@ public class JwtAuthentication implements Authentication {
 		if (isAuthenticated) {
 				return Collections.singletonList(new SimpleGrantedAuthority(role));
 		}
-		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
+		return Collections.singletonList(new SimpleGrantedAuthority(Role.ANONYMOUS.getValue()));
 	}
 
 	@Override
@@ -64,17 +62,17 @@ public class JwtAuthentication implements Authentication {
 
 	@Override
 	public String getName() {
-		if (user != null && isAuthenticated)
-			return user.getId();
+		if (key != null && isAuthenticated)
+			return key;
 		return null;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
-	public User getUser() {
-		return user;
+	public String getKey() {
+		return key;
 	}
 
 }

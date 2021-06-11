@@ -9,7 +9,7 @@ import lombok.Setter;
 @Builder
 public class TokenDto {
 
-    private String id;
+    private String key;
     private String role;
     private String ip;
     private String uuid;

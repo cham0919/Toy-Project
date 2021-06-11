@@ -6,6 +6,7 @@ import com.wcp.WCPTable.UserTable;
 import com.wcp.coding.test.CodingTest;
 import com.wcp.coding.join.CodingJoinUser;
 import com.wcp.user.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -31,8 +32,8 @@ public class CodingRoom {
     private Long key;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = UserTable.PK, nullable = false)
-//    @JoinColumn(name = UserTable.PK)
+//    @JoinColumn(name = UserTable.PK, nullable = false)
+    @JoinColumn(name = UserTable.PK)
     private User user;
 
     @Column(name = CodingRoomTable.TITLE, nullable = false)
@@ -61,27 +62,21 @@ public class CodingRoom {
     private List<CodingTest> codingTests = new ArrayList<>();
 
     public CodingRoom addUser(User user){
-        this.user = user;
-        this.user.getCodingRooms().add(this);
+        setUser(user);
+        getUser().getCodingRooms().add(this);
         return this;
-    }
-
-    public Map<String, Object> toMapForOpen() {
-        Map<String, Object> map = new TreeMap<String, Object>();
-        map.put("key", this.key);
-        map.put("title", this.title);
-        map.put("intro", this.intro);
-        map.put("password", this.password);
-        map.put("maxUser", this.maxUser);
-        map.put("ramdomKey", this.ramdomKey);
-        map.put("createDatetime", this.createdAt);
-        map.put("codingJoinUsers", this.codingJoinUsers);
-        map.put("codingTests", this.codingTests);
-        return map;
     }
 
     @Override
     public String toString() {
-        return toMapForOpen().toString();
+        return "CodingRoom{" +
+                "key=" + key +
+                ", title='" + title + '\'' +
+                ", intro='" + intro + '\'' +
+                ", password='" + password + '\'' +
+                ", maxUser=" + maxUser +
+                ", ramdomKey='" + ramdomKey + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

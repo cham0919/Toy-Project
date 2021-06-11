@@ -3,14 +3,13 @@ package com.wcp.judge.submission;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.wcp.common.http.HttpRequest;
 import com.wcp.judge.Judge;
-import com.wcp.judge.statuses.JudgeStatusesTest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -49,7 +48,7 @@ public class JudgeBatchedSubmissionTest {
     @Test
     public void CreateBatchedSubmission() throws IOException {
 
-        HttpClient client = HttpClientBuilder.create().build();
+        /*HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(URI.create(Judge.BATCHSUBMISSION + "?base64_encoded=true"));
         post.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
         post.addHeader("x-rapidapi-key", Judge.TOKEN);
@@ -57,7 +56,15 @@ public class JudgeBatchedSubmissionTest {
 
         post.setEntity(new StringEntity(batchJson)); //json 메시지 입력
 
-        HttpResponse response = client.execute(post);
+        HttpResponse response = client.execute(post);*/
+        HttpResponse response =
+        HttpRequest.of()
+                .post(URI.create(Judge.BATCHSUBMISSION + "?base64_encoded=true"))
+                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                .addHeader("x-rapidapi-key", Judge.TOKEN)
+                .addHeader("x-rapidapi-host", Judge.HOST)
+                .setEntity(new StringEntity(batchJson))
+                .execute();
 
         ResponseHandler<String> handler = new BasicResponseHandler();
         String body = handler.handleResponse(response);

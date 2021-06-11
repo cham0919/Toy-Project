@@ -5,12 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.wcp.coding.inputFile.CodeInputFileService;
 import com.wcp.coding.test.CodingTest;
-import com.wcp.coding.test.CodingTestService;
+import com.wcp.coding.test.CodingTestRepository;
 import com.wcp.common.Base64Utils;
 import com.wcp.common.file.FileUtils;
 import com.wcp.common.http.HttpRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ResponseHandler;
@@ -38,13 +39,16 @@ public class JudgeServiceImpl implements JudgeService {
 
     private final Logger log = LoggerFactory.getLogger(JudgeServiceImpl.class);
     private Gson gson = new GsonBuilder().create();
-    private final CodingTestService codingTestService;
+    private final CodingTestRepository codingTestRepository;
     private final CodeInputFileService codeInputFileService;
 
 
     @Override
     public List<JudegeResponseDto> createBatchedSubmission(JudgeRequestDto dto, String postId) throws Throwable {
-        CodingTest codingTest =  codingTestService.fetchById(postId).get();
+        if (StringUtils.isEmpty(postId) || !StringUtils.isNumeric(postId)) {
+            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check userKey : "+ postId);
+        }
+        CodingTest codingTest =  codingTestRepository.findById(Long.valueOf(postId)).get();
         File[] files =  codeInputFileService.fetchIOFilesById(codingTest.getCodeInputFile().getKey());
         String params = createBatchedSubmissionJson(toJudgeRequestDtos(files), dto);
         List<JudegeResponseDto> responseDtos = createBatchedSubmission(params);
@@ -121,7 +125,7 @@ public class JudgeServiceImpl implements JudgeService {
 
     @Override
     public List<JudegeResponseDto> createBatchedSubmission(String param) throws Throwable {
-        HttpResponse resp =HttpRequest.of()
+        HttpResponse resp = HttpRequest.of()
                 .post(createBatchedSubmissionUri())
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .addHeader(Judge.TOKEN_KEY, Judge.TOKEN_VALUE)

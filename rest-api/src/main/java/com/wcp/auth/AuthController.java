@@ -3,7 +3,6 @@ package com.wcp.auth;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wcp.common.http.HttpUtils;
-import com.wcp.user.User;
 import com.wcp.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final Gson gson = new GsonBuilder().setPrettyPrinting()
             .disableHtmlEscaping()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
@@ -33,9 +32,9 @@ public class AuthController {
 
 
 
-    @RequestMapping(value = {"/", ""}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ResponseEntity<String> checkUser(HttpServletRequest req,
+    public ResponseEntity<String> signIn(HttpServletRequest req,
                                             HttpServletResponse res,
                                             @RequestBody UserDto userDto)
     {
@@ -47,19 +46,4 @@ public class AuthController {
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @RequestMapping(value = {"/test"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-    @ResponseBody
-    public ResponseEntity<String> checkUser(HttpServletRequest req,
-                                            HttpServletResponse res)
-    {
-        try{
-            return new ResponseEntity<String>(HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(), t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
 }

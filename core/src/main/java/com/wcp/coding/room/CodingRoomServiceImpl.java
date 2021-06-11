@@ -16,8 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import static com.wcp.WCPTable.CodingRoomTable.PK;
 
 
 @Service
@@ -31,21 +33,34 @@ public class CodingRoomServiceImpl implements CodingRoomService{
 
 
     @Override
-    public CodingRoomDto fetchDtoById(String id){
-        CodingRoom codingRoom = fetchById(id).get();
-        return CodingRoomMapper.INSTANCE.toDto(codingRoom);
-    }
-
     @Transactional
-    public CodingRoom save(CodingRoom codingRoom, String userKey){
+    public CodingRoomDto save(CodingRoomDto dto, String userKey){
         if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
             throw new IllegalArgumentException("currentPage should not be empty or String. Please Check userKey : "+ userKey);
         }
+        CodingRoom codingRoom = CodingRoomMapper.INSTANCE.toEntity(dto);
         User user = userRepository.getOne(Long.valueOf(userKey));
         codingRoom.setUser(user);
-        return save(codingRoom);
+        codingRoomRepository.save(codingRoom);
+        return dto;
     }
 
+
+    @Override
+    public List<CodingRoomDto> fetchByPage(String currentPage) {
+        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : " + currentPage);
+        }
+
+        List<CodingRoom> codingRooms = fetchByPage(Integer.valueOf(currentPage));
+        List<CodingRoomDto> dtos = new ArrayList<>();
+        codingRooms.forEach(v -> {
+            dtos.add(
+                    CodingRoomMapper.INSTANCE.toDto(v)
+            );
+        });
+        return dtos;
+    }
 
     @Override
     public PageInfo fetchPageList(String currentPage){
@@ -59,56 +74,61 @@ public class CodingRoomServiceImpl implements CodingRoomService{
     }
 
     @Override
-    public List<CodingRoom> fetchByPage(String currentPage) {
-        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : "+ currentPage);
-        }
-        return fetchByPage(Integer.valueOf(currentPage));
-    }
-
-    @Override
     public List<CodingRoom> fetchByPage(int currentPage) {
         Page<CodingRoom> codingRoomPage = codingRoomRepository
                 .findAll(PageRequest
-                        .of(currentPage - 1, PageCount.CODING_ROOM.getPostCount(), Sort.by(Sort.Direction.ASC, "key")));
+                        .of(currentPage - 1, PageCount.CODING_ROOM.getPostCount(), Sort.by(Sort.Direction.ASC, PK)));
         return codingRoomPage.getContent();
     }
 
     @Override
-    public CodingRoom save(CodingRoom codingRoom) {
-        return codingRoomRepository.save(codingRoom);
+    public CodingRoomDto save(CodingRoomDto dto) {
+        CodingRoom codingRoom = CodingRoomMapper.INSTANCE.toEntity(dto);
+        codingRoom = codingRoomRepository.save(codingRoom);
+        return CodingRoomMapper.INSTANCE.toDto(codingRoom);
     }
 
     @Override
-    public Optional<CodingRoom> fetchById(String id) {
+    public CodingRoomDto fetchById(String id) {
         if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
-        return fetchById(Long.valueOf(id));
+        CodingRoom codingRoom = fetchById(Long.valueOf(id));
+        return CodingRoomMapper.INSTANCE.toDto(codingRoom);
     }
 
-    @Override
-    public Optional<CodingRoom> fetchById(Long id) {
-        return codingRoomRepository.findById(id);
+    public CodingRoom fetchById(Long id) {
+        return codingRoomRepository.findById(id).get();
     }
 
-    @Override
-    public List<CodingRoom> fetchAll() {
-        return codingRoomRepository.findAll();
+    public List<CodingRoomDto> fetchAll() {
+        List<CodingRoom> codingRooms = codingRoomRepository.findAll();
+        List<CodingRoomDto> codingRoomDtos = new ArrayList<>();
+        codingRooms.forEach(v -> {
+            codingRoomDtos.add(
+                    CodingRoomMapper.INSTANCE.toDto(v)
+            );
+        });
+        return codingRoomDtos;
     }
 
-    @Override
     @Transactional
-    public CodingRoom update(CodingRoom codingRoom) {
-        Optional<CodingRoom> fetchCodingRoom = fetchById(codingRoom.getKey());
-        fetchCodingRoom = Optional.of(codingRoom);
-        return fetchCodingRoom.get();
+    public CodingRoomDto update(CodingRoomDto dto) {
+        String id = dto.getKey();
+        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
+        }
+        CodingRoom fetchCodingRoom = fetchById(Long.valueOf(id));
+        CodingRoomMapper.INSTANCE.updateFromDto(dto, fetchCodingRoom);
+        return dto;
     }
 
+
     @Override
-    public CodingRoom delete(CodingRoom codingRoom) {
+    public CodingRoomDto delete(CodingRoomDto dto) {
+        CodingRoom codingRoom = CodingRoomMapper.INSTANCE.toEntity(dto);
         codingRoomRepository.delete(codingRoom);
-        return codingRoom;
+        return dto;
     }
 
     @Override
@@ -119,7 +139,6 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         deleteById(Long.valueOf(id));
     }
 
-    @Override
     public void deleteById(Long id) {
         codingRoomRepository.deleteById(id);
     }

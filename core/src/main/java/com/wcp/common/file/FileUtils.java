@@ -4,8 +4,11 @@ import com.wcp.common.Closer;
 import com.wcp.common.DateUtils;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -22,6 +25,7 @@ public final class FileUtils {
 
     private FileUtils() {}
 
+    private final static Tika tika = new Tika();
 
     public static String readFileToString(File file) {
         return readFileToString(file, Charset.defaultCharset());
@@ -165,5 +169,10 @@ public final class FileUtils {
 
     public static int countFilesInDir(File dir){
         return dir.listFiles().length;
+    }
+
+    public static boolean checkMimeType(MultipartFile file, MimeType mimeType) throws IOException {
+        String type = tika.detect(file.getBytes());
+        return mimeType.equalsIgnoreValue(type);
     }
 }

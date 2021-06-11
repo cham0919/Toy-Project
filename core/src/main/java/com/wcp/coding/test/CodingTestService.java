@@ -5,16 +5,8 @@ import com.wcp.common.base.PageService;
 
 import java.util.List;
 
-public interface CodingTestService extends CRUDService<CodingTest>, PageService<CodingTest> {
+public interface CodingTestService extends CRUDService<CodingTest,CodingTestDto>, PageService<CodingTest, CodingTestDto> {
 
-
-    CodingTestDto fetchDtoById(String id);
-
-    void registerContent(MultiPartDto multiPartDto, String postId) throws Exception;
-
-    List<CodingTest> fetchByPage(String currentPage);
-
-    List<CodingTest> fetchByPage(int currentPage);
-
+    void registerContent(MultiPartDto multiPartDto) throws Throwable;
 
 }

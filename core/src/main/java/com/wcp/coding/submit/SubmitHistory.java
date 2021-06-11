@@ -8,6 +8,7 @@ import com.wcp.coding.test.CodingTest;
 import com.wcp.user.User;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Accessors(chain = true)
 @Table(name = SubmitHistoryTable.TABLE_NAME)
 public class SubmitHistory {
 
