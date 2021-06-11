@@ -2,7 +2,6 @@ package com.wcp.judge.submission;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.wcp.judge.Judge;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -18,10 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -47,7 +44,7 @@ public class JudgeSubmissionTest {
     @Test
     public void createSubmission() throws IOException, InterruptedException {
         HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost(URI.create("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&fields=*"));
+        HttpPost post = new HttpPost(URI.create("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=true&fields=*"));
         post.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
         post.addHeader("x-rapidapi-key", Judge.TOKEN);
         post.addHeader("x-rapidapi-host", Judge.HOST);
@@ -69,7 +66,7 @@ public class JudgeSubmissionTest {
     public void getSubmission() throws  IOException, InterruptedException {
 
         HttpClient client = HttpClientBuilder.create().build();
-        HttpGet get = new HttpGet(URI.create(Judge.SUBMISSION + "/2e979232-92fd-4012-97cf-3e9177257d10?base64_encoded=true&fields=*"));
+        HttpGet get = new HttpGet(URI.create(Judge.SUBMISSION + "/0a35238b-adc3-4cef-a701-d83286d61cfc?base64_encoded=false&fields=*"));
         get.addHeader("x-rapidapi-key", Judge.TOKEN);
         get.addHeader("x-rapidapi-host", Judge.HOST);
         HttpResponse response = client.execute(get);

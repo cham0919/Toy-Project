@@ -8,6 +8,8 @@ import com.wcp.coding.room.CodingRoomRepository;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
 import com.wcp.page.PageInfo;
+import com.wcp.user.User;
+import com.wcp.user.UserRepository;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -42,35 +44,43 @@ public class CodingTestServiceTest {
     @Mock
     private CodingTestRepository codingTestRepository;
     @Mock
+    private UserRepository userRepository;
+    @Mock
     private CodingRoomRepository codingRoomRepository;
 
     @Test
-    public void registerContent_Success_DoesNotThrow() throws Exception {
+    public void registerContent_Success_DoesNotThrow() throws Throwable {
         String postId = "1";
+        String userKey = "1";
         MockMultipartFile file = new MockMultipartFile("file", "test.zip", "text/plain", "some xml".getBytes());
         MultiPartDto multiPartDto = new MultiPartDto().setFile(file);
+        multiPartDto.setUserKey(userKey)
+                .setPostId(postId);
 
         given(codeInputFileService.multiPartToEntity(any(MultipartFile.class)))
-                .willReturn(new CodeInputFile());
+                .willReturn(mock(CodeInputFile.class));
         given(codingRoomRepository.getOne(anyLong()))
-                .willReturn(new CodingRoom());
+                .willReturn(mock(CodingRoom.class));
+        given(userRepository.getOne(anyLong()))
+                .willReturn(mock(User.class));
         given(codeInputFileRepository.save(any(CodeInputFile.class)))
-                .willReturn(new CodeInputFile());
+                .willReturn(mock(CodeInputFile.class));
 
-        assertDoesNotThrow(() -> codingTestService.registerContent(multiPartDto, postId));
+        assertDoesNotThrow(() -> codingTestService.registerContent(multiPartDto));
     }
 
     @Test
-    public void registerContent_IsNotNumericId_ExceptionThrown() throws Exception {
+    public void registerContent_IsNotNumericId_ExceptionThrown() throws Throwable {
         String postId = "A";
         MockMultipartFile file = new MockMultipartFile("file", "test.zip", "text/plain", "some xml".getBytes());
         MultiPartDto multiPartDto = new MultiPartDto().setFile(file);
+        multiPartDto.setPostId(postId);
 
         given(codeInputFileService.multiPartToEntity(any(MultipartFile.class)))
                 .willReturn(new CodeInputFile());
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            codingTestService.registerContent(multiPartDto, postId);
+            codingTestService.registerContent(multiPartDto);
         });
     }
 
@@ -80,7 +90,7 @@ public class CodingTestServiceTest {
         MultiPartDto multiPartDto = new MultiPartDto();
 
         Assertions.assertThrows(FileUploadException.class, () -> {
-            codingTestService.registerContent(multiPartDto, postId);
+            codingTestService.registerContent(multiPartDto);
         });
     }
 

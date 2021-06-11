@@ -1,22 +1,10 @@
 package com.wcp.board;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.wcp.board.admin.AdminBoard;
-import com.wcp.board.admin.AdminBoardService;
-import com.wcp.board.page.PageInfo;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Map;
-
 public class AdminBoardTest extends BoardTest {
 
-    @Autowired
-    AdminBoardService adminBoardService;
-
+//    @Autowired
+//    AdminBoardService adminBoardService;
+/*
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final Gson gson = new GsonBuilder().setPrettyPrinting()
             .disableHtmlEscaping()
@@ -49,5 +37,5 @@ public class AdminBoardTest extends BoardTest {
     @Test
     public void deleteByIdTest(){
         adminBoardService.deleteById(postId);
-    }
+    }*/
 }

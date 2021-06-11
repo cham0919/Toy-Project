@@ -1,19 +1,7 @@
 package com.wcp.board;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.wcp.board.faq.FAQBoard;
-import com.wcp.board.faq.FAQBoardService;
-import com.wcp.board.page.PageInfo;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Map;
-
 public class FAQBoardTest extends BoardTest {
-
+/*
     @Autowired
     FAQBoardService faqBoardService;
 
@@ -49,5 +37,5 @@ public class FAQBoardTest extends BoardTest {
     @Test
     public void deleteByIdTest(){
         faqBoardService.deleteById(postId);
-    }
+    }*/
 }

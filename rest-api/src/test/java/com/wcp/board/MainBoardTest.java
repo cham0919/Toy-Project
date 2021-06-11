@@ -1,20 +1,7 @@
 package com.wcp.board;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.wcp.board.main.MainBoard;
-import com.wcp.board.main.MainBoardService;
-import com.wcp.board.page.PageInfo;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Map;
-
 public class MainBoardTest extends BoardTest {
-
+/*
     @Autowired
     MainBoardService mainBoardService;
 
@@ -72,5 +59,5 @@ public class MainBoardTest extends BoardTest {
     @Test
     public void deleteByIdTest(){
         mainBoardService.deleteById(postId);
-    }
+    }*/
 }
