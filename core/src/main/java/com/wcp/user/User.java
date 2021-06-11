@@ -4,6 +4,7 @@ import com.wcp.WCPTable.UserTable;
 import com.wcp.board.Board;
 import com.wcp.coding.room.CodingRoom;
 import com.wcp.coding.submit.SubmitHistory;
+import com.wcp.coding.test.CodingTest;
 import com.wcp.commant.BoardCommant;
 import com.wcp.convert.UserRoleToValueConverter;
 import com.wcp.convert.UserStatusToValueConverter;
@@ -74,6 +75,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<CodingRoom> codingRooms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<CodingTest> codingTests = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<SubmitHistory> submitHistories = new ArrayList<>();

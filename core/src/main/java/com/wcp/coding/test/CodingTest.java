@@ -2,9 +2,11 @@ package com.wcp.coding.test;
 
 import com.wcp.WCPTable.CodingRoomTable;
 import com.wcp.WCPTable.CodingTestTable;
-import com.wcp.coding.room.CodingRoom;
+import com.wcp.WCPTable.UserTable;
 import com.wcp.coding.inputFile.CodeInputFile;
+import com.wcp.coding.room.CodingRoom;
 import com.wcp.coding.submit.SubmitHistory;
+import com.wcp.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -26,6 +28,10 @@ public class CodingTest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = CodingTestTable.PK)
     private Long key;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = UserTable.PK)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = CodingRoomTable.PK)
