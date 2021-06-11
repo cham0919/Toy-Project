@@ -1,7 +1,6 @@
 package com.wcp.auth;
 
 
-import com.wcp.common.AESUtils;
 import com.wcp.mapper.UserMapper;
 import com.wcp.user.User;
 import com.wcp.user.UserDto;
@@ -39,7 +38,7 @@ public class AuthServiceImpl implements AuthService{
 
     private TokenDto initTokenDto(User user, String ip){
         return TokenDto.builder()
-                .id(user.getId())
+                .key(String.valueOf(user.getKey()))
                 .role(user.getRole().getValue())
                 .ip(ip)
                 .uuid(String.valueOf(UUID.randomUUID()))
