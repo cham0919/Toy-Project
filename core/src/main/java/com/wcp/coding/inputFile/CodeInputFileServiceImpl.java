@@ -2,6 +2,7 @@ package com.wcp.coding.inputFile;
 
 import com.wcp.common.file.FileUtils;
 import com.wcp.common.file.MimeType;
+import com.wcp.env.Config;
 import com.wcp.mapper.CodeInputFileMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileExistsException;
@@ -38,7 +39,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
         };
         String fileKey = UUID.randomUUID().toString();
         String fileName = fileKey + FilenameUtils.EXTENSION_SEPARATOR + FilenameUtils.getExtension(file.getOriginalFilename());
-        File uploadFile = new File(FileUtils.resourceDirToday("C:\\git\\file"),
+        File uploadFile = new File(FileUtils.resourceDirToday(Config.getProperty("com.wcp.default.dir")),
                 fileKey);
         if(!uploadFile.exists()){ uploadFile.mkdirs(); }
         uploadFile = new File(uploadFile, fileName);
