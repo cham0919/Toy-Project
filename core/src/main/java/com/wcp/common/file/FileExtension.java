@@ -8,7 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum FileExtension implements BaseEnum {
 
-    ZIP("zip");
+    ZIP("zip"),
+    PROPERTIES("properties");
 
     private String fileExtension;
 
