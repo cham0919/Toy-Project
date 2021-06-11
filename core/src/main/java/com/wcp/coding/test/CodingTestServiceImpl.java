@@ -12,6 +12,8 @@ import com.wcp.mapper.CodingTestMapper;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
 import com.wcp.page.PageInfo;
+import com.wcp.user.User;
+import com.wcp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -39,10 +41,12 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     private final CodingTestRepository codingTestRepository;
     private final CodingRoomRepository codingRoomRepository;
+    private final UserRepository userRepository;
 
 
     @Override
-    public void registerContent(MultiPartDto multiPartDto, String postId) throws Exception {
+    @Transactional
+    public void registerContent(MultiPartDto multiPartDto) throws Throwable {
         CodingTest codingTest = CodingTestMapper.INSTANCE.toEntity(multiPartDto);
         MultipartFile file = multiPartDto.getFile();
         if(file == null || file.isEmpty()) {
@@ -50,22 +54,29 @@ public class CodingTestServiceImpl implements CodingTestService{
             throw new FileUploadException();
         }
         CodeInputFile codeInputFile = codeInputFileService.multiPartToEntity(file);
-        registerContent(codingTest, codeInputFile, postId);
+        registerCodingTest(codingTest, multiPartDto.getPostId(), multiPartDto.getUserKey());
+        registerContent(codingTest, codeInputFile);
     }
 
-    @Transactional
-    public void registerContent(CodingTest codingTest, CodeInputFile codeInputFile, String postId){
-        if (StringUtils.isEmpty(postId) || !StringUtils.isNumeric(postId)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check postId : "+ postId);
-        }
-        // CodingTest 등록
-        CodingRoom codingRoom = codingRoomRepository.getOne(Long.valueOf(postId));
-        codingTest.setCodingRoom(codingRoom);
-        codingTestRepository.save(codingTest);
-
+    public void registerContent(CodingTest codingTest, CodeInputFile codeInputFile){
         //CodeInputFile 등록
         codeInputFile.setCodingTest(codingTest);
         codeInputFileRepository.save(codeInputFile);
+    }
+
+    private void registerCodingTest(CodingTest codingTest, String postId, String userKey){
+        if (StringUtils.isEmpty(postId) || !StringUtils.isNumeric(postId)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check postId : "+ postId);
+        }
+        if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check userKey : "+ userKey);
+        }
+        // CodingTest 등록
+        CodingRoom codingRoom = codingRoomRepository.getOne(Long.valueOf(postId));
+        User user = userRepository.getOne(Long.valueOf(userKey));
+        codingTest.setCodingRoom(codingRoom)
+                .setUser(user);
+        codingTestRepository.save(codingTest);
     }
 
 

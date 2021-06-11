@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CodingTestService extends CRUDService<CodingTest,CodingTestDto>, PageService<CodingTest, CodingTestDto> {
 
-    void registerContent(MultiPartDto multiPartDto, String postId) throws Exception;
+    void registerContent(MultiPartDto multiPartDto) throws Throwable;
 
 }

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class CodingTestDto {
 
     private String key;
+    private String userKey;
     private String postId;
     private String title;
     private String content;
