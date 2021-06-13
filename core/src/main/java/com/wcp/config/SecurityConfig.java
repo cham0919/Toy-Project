@@ -1,9 +1,11 @@
-package com.wcp.security;
+package com.wcp.config;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wcp.auth.JwtAuthenticationFilter;
+import com.wcp.security.LoginFailHandler;
+import com.wcp.security.LoginSuccessHandler;
 import com.wcp.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
