@@ -20,6 +20,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final AnonymousAuthentication anonymousAuthentication;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 헤더에서 JWT 를 받아옵니다.
@@ -54,6 +56,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             JwtAuthentication authentication = new JwtAuthentication(dto);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+    }
+
+    private void setAnonymousAuthentication() {
+        SecurityContextHolder.getContext().setAuthentication(anonymousAuthentication);
     }
 
 }
