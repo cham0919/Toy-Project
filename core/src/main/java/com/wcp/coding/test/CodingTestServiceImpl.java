@@ -4,10 +4,7 @@ import com.wcp.coding.inputFile.CodeInputFile;
 import com.wcp.coding.inputFile.CodeInputFileRepository;
 import com.wcp.coding.inputFile.CodeInputFileService;
 import com.wcp.coding.room.CodingRoom;
-import com.wcp.coding.room.CodingRoomDto;
 import com.wcp.coding.room.CodingRoomRepository;
-import com.wcp.coding.room.CodingRoomService;
-import com.wcp.mapper.CodingRoomMapper;
 import com.wcp.mapper.CodingTestMapper;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
@@ -28,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -136,6 +132,10 @@ public class CodingTestServiceImpl implements CodingTestService{
         return codingTestRepository.findById(id).get();
     }
 
+    public CodingTest fetchByIdJoinUser(Long id, Long userKey) {
+        return codingTestRepository.findByKeyAndUserKey(id, userKey);
+    }
+
     @Override
     public List<CodingTestDto> fetchAll() {
         List<CodingTest> codingTests = codingTestRepository.findAll();
@@ -155,7 +155,7 @@ public class CodingTestServiceImpl implements CodingTestService{
         if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
-        CodingTest codingTest = fetchById(Long.valueOf(id));
+        CodingTest codingTest = fetchByIdJoinUser(Long.valueOf(id), Long.valueOf(dto.getUserKey()));
         CodingTestMapper.INSTANCE.updateFromDto(dto, codingTest);
         return dto;
     }
