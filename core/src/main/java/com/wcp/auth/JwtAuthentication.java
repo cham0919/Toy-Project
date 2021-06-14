@@ -66,13 +66,4 @@ public class JwtAuthentication implements Authentication {
 			return key;
 		return null;
 	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
 }
