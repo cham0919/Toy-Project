@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/wcp/coding/board")
+@RequestMapping(value = "/wcp/coding/room")
 @RequiredArgsConstructor
 public class CodingRoomController {
 
