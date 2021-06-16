@@ -106,11 +106,13 @@ public class CodingTestController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> updateCodingTest(HttpServletRequest req,
                                          HttpServletResponse res,
-                                         @RequestBody CodingTestDto codingTest)
+                                         @RequestBody CodingTestDto codingTestDto)
     {
         try{
-            codingTest = codingTestService.update(codingTest);
-            return new ResponseEntity<String>(gson.toJson(codingTest), HttpStatus.OK);
+            String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
+            codingTestDto.setUserKey(userKey);
+            codingTestDto = codingTestService.update(codingTestDto);
+            return new ResponseEntity<String>(gson.toJson(codingTestDto), HttpStatus.OK);
         }catch (Throwable t){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
