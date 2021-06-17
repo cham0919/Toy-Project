@@ -25,22 +25,22 @@ public class AuthServiceImpl implements AuthService{
 
 
     @Override
-    public String signIn(UserDto userDto, String ip) throws Throwable {
+    public String signIn(UserDto userDto, String validateToken) throws Throwable {
         User user = UserMapper.INSTANCE.toEntity(userDto);
         User fetchUser = userService.fetchByUserId(user.getId());
         if (validatePassword(user, fetchUser)) {
-            TokenDto tokenDto = initTokenDto(fetchUser, ip);
+            TokenDto tokenDto = initTokenDto(fetchUser);
+            tokenDto.setValidateToken(validateToken);
             return JwtTokenProvider.createToken(tokenDto);
         } else {
             throw new LoginException();
         }
     }
 
-    private TokenDto initTokenDto(User user, String ip){
+    private TokenDto initTokenDto(User user){
         return TokenDto.builder()
                 .key(String.valueOf(user.getKey()))
                 .role(user.getRole().getValue())
-                .ip(ip)
                 .uuid(String.valueOf(UUID.randomUUID()))
                 .build();
     }

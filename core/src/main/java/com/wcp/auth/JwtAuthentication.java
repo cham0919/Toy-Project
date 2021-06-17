@@ -14,13 +14,13 @@ public class JwtAuthentication implements Authentication {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthentication.class);
 
-	private final String token;
+	private final String accessToken;
 	private String key;
 	private String role;
 	private boolean isAuthenticated;
 
 	public JwtAuthentication(TokenDto dto) {
-		this.token = dto.getToken();
+		this.accessToken = dto.getAccessToken();
 		this.key = dto.getKey();
 		this.role = dto.getRole();
 		this.isAuthenticated = true;
@@ -37,7 +37,7 @@ public class JwtAuthentication implements Authentication {
 
 	@Override
 	public Object getCredentials() {
-		return token;
+		return accessToken;
 	}
 
 	@Override
