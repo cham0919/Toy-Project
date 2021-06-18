@@ -8,5 +8,5 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface BoardLikeMapper extends GenericMapper<BoardLikeDto, BoardLike>{
 
-    BoardLikeMapper INSTANCE = Mappers.getMapper(BoardLikeMapper.class);
+    BoardLikeMapper BOARD_LIKE_MAPPER = Mappers.getMapper(BoardLikeMapper.class);
 }

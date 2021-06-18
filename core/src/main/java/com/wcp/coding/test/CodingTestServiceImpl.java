@@ -43,7 +43,7 @@ public class CodingTestServiceImpl implements CodingTestService{
     @Override
     @Transactional
     public void registerContent(MultiPartDto multiPartDto) throws Throwable {
-        CodingTest codingTest = CodingTestMapper.INSTANCE.toEntity(multiPartDto);
+        CodingTest codingTest = CodingTestMapper.CODING_TEST_MAPPER.toEntity(multiPartDto);
         MultipartFile file = multiPartDto.getFile();
         if(file == null || file.isEmpty()) {
             log.error("Only one file must be attached.");
@@ -78,7 +78,7 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     @Override
     public CodingTestDto save(CodingTestDto dto){
-        CodingTest codingTest = CodingTestMapper.INSTANCE.toEntity(dto);
+        CodingTest codingTest = CodingTestMapper.CODING_TEST_MAPPER.toEntity(dto);
         codingTestRepository.save(codingTest);
         return dto;
     }
@@ -93,7 +93,7 @@ public class CodingTestServiceImpl implements CodingTestService{
         List<CodingTestDto> dtos = new ArrayList<>();
         codingTests.forEach(v -> {
             dtos.add(
-                    CodingTestMapper.INSTANCE.toDto(v)
+                    CodingTestMapper.CODING_TEST_MAPPER.toDto(v)
             );
         });
         return dtos;
@@ -125,7 +125,7 @@ public class CodingTestServiceImpl implements CodingTestService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodingTest codingTest = fetchById(Long.valueOf(id));
-        return CodingTestMapper.INSTANCE.toDto(codingTest);
+        return CodingTestMapper.CODING_TEST_MAPPER.toDto(codingTest);
     }
 
     public CodingTest fetchById(Long id) {
@@ -142,7 +142,7 @@ public class CodingTestServiceImpl implements CodingTestService{
         List<CodingTestDto> dtos = new ArrayList<>();
         codingTests.forEach(v -> {
             dtos.add(
-                    CodingTestMapper.INSTANCE.toDto(v)
+                    CodingTestMapper.CODING_TEST_MAPPER.toDto(v)
             );
         });
         return dtos;
@@ -156,13 +156,13 @@ public class CodingTestServiceImpl implements CodingTestService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodingTest codingTest = fetchByIdJoinUser(Long.valueOf(id), Long.valueOf(dto.getUserKey()));
-        CodingTestMapper.INSTANCE.updateFromDto(dto, codingTest);
+        CodingTestMapper.CODING_TEST_MAPPER.updateFromDto(dto, codingTest);
         return dto;
     }
 
     @Override
     public CodingTestDto delete(CodingTestDto dto) {
-        CodingTest codingTest = CodingTestMapper.INSTANCE.toEntity(dto);
+        CodingTest codingTest = CodingTestMapper.CODING_TEST_MAPPER.toEntity(dto);
         codingTestRepository.delete(codingTest);
         return dto;
     }

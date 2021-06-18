@@ -8,5 +8,5 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface CodingJoinUserMapper extends GenericMapper<CodingJoinUserDto, CodingJoinUser>{
 
-    CodingJoinUserMapper INSTANCE = Mappers.getMapper(CodingJoinUserMapper.class);
+    CodingJoinUserMapper CODING_JOIN_USER_MAPPER = Mappers.getMapper(CodingJoinUserMapper.class);
 }

@@ -8,5 +8,5 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface BoardCategoryMapper extends GenericMapper<BoardCategoryDto, BoardCategory>{
 
-    BoardCategoryMapper INSTANCE = Mappers.getMapper(BoardCategoryMapper.class);
+    BoardCategoryMapper BOARD_CATEGORY_MAPPER = Mappers.getMapper(BoardCategoryMapper.class);
 }

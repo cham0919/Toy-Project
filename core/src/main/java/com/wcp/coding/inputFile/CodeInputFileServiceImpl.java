@@ -93,7 +93,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
     @Override
     public CodeInputFileDto save(CodeInputFileDto dto){
-        CodeInputFile codeInputFile = CodeInputFileMapper.INSTANCE.toEntity(dto);
+        CodeInputFile codeInputFile = CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.toEntity(dto);
         codeInputFileRepository.save(codeInputFile);
         return dto;
     }
@@ -104,7 +104,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
-        return CodeInputFileMapper.INSTANCE.toDto(codeInputFile);
+        return CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.toDto(codeInputFile);
     }
 
     public CodeInputFile fetchById(Long id) {
@@ -117,7 +117,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
         List<CodeInputFileDto> dtos = new ArrayList<>();
         codeInputFiles.forEach(v -> {
             dtos.add(
-                    CodeInputFileMapper.INSTANCE.toDto(v)
+                    CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.toDto(v)
             );
         });
         return dtos;
@@ -131,13 +131,13 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
-        CodeInputFileMapper.INSTANCE.updateFromDto(dto, codeInputFile);
+        CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.updateFromDto(dto, codeInputFile);
         return dto;
     }
 
     @Override
     public CodeInputFileDto delete(CodeInputFileDto dto) {
-        CodeInputFile codeInputFile = CodeInputFileMapper.INSTANCE.toEntity(dto);
+        CodeInputFile codeInputFile = CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.toEntity(dto);
         codeInputFileRepository.delete(codeInputFile);
         return dto;
     }

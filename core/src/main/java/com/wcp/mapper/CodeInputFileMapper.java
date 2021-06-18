@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface CodeInputFileMapper extends GenericMapper<CodeInputFileDto, CodeInputFile> {
 
-    CodeInputFileMapper INSTANCE = Mappers.getMapper(CodeInputFileMapper.class);
+    CodeInputFileMapper CODE_INPUT_FILE_MAPPER = Mappers.getMapper(CodeInputFileMapper.class);
 
 }
 

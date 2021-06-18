@@ -38,7 +38,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
             throw new IllegalArgumentException("currentPage should not be empty or String. Please Check userKey : "+ userKey);
         }
-        CodingRoom codingRoom = CodingRoomMapper.INSTANCE.toEntity(dto);
+        CodingRoom codingRoom = CodingRoomMapper.CODING_ROOM_MAPPER.toEntity(dto);
         User user = userRepository.getOne(Long.valueOf(userKey));
         codingRoom.setUser(user);
         codingRoomRepository.save(codingRoom);
@@ -56,7 +56,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         List<CodingRoomDto> dtos = new ArrayList<>();
         codingRooms.forEach(v -> {
             dtos.add(
-                    CodingRoomMapper.INSTANCE.toDto(v)
+                    CodingRoomMapper.CODING_ROOM_MAPPER.toDto(v)
             );
         });
         return dtos;
@@ -83,9 +83,9 @@ public class CodingRoomServiceImpl implements CodingRoomService{
 
     @Override
     public CodingRoomDto save(CodingRoomDto dto) {
-        CodingRoom codingRoom = CodingRoomMapper.INSTANCE.toEntity(dto);
+        CodingRoom codingRoom = CodingRoomMapper.CODING_ROOM_MAPPER.toEntity(dto);
         codingRoom = codingRoomRepository.save(codingRoom);
-        return CodingRoomMapper.INSTANCE.toDto(codingRoom);
+        return CodingRoomMapper.CODING_ROOM_MAPPER.toDto(codingRoom);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodingRoom codingRoom = fetchById(Long.valueOf(id));
-        return CodingRoomMapper.INSTANCE.toDto(codingRoom);
+        return CodingRoomMapper.CODING_ROOM_MAPPER.toDto(codingRoom);
     }
 
     public CodingRoom fetchById(Long id) {
@@ -106,7 +106,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         List<CodingRoomDto> codingRoomDtos = new ArrayList<>();
         codingRooms.forEach(v -> {
             codingRoomDtos.add(
-                    CodingRoomMapper.INSTANCE.toDto(v)
+                    CodingRoomMapper.CODING_ROOM_MAPPER.toDto(v)
             );
         });
         return codingRoomDtos;
@@ -119,14 +119,14 @@ public class CodingRoomServiceImpl implements CodingRoomService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodingRoom fetchCodingRoom = fetchById(Long.valueOf(id));
-        CodingRoomMapper.INSTANCE.updateFromDto(dto, fetchCodingRoom);
+        CodingRoomMapper.CODING_ROOM_MAPPER.updateFromDto(dto, fetchCodingRoom);
         return dto;
     }
 
 
     @Override
     public CodingRoomDto delete(CodingRoomDto dto) {
-        CodingRoom codingRoom = CodingRoomMapper.INSTANCE.toEntity(dto);
+        CodingRoom codingRoom = CodingRoomMapper.CODING_ROOM_MAPPER.toEntity(dto);
         codingRoomRepository.delete(codingRoom);
         return dto;
     }

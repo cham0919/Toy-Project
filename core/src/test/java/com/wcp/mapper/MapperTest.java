@@ -16,7 +16,7 @@ public class MapperTest {
     public void codingRoomToDto_Success_Equals(){
         CodingRoom entity = new CodingRoom();
 
-        CodingRoomDto dto = CodingRoomMapper.INSTANCE.toDto(entity);
+        CodingRoomDto dto = CodingRoomMapper.CODING_ROOM_MAPPER.toDto(entity);
 
         assertEquals(entity.getKey(), dto.getKey());
         assertEquals(entity.getPassword(), dto.getPassword());
@@ -33,7 +33,7 @@ public class MapperTest {
     public void codingRoomToEntity_Success_Equals(){
         CodingRoomDto dto = new CodingRoomDto();
 
-        CodingRoom entity = CodingRoomMapper.INSTANCE.toEntity(dto);
+        CodingRoom entity = CodingRoomMapper.CODING_ROOM_MAPPER.toEntity(dto);
 
         assertEquals(entity.getKey(), dto.getKey());
         assertEquals(entity.getPassword(), dto.getPassword());
@@ -53,7 +53,7 @@ public class MapperTest {
         CodingTest entity = new CodingTest()
                 .setKey(1L);
 
-        CodingTestMapper.INSTANCE.updateFromDto(dto, entity);
+        CodingTestMapper.CODING_TEST_MAPPER.updateFromDto(dto, entity);
 
         assertEquals(entity.getKey(), 1L);
         assertEquals(entity.getContent(), dto.getContent());
@@ -63,7 +63,7 @@ public class MapperTest {
     public void codingTestToDto_Success_Equals(){
         CodingTest entity = new CodingTest();
 
-        CodingTestDto dto = CodingTestMapper.INSTANCE.toDto(entity);
+        CodingTestDto dto = CodingTestMapper.CODING_TEST_MAPPER.toDto(entity);
 
         assertEquals(entity.getKey(), dto.getKey());
         assertEquals(entity.getContent(), dto.getContent());
@@ -77,7 +77,7 @@ public class MapperTest {
     public void codingTestToEntity_Success_Equals(){
         CodingTestDto dto = new CodingTestDto();
 
-        CodingTest entity = CodingTestMapper.INSTANCE.toEntity(dto);
+        CodingTest entity = CodingTestMapper.CODING_TEST_MAPPER.toEntity(dto);
 
         assertEquals(entity.getKey(), dto.getKey());
         assertEquals(entity.getContent(), dto.getContent());
@@ -95,7 +95,7 @@ public class MapperTest {
         CodingRoom entity = new CodingRoom()
                 .setKey(1L);
 
-        CodingRoomMapper.INSTANCE.updateFromDto(dto, entity);
+        CodingRoomMapper.CODING_ROOM_MAPPER.updateFromDto(dto, entity);
 
         assertEquals(entity.getKey(), 1L);
         assertEquals(entity.getIntro(), dto.getIntro());
@@ -105,7 +105,7 @@ public class MapperTest {
     public void userToDto_Success_Equals(){
         User entity = new User();
 
-        UserDto dto = UserMapper.INSTANCE.toDto(entity);
+        UserDto dto = UserMapper.USER_MAPPER.toDto(entity);
 
         assertEquals(entity.getKey(), dto.getKey());
         assertEquals(entity.getBoardCommants(), dto.getBoardCommants());
@@ -127,7 +127,7 @@ public class MapperTest {
     public void userToEntity_Success_Equals(){
         UserDto dto = new UserDto();
 
-        User entity = UserMapper.INSTANCE.toEntity(dto);
+        User entity = UserMapper.USER_MAPPER.toEntity(dto);
 
         assertEquals(entity.getKey(), dto.getKey());
         assertEquals(entity.getBoardCommants(), dto.getBoardCommants());
@@ -153,7 +153,7 @@ public class MapperTest {
         User entity = new User()
                 .setKey(1L);
 
-        UserMapper.INSTANCE.updateFromDto(dto, entity);
+        UserMapper.USER_MAPPER.updateFromDto(dto, entity);
 
         assertEquals(entity.getKey(), 1L);
         assertEquals(entity.getId(), dto.getId());

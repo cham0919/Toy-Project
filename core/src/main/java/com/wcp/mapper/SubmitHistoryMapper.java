@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface SubmitHistoryMapper extends GenericMapper<SubmitHistoryDto, SubmitHistory>{
 
-    SubmitHistoryMapper INSTANCE = Mappers.getMapper(SubmitHistoryMapper.class);
+    SubmitHistoryMapper SUBMIT_HISTORY_MAPPER = Mappers.getMapper(SubmitHistoryMapper.class);
 
     @Override
     @Mappings({

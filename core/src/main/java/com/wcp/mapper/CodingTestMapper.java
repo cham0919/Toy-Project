@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface CodingTestMapper extends GenericMapper<CodingTestDto, CodingTest> {
 
-    CodingTestMapper INSTANCE = Mappers.getMapper(CodingTestMapper.class);
+    CodingTestMapper CODING_TEST_MAPPER = Mappers.getMapper(CodingTestMapper.class);
 
 }
 

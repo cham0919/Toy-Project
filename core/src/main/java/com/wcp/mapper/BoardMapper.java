@@ -8,5 +8,5 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface BoardMapper extends GenericMapper<BoardDto, Board>{
 
-    BoardMapper INSTANCE = Mappers.getMapper(BoardMapper.class);
+    BoardMapper BOARD_MAPPER = Mappers.getMapper(BoardMapper.class);
 }

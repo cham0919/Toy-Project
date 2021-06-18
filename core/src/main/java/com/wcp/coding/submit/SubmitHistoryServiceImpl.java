@@ -1,12 +1,8 @@
 package com.wcp.coding.submit;
 
 
-import com.wcp.coding.inputFile.CodeInputFile;
 import com.wcp.coding.test.CodingTest;
 import com.wcp.coding.test.CodingTestRepository;
-import com.wcp.coding.test.CodingTestService;
-import com.wcp.mapper.CodeInputFileMapper;
-import com.wcp.mapper.CodingTestMapper;
 import com.wcp.mapper.SubmitHistoryMapper;
 import com.wcp.user.User;
 import com.wcp.user.UserRepository;
@@ -36,7 +32,7 @@ public class SubmitHistoryServiceImpl implements SubmitHistoryService{
         if (StringUtils.isEmpty(postId) || !StringUtils.isNumeric(postId)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check postId : "+ postId);
         }
-        SubmitHistory submitHistory = SubmitHistoryMapper.INSTANCE.toEntity(dto);
+        SubmitHistory submitHistory = SubmitHistoryMapper.SUBMIT_HISTORY_MAPPER.toEntity(dto);
         User user = userRepository.getOne(verifyKey(userKey));
         CodingTest codingTest =  codingTestRepository.getOne(Long.valueOf(postId));
         submitHistory.setUser(user)
@@ -54,7 +50,7 @@ public class SubmitHistoryServiceImpl implements SubmitHistoryService{
 
     @Override
     public SubmitHistoryDto save(SubmitHistoryDto dto) {
-        SubmitHistory entity = SubmitHistoryMapper.INSTANCE.toEntity(dto);
+        SubmitHistory entity = SubmitHistoryMapper.SUBMIT_HISTORY_MAPPER.toEntity(dto);
         submitHistoryRepository.save(entity);
         return dto;
     }
@@ -65,7 +61,7 @@ public class SubmitHistoryServiceImpl implements SubmitHistoryService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check id : "+ id);
         }
         SubmitHistory entity = submitHistoryRepository.findById(Long.valueOf(id)).get();
-        return SubmitHistoryMapper.INSTANCE.toDto(entity);
+        return SubmitHistoryMapper.SUBMIT_HISTORY_MAPPER.toDto(entity);
     }
 
     @Override
@@ -74,7 +70,7 @@ public class SubmitHistoryServiceImpl implements SubmitHistoryService{
        List<SubmitHistoryDto> dtos = new ArrayList<>();
        entitys.forEach(v -> {
             dtos.add(
-                    SubmitHistoryMapper.INSTANCE.toDto(v)
+                    SubmitHistoryMapper.SUBMIT_HISTORY_MAPPER.toDto(v)
             );
         });
         return dtos;
@@ -88,13 +84,13 @@ public class SubmitHistoryServiceImpl implements SubmitHistoryService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         SubmitHistory entity = submitHistoryRepository.findById(Long.valueOf(id)).get();
-        SubmitHistoryMapper.INSTANCE.updateFromDto(dto, entity);
+        SubmitHistoryMapper.SUBMIT_HISTORY_MAPPER.updateFromDto(dto, entity);
         return dto;
     }
 
     @Override
     public SubmitHistoryDto delete(SubmitHistoryDto dto) {
-        SubmitHistory submitHistory = SubmitHistoryMapper.INSTANCE.toEntity(dto);
+        SubmitHistory submitHistory = SubmitHistoryMapper.SUBMIT_HISTORY_MAPPER.toEntity(dto);
         submitHistoryRepository.delete(submitHistory);
         return dto;
     }
