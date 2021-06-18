@@ -18,7 +18,6 @@ public class JwtTokenProviderTest {
     private JwtTokenProvider jwtTokenProvider;
 
     TokenDto dto = TokenDto.builder()
-            .ip("localhost")
             .key("testId")
             .role("ROLE_MEMBER")
             .uuid(String.valueOf(UUID.randomUUID()))
@@ -55,8 +54,7 @@ public class JwtTokenProviderTest {
     public void validateWebToken() {
         String token = jwtTokenProvider.createToken(dto);
         TokenDto tempDto =  TokenDto.builder()
-                .token(token)
-                .ip("localhost")
+                .accessToken(token)
                 .build();
 
         boolean result = jwtTokenProvider.validateWebToken(tempDto);
