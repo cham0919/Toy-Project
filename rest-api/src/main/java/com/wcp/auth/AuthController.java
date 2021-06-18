@@ -19,6 +19,8 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/wcp/auth")
@@ -51,9 +53,46 @@ public class AuthController {
         }
     }
 
+    @RequestMapping(value = "/check", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> authCheck(HttpServletRequest req,
+                                         HttpServletResponse res)
+    {
+        try{
+            Cookie accessTokenCookie = WebUtils.getCookie(req, "accessToken");
+            Map<String, Boolean> map = new HashMap();
+            map.put("result", accessTokenCookie != null);
+            return new ResponseEntity<String>(gson.toJson(map), HttpStatus.OK);
+        }catch (Throwable t){
+            log.error(t.getMessage(), t);
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ResponseEntity<String> logout(HttpServletRequest req,
+                                            HttpServletResponse res)
+    {
+        try{
+            ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", null)
+                    .sameSite("Strict")
+                    .maxAge(0)
+                    .path("/wcp")
+                    .httpOnly(true)
+                    .build();
+            res.addHeader("Set-Cookie", accessTokenCookie.toString());
+            return new ResponseEntity<String>(HttpStatus.OK);
+        }catch (Throwable t){
+            log.error(t.getMessage(), t);
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private void applyCookie(HttpServletResponse res, String accessToken) {
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
                 .sameSite("Strict")
+                .path("/wcp")
                 .httpOnly(true)
                 .build();
         res.addHeader("Set-Cookie", accessTokenCookie.toString());
