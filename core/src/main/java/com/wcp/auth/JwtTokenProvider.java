@@ -23,11 +23,8 @@ public class JwtTokenProvider {
     private final String SECRET_KEY = Base64Utils.encode("wcp");
 
     private final String ROLE = "role";
-    private final String IP = "ip";
     private final String UUID = "uuid";
     private final String KEY = "key";
-    private final String ACCESSTOKEN = "accesstoken";
-    private final String VALIDATETOKEN = "validatetoken";
 
     // 토큰 유효시간 30분
     private long tokenValidTime = 30 * 60 * 1000L;
