@@ -17,12 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static com.wcp.coding.inputFile.InputFileExtension.IN;
 import static com.wcp.coding.inputFile.InputFileExtension.OUT;
+import static com.wcp.mapper.CodeInputFileMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,39 +39,53 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
         if(!FileUtils.checkMimeType(file, MimeType.ZIP)){
             throw new MimeTypeException("Upload is only possible as a zip file");
         };
-        String fileKey = UUID.randomUUID().toString();
-        String fileName = fileKey + FilenameUtils.EXTENSION_SEPARATOR + FilenameUtils.getExtension(file.getOriginalFilename());
-        File uploadFile = new File(FileUtils.resourceDirToday(Config.getProperty("com.wcp.default.dir")),
-                fileKey);
-        if(!uploadFile.exists()){ uploadFile.mkdirs(); }
-        uploadFile = new File(uploadFile, fileName);
-        file.transferTo(uploadFile);
+
+        File uploadFile = uploadFile(file);
 
         return new CodeInputFile().setGivenName(file.getOriginalFilename())
-                .setFileName(fileName)
+                .setFileName(uploadFile.getName())
                 .setFileSize(file.getSize())
                 .setPath(uploadFile.getParent());
     }
 
+    private File uploadFile(MultipartFile file) throws IOException {
+        String randomFileKey = UUID.randomUUID().toString();
+        String fileName = randomFileKey + FilenameUtils.EXTENSION_SEPARATOR + FilenameUtils.getExtension(file.getOriginalFilename());
+        File uploadFile = new File(FileUtils.resourceDirToday(Config.getProperty("com.wcp.default.dir")),
+                randomFileKey);
+        if(!uploadFile.exists()){ uploadFile.mkdirs(); }
+        uploadFile = new File(uploadFile, fileName);
+        file.transferTo(uploadFile);
+        return uploadFile;
+    }
 
     @Override
     public File[] fetchIOFilesById(Long fileId) throws FileExistsException {
         CodeInputFile codeInputFile = fetchById(fileId);
-        checkUnZip(codeInputFile);
         File dir = codeInputFile.getDir();
+        unzipFile(codeInputFile);
+
         return FileUtils.sortFileList(dir.listFiles());
     }
 
-    @Override
-    public void checkUnZip(CodeInputFile codeInputFile) throws FileExistsException {
+    private void unzipFile(CodeInputFile codeInputFile) throws FileExistsException {
+        if (!isUnZip(codeInputFile)) {
+            File zip = codeInputFile.getInputFile();
+            FileUtils.unZip(zip);
+        }
+    }
+
+    private boolean isUnZip(CodeInputFile codeInputFile) throws FileExistsException {
         File zip = codeInputFile.getInputFile();
         File dir = codeInputFile.getDir();
         File[] files = fetchIOFiles(dir);
 
-        if( zip.exists() ) {
-           if(files.length == 0){
-               FileUtils.unZip(zip);
-           }
+        if(zip.exists()) {
+            if(files.length == 0){
+                return false;
+            } else {
+                return true;
+            }
         } else {
             log.error("No Exist File {}", zip.getAbsolutePath());
             throw new FileExistsException();
