@@ -3,7 +3,6 @@ package com.wcp.coding.inputFile;
 import com.wcp.common.file.FileUtils;
 import com.wcp.common.file.MimeType;
 import com.wcp.env.Config;
-import com.wcp.mapper.CodeInputFileMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FilenameUtils;
@@ -24,7 +23,7 @@ import java.util.UUID;
 
 import static com.wcp.coding.inputFile.InputFileExtension.IN;
 import static com.wcp.coding.inputFile.InputFileExtension.OUT;
-import static com.wcp.mapper.CodeInputFileMapper.*;
+import static com.wcp.mapper.CodeInputFileMapper.CODE_INPUT_FILE_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -81,11 +80,8 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
         File[] files = fetchIOFiles(dir);
 
         if(zip.exists()) {
-            if(files.length == 0){
-                return false;
-            } else {
-                return true;
-            }
+            if(files.length == 0){ return false; }
+            else { return true; }
         } else {
             log.error("No Exist File {}", zip.getAbsolutePath());
             throw new FileExistsException();
@@ -109,7 +105,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
     @Override
     public CodeInputFileDto save(CodeInputFileDto dto){
-        CodeInputFile codeInputFile = CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.toEntity(dto);
+        CodeInputFile codeInputFile = CODE_INPUT_FILE_MAPPER.toEntity(dto);
         codeInputFileRepository.save(codeInputFile);
         return dto;
     }
@@ -120,7 +116,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
-        return CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.toDto(codeInputFile);
+        return CODE_INPUT_FILE_MAPPER.toDto(codeInputFile);
     }
 
     public CodeInputFile fetchById(Long id) {
@@ -132,9 +128,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
         List<CodeInputFile> codeInputFiles = codeInputFileRepository.findAll();
         List<CodeInputFileDto> dtos = new ArrayList<>();
         codeInputFiles.forEach(v -> {
-            dtos.add(
-                    CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.toDto(v)
-            );
+            dtos.add(CODE_INPUT_FILE_MAPPER.toDto(v));
         });
         return dtos;
     }
@@ -147,13 +141,13 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
-        CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.updateFromDto(dto, codeInputFile);
+        CODE_INPUT_FILE_MAPPER.updateFromDto(dto, codeInputFile);
         return dto;
     }
 
     @Override
     public CodeInputFileDto delete(CodeInputFileDto dto) {
-        CodeInputFile codeInputFile = CodeInputFileMapper.CODE_INPUT_FILE_MAPPER.toEntity(dto);
+        CodeInputFile codeInputFile = CODE_INPUT_FILE_MAPPER.toEntity(dto);
         codeInputFileRepository.delete(codeInputFile);
         return dto;
     }

@@ -5,7 +5,6 @@ import com.wcp.coding.inputFile.CodeInputFileRepository;
 import com.wcp.coding.inputFile.CodeInputFileService;
 import com.wcp.coding.room.CodingRoom;
 import com.wcp.coding.room.CodingRoomRepository;
-import com.wcp.mapper.CodingTestMapper;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
 import com.wcp.page.PageInfo;
@@ -26,6 +25,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.wcp.mapper.CodingTestMapper.*;
+
 @Service
 @RequiredArgsConstructor
 public class CodingTestServiceImpl implements CodingTestService{
@@ -43,7 +44,7 @@ public class CodingTestServiceImpl implements CodingTestService{
     @Override
     @Transactional
     public void registerContent(MultiPartDto multiPartDto) throws Throwable {
-        CodingTest codingTest = CodingTestMapper.CODING_TEST_MAPPER.toEntity(multiPartDto);
+        CodingTest codingTest = CODING_TEST_MAPPER.toEntity(multiPartDto);
         MultipartFile file = multiPartDto.getFile();
         if(file == null || file.isEmpty()) {
             log.error("Only one file must be attached.");
@@ -78,7 +79,7 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     @Override
     public CodingTestDto save(CodingTestDto dto){
-        CodingTest codingTest = CodingTestMapper.CODING_TEST_MAPPER.toEntity(dto);
+        CodingTest codingTest = CODING_TEST_MAPPER.toEntity(dto);
         codingTestRepository.save(codingTest);
         return dto;
     }
@@ -92,9 +93,7 @@ public class CodingTestServiceImpl implements CodingTestService{
         List<CodingTest> codingTests = fetchByPage(Integer.valueOf(currentPage));
         List<CodingTestDto> dtos = new ArrayList<>();
         codingTests.forEach(v -> {
-            dtos.add(
-                    CodingTestMapper.CODING_TEST_MAPPER.toDto(v)
-            );
+            dtos.add( CODING_TEST_MAPPER.toDto(v) );
         });
         return dtos;
     }
@@ -125,7 +124,7 @@ public class CodingTestServiceImpl implements CodingTestService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodingTest codingTest = fetchById(Long.valueOf(id));
-        return CodingTestMapper.CODING_TEST_MAPPER.toDto(codingTest);
+        return CODING_TEST_MAPPER.toDto(codingTest);
     }
 
     public CodingTest fetchById(Long id) {
@@ -141,9 +140,7 @@ public class CodingTestServiceImpl implements CodingTestService{
         List<CodingTest> codingTests = codingTestRepository.findAll();
         List<CodingTestDto> dtos = new ArrayList<>();
         codingTests.forEach(v -> {
-            dtos.add(
-                    CodingTestMapper.CODING_TEST_MAPPER.toDto(v)
-            );
+            dtos.add( CODING_TEST_MAPPER.toDto(v) );
         });
         return dtos;
     }
@@ -156,13 +153,13 @@ public class CodingTestServiceImpl implements CodingTestService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodingTest codingTest = fetchByIdJoinUser(Long.valueOf(id), Long.valueOf(dto.getUserKey()));
-        CodingTestMapper.CODING_TEST_MAPPER.updateFromDto(dto, codingTest);
+        CODING_TEST_MAPPER.updateFromDto(dto, codingTest);
         return dto;
     }
 
     @Override
     public CodingTestDto delete(CodingTestDto dto) {
-        CodingTest codingTest = CodingTestMapper.CODING_TEST_MAPPER.toEntity(dto);
+        CodingTest codingTest = CODING_TEST_MAPPER.toEntity(dto);
         codingTestRepository.delete(codingTest);
         return dto;
     }

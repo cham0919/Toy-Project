@@ -1,6 +1,6 @@
 package com.wcp.coding.room;
 
-import com.wcp.mapper.CodingRoomMapper;
+
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
 import com.wcp.page.PageInfo;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.wcp.WCPTable.CodingRoomTable.PK;
-
+import static com.wcp.mapper.CodingRoomMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
             throw new IllegalArgumentException("currentPage should not be empty or String. Please Check userKey : "+ userKey);
         }
-        CodingRoom codingRoom = CodingRoomMapper.CODING_ROOM_MAPPER.toEntity(dto);
+        CodingRoom codingRoom = CODING_ROOM_MAPPER.toEntity(dto);
         User user = userRepository.getOne(Long.valueOf(userKey));
         codingRoom.setUser(user);
         codingRoomRepository.save(codingRoom);
@@ -55,9 +55,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         List<CodingRoom> codingRooms = fetchByPage(Integer.valueOf(currentPage));
         List<CodingRoomDto> dtos = new ArrayList<>();
         codingRooms.forEach(v -> {
-            dtos.add(
-                    CodingRoomMapper.CODING_ROOM_MAPPER.toDto(v)
-            );
+            dtos.add( CODING_ROOM_MAPPER.toDto(v) );
         });
         return dtos;
     }
@@ -83,9 +81,9 @@ public class CodingRoomServiceImpl implements CodingRoomService{
 
     @Override
     public CodingRoomDto save(CodingRoomDto dto) {
-        CodingRoom codingRoom = CodingRoomMapper.CODING_ROOM_MAPPER.toEntity(dto);
+        CodingRoom codingRoom = CODING_ROOM_MAPPER.toEntity(dto);
         codingRoom = codingRoomRepository.save(codingRoom);
-        return CodingRoomMapper.CODING_ROOM_MAPPER.toDto(codingRoom);
+        return CODING_ROOM_MAPPER.toDto(codingRoom);
     }
 
     @Override
@@ -94,7 +92,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodingRoom codingRoom = fetchById(Long.valueOf(id));
-        return CodingRoomMapper.CODING_ROOM_MAPPER.toDto(codingRoom);
+        return CODING_ROOM_MAPPER.toDto(codingRoom);
     }
 
     public CodingRoom fetchById(Long id) {
@@ -105,9 +103,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         List<CodingRoom> codingRooms = codingRoomRepository.findAll();
         List<CodingRoomDto> codingRoomDtos = new ArrayList<>();
         codingRooms.forEach(v -> {
-            codingRoomDtos.add(
-                    CodingRoomMapper.CODING_ROOM_MAPPER.toDto(v)
-            );
+            codingRoomDtos.add( CODING_ROOM_MAPPER.toDto(v) );
         });
         return codingRoomDtos;
     }
@@ -119,14 +115,14 @@ public class CodingRoomServiceImpl implements CodingRoomService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodingRoom fetchCodingRoom = fetchById(Long.valueOf(id));
-        CodingRoomMapper.CODING_ROOM_MAPPER.updateFromDto(dto, fetchCodingRoom);
+        CODING_ROOM_MAPPER.updateFromDto(dto, fetchCodingRoom);
         return dto;
     }
 
 
     @Override
     public CodingRoomDto delete(CodingRoomDto dto) {
-        CodingRoom codingRoom = CodingRoomMapper.CODING_ROOM_MAPPER.toEntity(dto);
+        CodingRoom codingRoom = CODING_ROOM_MAPPER.toEntity(dto);
         codingRoomRepository.delete(codingRoom);
         return dto;
     }
