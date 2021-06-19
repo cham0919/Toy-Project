@@ -51,12 +51,9 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : " + currentPage);
         }
-
         List<CodingRoom> codingRooms = fetchByPage(Integer.valueOf(currentPage));
         List<CodingRoomDto> dtos = new ArrayList<>();
-        codingRooms.forEach(v -> {
-            dtos.add( CODING_ROOM_MAPPER.toDto(v) );
-        });
+        codingRooms.forEach(v -> { dtos.add(CODING_ROOM_MAPPER.toDto(v)); });
         return dtos;
     }
 

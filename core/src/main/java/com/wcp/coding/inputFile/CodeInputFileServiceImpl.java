@@ -35,16 +35,16 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
     @Override
     public CodeInputFile multiPartToEntity(MultipartFile file) throws Throwable {
-        if(!FileUtils.checkMimeType(file, MimeType.ZIP)){
-            throw new MimeTypeException("Upload is only possible as a zip file");
-        };
-
+        if (!isZipFile(file)) { throw new MimeTypeException("Upload is only possible as a zip file"); }
         File uploadFile = uploadFile(file);
-
         return new CodeInputFile().setGivenName(file.getOriginalFilename())
                 .setFileName(uploadFile.getName())
                 .setFileSize(file.getSize())
                 .setPath(uploadFile.getParent());
+    }
+
+    private boolean isZipFile(MultipartFile file) throws IOException {
+        return FileUtils.checkMimeType(file, MimeType.ZIP);
     }
 
     private File uploadFile(MultipartFile file) throws IOException {
@@ -63,7 +63,6 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
         CodeInputFile codeInputFile = fetchById(fileId);
         File dir = codeInputFile.getDir();
         unzipFile(codeInputFile);
-
         return FileUtils.sortFileList(dir.listFiles());
     }
 

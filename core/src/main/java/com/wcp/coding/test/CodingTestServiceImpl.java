@@ -46,7 +46,7 @@ public class CodingTestServiceImpl implements CodingTestService{
     public void registerContent(MultiPartDto multiPartDto) throws Throwable {
         CodingTest codingTest = CODING_TEST_MAPPER.toEntity(multiPartDto);
         MultipartFile file = multiPartDto.getFile();
-        if(file == null || file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             log.error("Only one file must be attached.");
             throw new FileUploadException();
         }
@@ -139,9 +139,7 @@ public class CodingTestServiceImpl implements CodingTestService{
     public List<CodingTestDto> fetchAll() {
         List<CodingTest> codingTests = codingTestRepository.findAll();
         List<CodingTestDto> dtos = new ArrayList<>();
-        codingTests.forEach(v -> {
-            dtos.add( CODING_TEST_MAPPER.toDto(v) );
-        });
+        codingTests.forEach(v -> { dtos.add(CODING_TEST_MAPPER.toDto(v)); });
         return dtos;
     }
 
