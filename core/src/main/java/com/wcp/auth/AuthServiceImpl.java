@@ -33,11 +33,18 @@ public class AuthServiceImpl implements AuthService{
         User user = USER_MAPPER.toEntity(userDto);
         User fetchUser = userService.fetchByUserId(user.getId());
         if (validatePassword(user, fetchUser)) {
+            updateDto(fetchUser, userDto);
             TokenDto tokenDto = initTokenDto(fetchUser, validateToken);
             return JwtTokenProvider.createToken(tokenDto);
         } else {
             throw new LoginException();
         }
+    }
+
+    private void updateDto(User fetchUser, UserDto userDto) {
+        userDto.setPassword(null)
+                .setRole(fetchUser.getRole())
+                .setNickname(fetchUser.getNickname());
     }
 
     @Override

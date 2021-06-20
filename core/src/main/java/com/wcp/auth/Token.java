@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public enum Token {
 
-    ACCESSTOKEN("accesstoken"),
-    VALIDATETOKEN("validatetoken");
+    ACCESSTOKEN("accessToken"),
+    VALIDATETOKEN("validateToken");
 
     private String token;
 }
