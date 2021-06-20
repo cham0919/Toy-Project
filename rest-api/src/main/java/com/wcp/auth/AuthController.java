@@ -49,7 +49,7 @@ public class AuthController {
             String accessToken = authService.signIn(userDto, validateTokenCookie.getValue());
             ResponseCookie accessTokenCookie = authService.privideAccessToken(accessToken);
             res.addHeader("Set-Cookie", accessTokenCookie.toString());
-            return new ResponseEntity<String>(HttpStatus.OK);
+            return new ResponseEntity<String>(gson.toJson(userDto),HttpStatus.OK);
         }catch (Throwable t){
             log.error(t.getMessage(), t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
