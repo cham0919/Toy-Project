@@ -1,6 +1,7 @@
 package com.wcp.coding.room;
 
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
 import com.wcp.page.PageInfo;
@@ -21,16 +22,29 @@ import java.util.List;
 
 import static com.wcp.WCPTable.CodingRoomTable.PK;
 import static com.wcp.mapper.CodingRoomMapper.*;
+import static com.wcp.coding.room.QCodingRoom.codingRoom;
+import static com.wcp.coding.join.QCodingJoinUser.codingJoinUser;
 
 @Service
 @RequiredArgsConstructor
 public class CodingRoomServiceImpl implements CodingRoomService{
 
     private final Logger log = LoggerFactory.getLogger(CodingRoomServiceImpl.class);
+    private final JPAQueryFactory queryFactory;
     private final CodingRoomRepository codingRoomRepository;
     private final UserRepository userRepository;
     private final PageCalculator pageCalculator;
 
+    @Override
+    public List<CodingRoomDto> fetchAllPublicRoom(){
+        List<CodingRoom> codingRooms = queryFactory
+                .selectFrom(codingRoom)
+                .join(codingRoom.codingJoinUsers)
+                .fetchJoin()
+                .where(codingRoom.secret.eq(false))
+                .fetch();
+        return parseCodingRoomDtos(codingRooms);
+    }
 
     @Override
     @Transactional
@@ -52,8 +66,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : " + currentPage);
         }
         List<CodingRoom> codingRooms = fetchByPage(Integer.valueOf(currentPage));
-        List<CodingRoomDto> dtos = new ArrayList<>();
-        codingRooms.forEach(v -> { dtos.add(CODING_ROOM_MAPPER.toDto(v)); });
+        List<CodingRoomDto> dtos = parseCodingRoomDtos(codingRooms);
         return dtos;
     }
 
@@ -98,9 +111,14 @@ public class CodingRoomServiceImpl implements CodingRoomService{
 
     public List<CodingRoomDto> fetchAll() {
         List<CodingRoom> codingRooms = codingRoomRepository.findAll();
+        List<CodingRoomDto> codingRoomDtos = parseCodingRoomDtos(codingRooms);
+        return codingRoomDtos;
+    }
+
+    private List<CodingRoomDto> parseCodingRoomDtos(List<CodingRoom> codingRooms) {
         List<CodingRoomDto> codingRoomDtos = new ArrayList<>();
         codingRooms.forEach(v -> {
-            codingRoomDtos.add( CODING_ROOM_MAPPER.toDto(v) );
+            codingRoomDtos.add(CODING_ROOM_MAPPER.toDto(v));
         });
         return codingRoomDtos;
     }

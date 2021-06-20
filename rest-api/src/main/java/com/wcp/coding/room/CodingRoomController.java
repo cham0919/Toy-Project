@@ -26,9 +26,21 @@ public class CodingRoomController {
             .disableHtmlEscaping()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             .create();
-
     private final CodingRoomService codingRoomService;
 
+
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    public ResponseEntity<String> fetchAllPublicRoom(HttpServletRequest req,
+                                            HttpServletResponse res)
+    {
+        try{
+            List<CodingRoomDto> codingRoomDtos = codingRoomService.fetchAllPublicRoom();
+            return new ResponseEntity<String>(gson.toJson(codingRoomDtos), HttpStatus.OK);
+        }catch (Throwable t){
+            log.error(t.getMessage(),t);
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> save(HttpServletRequest req,
@@ -40,7 +52,7 @@ public class CodingRoomController {
             codingRoomDto = codingRoomService.save(codingRoomDto, userKey);
             return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
         }catch (Throwable t){
-            t.printStackTrace();
+            log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -54,6 +66,7 @@ public class CodingRoomController {
             CodingRoomDto codingRoomDto = codingRoomService.fetchById(postId);
             return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -67,6 +80,7 @@ public class CodingRoomController {
             List<CodingRoomDto> dtos = codingRoomService.fetchByPage(pageNm);
             return new ResponseEntity<String>(gson.toJson(dtos), HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -81,6 +95,7 @@ public class CodingRoomController {
             Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
             return new ResponseEntity<String>(gson.toJson(stringObjectMap),HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -93,6 +108,7 @@ public class CodingRoomController {
             List<CodingRoomDto> dtos = codingRoomService.fetchAll();
             return new ResponseEntity<String>(gson.toJson(dtos), HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -106,6 +122,7 @@ public class CodingRoomController {
             dto = codingRoomService.update(dto);
             return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -119,6 +136,7 @@ public class CodingRoomController {
             codingRoomService.delete(codingRoomDto);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -132,6 +150,7 @@ public class CodingRoomController {
             codingRoomService.deleteById(postId);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -144,6 +163,7 @@ public class CodingRoomController {
             Long postCnt = codingRoomService.count();
             return new ResponseEntity<String>(String.valueOf(postCnt),HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -41,6 +41,9 @@ public class CodingRoom {
     @Column(name = CodingRoomTable.INTRO)
     private String intro;
 
+    @Column(name = CodingRoomTable.SECRET)
+    private boolean secret;
+
     @Column(name = CodingRoomTable.PASSWORD)
     private String password;
 
