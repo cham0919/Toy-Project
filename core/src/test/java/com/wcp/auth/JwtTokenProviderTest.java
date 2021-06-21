@@ -20,7 +20,7 @@ public class JwtTokenProviderTest {
     TokenDto dto = TokenDto.builder()
             .key("testId")
             .role("ROLE_MEMBER")
-            .uuid(String.valueOf(UUID.randomUUID()))
+            .validateToken(String.valueOf(UUID.randomUUID()))
             .build();
 
     @Test
