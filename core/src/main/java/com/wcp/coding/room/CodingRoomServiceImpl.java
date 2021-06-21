@@ -2,6 +2,7 @@ package com.wcp.coding.room;
 
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.wcp.mapper.CodingRoomMapper;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
 import com.wcp.page.PageInfo;
@@ -39,7 +40,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
     public List<CodingRoomDto> fetchAllPublicRoom(){
         List<CodingRoom> codingRooms = queryFactory
                 .selectFrom(codingRoom)
-                .join(codingRoom.codingJoinUsers)
+                .leftJoin(codingRoom.codingJoinUsers)
                 .fetchJoin()
                 .where(codingRoom.secret.eq(false))
                 .fetch();
@@ -55,8 +56,8 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         CodingRoom codingRoom = CODING_ROOM_MAPPER.toEntity(dto);
         User user = userRepository.getOne(Long.valueOf(userKey));
         codingRoom.setUser(user);
-        codingRoomRepository.save(codingRoom);
-        return dto;
+        codingRoom = codingRoomRepository.save(codingRoom);
+        return CODING_ROOM_MAPPER.toDto(codingRoom);
     }
 
 
