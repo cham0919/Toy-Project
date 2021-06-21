@@ -34,7 +34,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims(); // JWT payload 에 저장되는 정보단위
         claims.put(ROLE, tokenDto.getRole()); // 정보는 key / value 쌍으로 저장된다.
         claims.put(KEY, tokenDto.getKey()); // 정보는 key / value 쌍으로 저장된다.
-        claims.put(UUID, AESUtils.encrypt(tokenDto.getUuid())); // 정보는 key / value 쌍으로 저장된다.
+        claims.put(UUID, AESUtils.encrypt(tokenDto.getValidateToken())); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장

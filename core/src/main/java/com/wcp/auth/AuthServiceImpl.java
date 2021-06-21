@@ -70,7 +70,6 @@ public class AuthServiceImpl implements AuthService{
         return TokenDto.builder()
                 .key(String.valueOf(user.getKey()))
                 .role(user.getRole().getValue())
-                .uuid(String.valueOf(UUID.randomUUID()))
                 .validateToken(validateToken)
                 .build();
     }
