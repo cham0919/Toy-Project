@@ -1,11 +1,7 @@
-package judge;
+package com.wcp.judge;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wcp.coding.submit.SubmitHistoryServiceImpl;
-import com.wcp.judge.JudegeResponseDto;
-import com.wcp.judge.JudgeRequestDto;
-import com.wcp.judge.JudgeService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
