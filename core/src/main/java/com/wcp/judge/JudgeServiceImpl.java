@@ -48,6 +48,7 @@ public class JudgeServiceImpl implements JudgeService {
         if (StringUtils.isEmpty(postId) || !StringUtils.isNumeric(postId)) {
             throw new IllegalArgumentException("currentPage should not be empty or String. Please Check userKey : "+ postId);
         }
+        //TODO. fetchJoin으로 한번의 Select문 날리기
         CodingTest codingTest =  codingTestRepository.findById(Long.valueOf(postId)).get();
         File[] files =  codeInputFileService.fetchIOFilesById(codingTest.getCodeInputFile().getKey());
         String params = createBatchedSubmissionJson(toJudgeRequestDtos(files), dto);
