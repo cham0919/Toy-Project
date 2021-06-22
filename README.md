@@ -4,11 +4,13 @@
 
 [projectInfo_link]: readMe/ProjectInfo.md
 [db_link]: readMe/DataBase.md
+[api_link]: readMe/RestApi.md
 
 
 1. [Project 개요](#Project-개요) <br/>
 2. [주요 기술 및 기능][projectInfo_link] <br/>
 3. [DataBase][db_link] 
+4. [Restful API 설계][api_link] 
 
 
 
