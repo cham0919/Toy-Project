@@ -69,6 +69,7 @@ public class WCPTable {
         public static final String TITLE = "title";
         public static final String INTRO = "intro";
         public static final String CREATED_AT = "created_at";
+        public static final String SECRET = "secret";
         public static final String PASSWORD = "password";
         public static final String MAX_USER = "max_user";
         public static final String RAMDOM_KEY = "ramdom_key";

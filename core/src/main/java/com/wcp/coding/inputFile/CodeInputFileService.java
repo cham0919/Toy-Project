@@ -16,8 +16,6 @@ public interface CodeInputFileService extends CRUDService<CodeInputFile, CodeInp
 
     File[] fetchIOFilesById(Long fileId) throws FileExistsException;
 
-    void checkUnZip(CodeInputFile codeInputFile) throws FileExistsException;
-
     File[] fetchIOFiles(File dir) throws FileExistsException;
 
 }

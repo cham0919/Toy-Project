@@ -18,6 +18,7 @@ public class CodingRoomDto {
     private String key;
     private String title;
     private String intro;
+    private boolean secret;
     private String password;
     private Long maxUser;
     private String ramdomKey;

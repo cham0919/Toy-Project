@@ -11,7 +11,6 @@ public class TokenDto {
 
     private String key;
     private String role;
-    private String ip;
-    private String uuid;
-    private String token;
+    private String accessToken;
+    private String validateToken;
 }

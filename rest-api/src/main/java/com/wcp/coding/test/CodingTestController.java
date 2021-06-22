@@ -47,6 +47,7 @@ public class CodingTestController {
             codingTestService.registerContent(multiPartDto);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(), t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -60,6 +61,7 @@ public class CodingTestController {
             CodingTestDto dto = codingTestService.fetchById(postId);
             return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(), t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -73,6 +75,7 @@ public class CodingTestController {
             List<CodingTestDto> codingTests = codingTestService.fetchByPage(pageNm);
             return new ResponseEntity<String>(gson.toJson(codingTests), HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(), t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -87,6 +90,7 @@ public class CodingTestController {
             Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
             return new ResponseEntity<String>(gson.toJson(stringObjectMap),HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(), t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -99,6 +103,7 @@ public class CodingTestController {
             List<CodingTestDto> codingTestDtos = codingTestService.fetchAll();
             return new ResponseEntity<String>(gson.toJson(codingTestDtos), HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(), t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -106,12 +111,15 @@ public class CodingTestController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> updateCodingTest(HttpServletRequest req,
                                          HttpServletResponse res,
-                                         @RequestBody CodingTestDto codingTest)
+                                         @RequestBody CodingTestDto codingTestDto)
     {
         try{
-            codingTest = codingTestService.update(codingTest);
-            return new ResponseEntity<String>(gson.toJson(codingTest), HttpStatus.OK);
+            String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
+            codingTestDto.setUserKey(userKey);
+            codingTestDto = codingTestService.update(codingTestDto);
+            return new ResponseEntity<String>(gson.toJson(codingTestDto), HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(), t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -125,6 +133,7 @@ public class CodingTestController {
             codingTestService.deleteById(postId);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(), t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -137,6 +146,7 @@ public class CodingTestController {
             Long postCnt = codingTestService.count();
             return new ResponseEntity<String>(String.valueOf(postCnt),HttpStatus.OK);
         }catch (Throwable t){
+            log.error(t.getMessage(), t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

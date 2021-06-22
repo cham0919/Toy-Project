@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-05-31T13:25:46+0900",
+    date = "2021-06-20T07:28:05+0900",
     comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_231 (Oracle Corporation)"
 )
 @Component
@@ -154,6 +154,7 @@ public class CodingJoinUserMapperImpl implements CodingJoinUserMapper {
         }
         codingRoomDto.setTitle( codingRoom.getTitle() );
         codingRoomDto.setIntro( codingRoom.getIntro() );
+        codingRoomDto.setSecret( codingRoom.isSecret() );
         codingRoomDto.setPassword( codingRoom.getPassword() );
         codingRoomDto.setMaxUser( codingRoom.getMaxUser() );
         codingRoomDto.setRamdomKey( codingRoom.getRamdomKey() );
@@ -263,6 +264,7 @@ public class CodingJoinUserMapperImpl implements CodingJoinUserMapper {
         }
         codingRoom.setTitle( codingRoomDto.getTitle() );
         codingRoom.setIntro( codingRoomDto.getIntro() );
+        codingRoom.setSecret( codingRoomDto.isSecret() );
         codingRoom.setPassword( codingRoomDto.getPassword() );
         codingRoom.setMaxUser( codingRoomDto.getMaxUser() );
         codingRoom.setRamdomKey( codingRoomDto.getRamdomKey() );
@@ -280,11 +282,11 @@ public class CodingJoinUserMapperImpl implements CodingJoinUserMapper {
 
         User user = new User();
 
-        user.setPassword( userDto.getPassword() );
         if ( userDto.getKey() != null ) {
             user.setKey( Long.parseLong( userDto.getKey() ) );
         }
         user.setId( userDto.getId() );
+        user.setPassword( userDto.getPassword() );
         user.setName( userDto.getName() );
         user.setNickname( userDto.getNickname() );
         user.setPhone( userDto.getPhone() );
@@ -329,6 +331,7 @@ public class CodingJoinUserMapperImpl implements CodingJoinUserMapper {
         if ( codingRoomDto.getIntro() != null ) {
             mappingTarget.setIntro( codingRoomDto.getIntro() );
         }
+        mappingTarget.setSecret( codingRoomDto.isSecret() );
         if ( codingRoomDto.getPassword() != null ) {
             mappingTarget.setPassword( codingRoomDto.getPassword() );
         }
@@ -374,14 +377,14 @@ public class CodingJoinUserMapperImpl implements CodingJoinUserMapper {
             return;
         }
 
-        if ( userDto.getPassword() != null ) {
-            mappingTarget.setPassword( userDto.getPassword() );
-        }
         if ( userDto.getKey() != null ) {
             mappingTarget.setKey( Long.parseLong( userDto.getKey() ) );
         }
         if ( userDto.getId() != null ) {
             mappingTarget.setId( userDto.getId() );
+        }
+        if ( userDto.getPassword() != null ) {
+            mappingTarget.setPassword( userDto.getPassword() );
         }
         if ( userDto.getName() != null ) {
             mappingTarget.setName( userDto.getName() );

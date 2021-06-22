@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-05-31T13:25:46+0900",
+    date = "2021-06-20T07:28:05+0900",
     comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_231 (Oracle Corporation)"
 )
 @Component
@@ -38,6 +38,7 @@ public class CodingRoomMapperImpl implements CodingRoomMapper {
         }
         codingRoomDto.setTitle( e.getTitle() );
         codingRoomDto.setIntro( e.getIntro() );
+        codingRoomDto.setSecret( e.isSecret() );
         codingRoomDto.setPassword( e.getPassword() );
         codingRoomDto.setMaxUser( e.getMaxUser() );
         codingRoomDto.setRamdomKey( e.getRamdomKey() );
@@ -61,6 +62,7 @@ public class CodingRoomMapperImpl implements CodingRoomMapper {
         }
         codingRoom.setTitle( d.getTitle() );
         codingRoom.setIntro( d.getIntro() );
+        codingRoom.setSecret( d.isSecret() );
         codingRoom.setPassword( d.getPassword() );
         codingRoom.setMaxUser( d.getMaxUser() );
         codingRoom.setRamdomKey( d.getRamdomKey() );
@@ -86,6 +88,7 @@ public class CodingRoomMapperImpl implements CodingRoomMapper {
         if ( dto.getIntro() != null ) {
             entity.setIntro( dto.getIntro() );
         }
+        entity.setSecret( dto.isSecret() );
         if ( dto.getPassword() != null ) {
             entity.setPassword( dto.getPassword() );
         }
@@ -239,11 +242,11 @@ public class CodingRoomMapperImpl implements CodingRoomMapper {
 
         User user = new User();
 
-        user.setPassword( userDto.getPassword() );
         if ( userDto.getKey() != null ) {
             user.setKey( Long.parseLong( userDto.getKey() ) );
         }
         user.setId( userDto.getId() );
+        user.setPassword( userDto.getPassword() );
         user.setName( userDto.getName() );
         user.setNickname( userDto.getNickname() );
         user.setPhone( userDto.getPhone() );

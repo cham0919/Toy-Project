@@ -32,8 +32,7 @@ public class CodingRoom {
     private Long key;
 
     @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = UserTable.PK, nullable = false)
-    @JoinColumn(name = UserTable.PK)
+    @JoinColumn(name = UserTable.PK, nullable = false)
     private User user;
 
     @Column(name = CodingRoomTable.TITLE, nullable = false)
@@ -41,6 +40,9 @@ public class CodingRoom {
 
     @Column(name = CodingRoomTable.INTRO)
     private String intro;
+
+    @Column(name = CodingRoomTable.SECRET)
+    private boolean secret;
 
     @Column(name = CodingRoomTable.PASSWORD)
     private String password;

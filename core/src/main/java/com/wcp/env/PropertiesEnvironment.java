@@ -18,11 +18,15 @@ public class PropertiesEnvironment implements Environment{
     private final Logger log = LoggerFactory.getLogger(PropertiesEnvironment.class);
 
     public Properties props = new Properties();
-    private String basePath = "src/main/resources/config";
+    private String basePath = "/src/main/resources/config";
 
     private static PropertiesEnvironment instance;
 
-    static {
+    private PropertiesEnvironment() {
+        init();
+    }
+
+    public static PropertiesEnvironment getInstance(){
         if (instance == null) {
             synchronized (PropertiesEnvironment.class) {
                 if (instance == null) {
@@ -30,13 +34,6 @@ public class PropertiesEnvironment implements Environment{
                 }
             }
         }
-    }
-
-    private PropertiesEnvironment() {
-        init();
-    }
-
-    public static PropertiesEnvironment getInstance(){
         return instance;
     }
 
@@ -64,7 +61,7 @@ public class PropertiesEnvironment implements Environment{
     }
 
     private File[] fetchPropertiesFiles() {
-        File propDir = new File(basePath);
+        File propDir = new File(getClass().getResource("/config").getFile());
         return propDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {

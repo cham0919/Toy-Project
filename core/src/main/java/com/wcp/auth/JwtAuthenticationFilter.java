@@ -1,47 +1,85 @@
 package com.wcp.auth;
 
-import com.wcp.common.http.HttpUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.WebUtils;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+//public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter implements Filter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Override
+    private final AnonymousAuthentication anonymousAuthentication;
+
+    /*@Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 헤더에서 JWT 를 받아옵니다.
-        String token = jwtTokenProvider.resolveToken(request);
-        if (token != null) {
-            // 유효한 토큰인지 확인합니다.
-            TokenDto dto = TokenDto.builder()
-                    .token(token)
-                    .ip(HttpUtils.getClientIp(request))
-                    .build();
-            if(jwtTokenProvider.validateWebToken(dto)){
-                setAuthentication(dto);
-                filterChain.doFilter(request, response);
-            }else{
-                filterChain.doFilter(request, response);
-//                filter(request, response);
-            }
-        }else{
-            filterChain.doFilter(request, response);
+        // 쿠키 JWT 를 받아옵니다.
+        Cookie accessTokenCookie = WebUtils.getCookie(request, "accessToken");
+        Cookie validateTokenCookie = WebUtils.getCookie(request, "validateToken");
+
+        if (!hasCookie(validateTokenCookie)) {
+            applyValidateTokenCookie(response);
+        } else if (hasCookie(accessTokenCookie)) {
+            TokenDto dto = createTokenDto(accessTokenCookie, validateTokenCookie);
+            setAuthentication(dto);
+        } else {
+            setAnonymousAuthentication();
         }
+        filterChain.doFilter(request, response);
+    }*/
+
+
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
+        // 쿠키 JWT 를 받아옵니다.
+        Cookie accessTokenCookie = WebUtils.getCookie(request, "accessToken");
+        Cookie validateTokenCookie = WebUtils.getCookie(request, "validateToken");
+
+        if (!hasCookie(validateTokenCookie)) {
+            applyValidateTokenCookie(response);
+        } else if (hasCookie(accessTokenCookie)) {
+            TokenDto dto = createTokenDto(accessTokenCookie, validateTokenCookie);
+            setAuthentication(dto);
+        } else {
+            setAnonymousAuthentication();
+        }
+        chain.doFilter(req, res);
     }
 
+    private TokenDto createTokenDto(Cookie accessTokenCookie, Cookie validateTokenCookie) {
+        TokenDto dto = TokenDto.builder()
+                .accessToken(accessTokenCookie.getValue())
+                .validateToken(validateTokenCookie.getValue())
+                .build();
+        return dto;
+    }
+
+    private boolean hasCookie(Cookie cookie) {
+        return cookie != null && cookie.getValue() != null;
+    }
+
+    private void applyValidateTokenCookie(HttpServletResponse response) {
+        ResponseCookie validateTokenCookie = ResponseCookie.from("validateToken", String.valueOf(UUID.randomUUID()))
+//                .sameSite("La")
+                .httpOnly(true)
+                .path("/wcp")
+                .build();
+        response.addHeader("Set-Cookie", validateTokenCookie.toString());
+    }
 
     private void filter(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
@@ -50,10 +88,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void setAuthentication(TokenDto dto) {
-        if (!dto.getToken().isEmpty()) {
+        if (isValidateToken(dto)) {
             JwtAuthentication authentication = new JwtAuthentication(dto);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        } else {
+            setAnonymousAuthentication();
         }
     }
+
+    private boolean isValidateToken(TokenDto dto){
+        return jwtTokenProvider.validateWebToken(dto);
+    }
+
+    private void setAnonymousAuthentication() {
+        SecurityContextHolder.getContext().setAuthentication(anonymousAuthentication);
+    }
+
 
 }

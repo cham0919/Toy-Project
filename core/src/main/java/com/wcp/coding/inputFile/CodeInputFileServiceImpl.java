@@ -3,7 +3,6 @@ package com.wcp.coding.inputFile;
 import com.wcp.common.file.FileUtils;
 import com.wcp.common.file.MimeType;
 import com.wcp.env.Config;
-import com.wcp.mapper.CodeInputFileMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FilenameUtils;
@@ -17,12 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static com.wcp.coding.inputFile.InputFileExtension.IN;
 import static com.wcp.coding.inputFile.InputFileExtension.OUT;
+import static com.wcp.mapper.CodeInputFileMapper.CODE_INPUT_FILE_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -34,42 +35,52 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
     @Override
     public CodeInputFile multiPartToEntity(MultipartFile file) throws Throwable {
-        if(!FileUtils.checkMimeType(file, MimeType.ZIP)){
-            throw new MimeTypeException("Upload is only possible as a zip file");
-        };
-        String fileKey = UUID.randomUUID().toString();
-        String fileName = fileKey + FilenameUtils.EXTENSION_SEPARATOR + FilenameUtils.getExtension(file.getOriginalFilename());
-        File uploadFile = new File(FileUtils.resourceDirToday(Config.getProperty("com.wcp.default.dir")),
-                fileKey);
-        if(!uploadFile.exists()){ uploadFile.mkdirs(); }
-        uploadFile = new File(uploadFile, fileName);
-        file.transferTo(uploadFile);
-
+        if (!isZipFile(file)) { throw new MimeTypeException("Upload is only possible as a zip file"); }
+        File uploadFile = uploadFile(file);
         return new CodeInputFile().setGivenName(file.getOriginalFilename())
-                .setFileName(fileName)
+                .setFileName(uploadFile.getName())
                 .setFileSize(file.getSize())
                 .setPath(uploadFile.getParent());
     }
 
+    private boolean isZipFile(MultipartFile file) throws IOException {
+        return FileUtils.checkMimeType(file, MimeType.ZIP);
+    }
+
+    private File uploadFile(MultipartFile file) throws IOException {
+        String randomFileKey = UUID.randomUUID().toString();
+        String fileName = randomFileKey + FilenameUtils.EXTENSION_SEPARATOR + FilenameUtils.getExtension(file.getOriginalFilename());
+        File uploadFile = new File(FileUtils.resourceDirToday(Config.getProperty("com.wcp.default.dir")),
+                randomFileKey);
+        if(!uploadFile.exists()){ uploadFile.mkdirs(); }
+        uploadFile = new File(uploadFile, fileName);
+        file.transferTo(uploadFile);
+        return uploadFile;
+    }
 
     @Override
     public File[] fetchIOFilesById(Long fileId) throws FileExistsException {
         CodeInputFile codeInputFile = fetchById(fileId);
-        checkUnZip(codeInputFile);
         File dir = codeInputFile.getDir();
+        unzipFile(codeInputFile);
         return FileUtils.sortFileList(dir.listFiles());
     }
 
-    @Override
-    public void checkUnZip(CodeInputFile codeInputFile) throws FileExistsException {
+    private void unzipFile(CodeInputFile codeInputFile) throws FileExistsException {
+        if (!isUnZip(codeInputFile)) {
+            File zip = codeInputFile.getInputFile();
+            FileUtils.unZip(zip);
+        }
+    }
+
+    private boolean isUnZip(CodeInputFile codeInputFile) throws FileExistsException {
         File zip = codeInputFile.getInputFile();
         File dir = codeInputFile.getDir();
         File[] files = fetchIOFiles(dir);
 
-        if( zip.exists() ) {
-           if(files.length == 0){
-               FileUtils.unZip(zip);
-           }
+        if(zip.exists()) {
+            if(files.length == 0){ return false; }
+            else { return true; }
         } else {
             log.error("No Exist File {}", zip.getAbsolutePath());
             throw new FileExistsException();
@@ -93,7 +104,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
     @Override
     public CodeInputFileDto save(CodeInputFileDto dto){
-        CodeInputFile codeInputFile = CodeInputFileMapper.INSTANCE.toEntity(dto);
+        CodeInputFile codeInputFile = CODE_INPUT_FILE_MAPPER.toEntity(dto);
         codeInputFileRepository.save(codeInputFile);
         return dto;
     }
@@ -104,7 +115,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
-        return CodeInputFileMapper.INSTANCE.toDto(codeInputFile);
+        return CODE_INPUT_FILE_MAPPER.toDto(codeInputFile);
     }
 
     public CodeInputFile fetchById(Long id) {
@@ -116,9 +127,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
         List<CodeInputFile> codeInputFiles = codeInputFileRepository.findAll();
         List<CodeInputFileDto> dtos = new ArrayList<>();
         codeInputFiles.forEach(v -> {
-            dtos.add(
-                    CodeInputFileMapper.INSTANCE.toDto(v)
-            );
+            dtos.add(CODE_INPUT_FILE_MAPPER.toDto(v));
         });
         return dtos;
     }
@@ -131,13 +140,13 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
-        CodeInputFileMapper.INSTANCE.updateFromDto(dto, codeInputFile);
+        CODE_INPUT_FILE_MAPPER.updateFromDto(dto, codeInputFile);
         return dto;
     }
 
     @Override
     public CodeInputFileDto delete(CodeInputFileDto dto) {
-        CodeInputFile codeInputFile = CodeInputFileMapper.INSTANCE.toEntity(dto);
+        CodeInputFile codeInputFile = CODE_INPUT_FILE_MAPPER.toEntity(dto);
         codeInputFileRepository.delete(codeInputFile);
         return dto;
     }

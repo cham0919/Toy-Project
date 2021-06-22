@@ -8,5 +8,5 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface CertificationTokenMapper extends GenericMapper<CertificationTokenDto, CertificationToken>{
 
-    CertificationTokenMapper INSTANCE = Mappers.getMapper(CertificationTokenMapper.class);
+    CertificationTokenMapper CERTIFICATION_TOKEN_MAPPER = Mappers.getMapper(CertificationTokenMapper.class);
 }

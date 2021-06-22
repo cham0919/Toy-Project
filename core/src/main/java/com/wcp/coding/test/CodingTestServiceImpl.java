@@ -4,11 +4,7 @@ import com.wcp.coding.inputFile.CodeInputFile;
 import com.wcp.coding.inputFile.CodeInputFileRepository;
 import com.wcp.coding.inputFile.CodeInputFileService;
 import com.wcp.coding.room.CodingRoom;
-import com.wcp.coding.room.CodingRoomDto;
 import com.wcp.coding.room.CodingRoomRepository;
-import com.wcp.coding.room.CodingRoomService;
-import com.wcp.mapper.CodingRoomMapper;
-import com.wcp.mapper.CodingTestMapper;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
 import com.wcp.page.PageInfo;
@@ -28,7 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import static com.wcp.mapper.CodingTestMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,9 +44,9 @@ public class CodingTestServiceImpl implements CodingTestService{
     @Override
     @Transactional
     public void registerContent(MultiPartDto multiPartDto) throws Throwable {
-        CodingTest codingTest = CodingTestMapper.INSTANCE.toEntity(multiPartDto);
+        CodingTest codingTest = CODING_TEST_MAPPER.toEntity(multiPartDto);
         MultipartFile file = multiPartDto.getFile();
-        if(file == null || file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             log.error("Only one file must be attached.");
             throw new FileUploadException();
         }
@@ -82,7 +79,7 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     @Override
     public CodingTestDto save(CodingTestDto dto){
-        CodingTest codingTest = CodingTestMapper.INSTANCE.toEntity(dto);
+        CodingTest codingTest = CODING_TEST_MAPPER.toEntity(dto);
         codingTestRepository.save(codingTest);
         return dto;
     }
@@ -96,9 +93,7 @@ public class CodingTestServiceImpl implements CodingTestService{
         List<CodingTest> codingTests = fetchByPage(Integer.valueOf(currentPage));
         List<CodingTestDto> dtos = new ArrayList<>();
         codingTests.forEach(v -> {
-            dtos.add(
-                    CodingTestMapper.INSTANCE.toDto(v)
-            );
+            dtos.add( CODING_TEST_MAPPER.toDto(v) );
         });
         return dtos;
     }
@@ -129,22 +124,22 @@ public class CodingTestServiceImpl implements CodingTestService{
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         CodingTest codingTest = fetchById(Long.valueOf(id));
-        return CodingTestMapper.INSTANCE.toDto(codingTest);
+        return CODING_TEST_MAPPER.toDto(codingTest);
     }
 
     public CodingTest fetchById(Long id) {
         return codingTestRepository.findById(id).get();
     }
 
+    public CodingTest fetchByIdJoinUser(Long id, Long userKey) {
+        return codingTestRepository.findByKeyAndUserKey(id, userKey);
+    }
+
     @Override
     public List<CodingTestDto> fetchAll() {
         List<CodingTest> codingTests = codingTestRepository.findAll();
         List<CodingTestDto> dtos = new ArrayList<>();
-        codingTests.forEach(v -> {
-            dtos.add(
-                    CodingTestMapper.INSTANCE.toDto(v)
-            );
-        });
+        codingTests.forEach(v -> { dtos.add(CODING_TEST_MAPPER.toDto(v)); });
         return dtos;
     }
 
@@ -155,14 +150,14 @@ public class CodingTestServiceImpl implements CodingTestService{
         if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
-        CodingTest codingTest = fetchById(Long.valueOf(id));
-        CodingTestMapper.INSTANCE.updateFromDto(dto, codingTest);
+        CodingTest codingTest = fetchByIdJoinUser(Long.valueOf(id), Long.valueOf(dto.getUserKey()));
+        CODING_TEST_MAPPER.updateFromDto(dto, codingTest);
         return dto;
     }
 
     @Override
     public CodingTestDto delete(CodingTestDto dto) {
-        CodingTest codingTest = CodingTestMapper.INSTANCE.toEntity(dto);
+        CodingTest codingTest = CODING_TEST_MAPPER.toEntity(dto);
         codingTestRepository.delete(codingTest);
         return dto;
     }

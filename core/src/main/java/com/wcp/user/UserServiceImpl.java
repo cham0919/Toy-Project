@@ -1,6 +1,6 @@
 package com.wcp.user;
 
-import com.wcp.mapper.UserMapper;
+
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import static com.wcp.mapper.UserMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,15 +23,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto signUp(UserDto userDto){
-        User user = UserMapper.INSTANCE.toEntity(userDto);
+        User user = USER_MAPPER.toEntity(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return UserMapper.INSTANCE.toDto(user);
+        return USER_MAPPER.toDto(user);
     }
 
     @Override
     public UserDto save(UserDto dto){
-        User user = UserMapper.INSTANCE.toEntity(dto);
+        User user = USER_MAPPER.toEntity(dto);
         userRepository.save(user);
         return dto;
     }
@@ -46,7 +47,7 @@ public class UserServiceImpl implements UserService {
 //            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ userKey);
 //        }
         User user = fetchById(Long.valueOf(userKey));
-        return UserMapper.INSTANCE.toDto(user);
+        return USER_MAPPER.toDto(user);
     }
 
     private User fetchById(Long userKey) {
@@ -58,9 +59,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
         List<UserDto> dtos = new ArrayList<>();
         users.forEach(v -> {
-            dtos.add(
-                    UserMapper.INSTANCE.toDto(v)
-            );
+            dtos.add( USER_MAPPER.toDto(v) );
         });
         return dtos;
     }
@@ -72,14 +71,14 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
         User user = fetchById(Long.valueOf(id));
-        UserMapper.INSTANCE.updateFromDto(dto, user);
+        USER_MAPPER.updateFromDto(dto, user);
         return dto;
     }
 
     // 회원데이터 삭제 delete
     @Override
     public UserDto delete(UserDto dto){
-        User user = UserMapper.INSTANCE.toEntity(dto);
+        User user = USER_MAPPER.toEntity(dto);
         userRepository.delete(user);
         return dto;
     }

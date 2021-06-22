@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface CodingRoomMapper extends GenericMapper<CodingRoomDto, CodingRoom> {
 
-    CodingRoomMapper INSTANCE = Mappers.getMapper(CodingRoomMapper.class);
+    CodingRoomMapper CODING_ROOM_MAPPER = Mappers.getMapper(CodingRoomMapper.class);
 
 }
 

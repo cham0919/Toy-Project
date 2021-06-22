@@ -11,7 +11,6 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,29 +67,29 @@ public class InputFileServiceTest {
         });
     }
 
-    @Test
-    public void checkUnZip_Success_NoAction() throws FileExistsException {
-        CodeInputFile codeInputFile = new CodeInputFile()
-                .setFileName("4b648c0b-6683-466c-991e-4776eb18a976.zip")
-                .setGivenName("test")
-                .setPath("C:\\git\\file\\2021\\05\\31\\4b648c0b-6683-466c-991e-4776eb18a976");
+//    @Test
+//    public void checkUnZip_Success_NoAction() throws FileExistsException {
+//        CodeInputFile codeInputFile = new CodeInputFile()
+//                .setFileName("4b648c0b-6683-466c-991e-4776eb18a976.zip")
+//                .setGivenName("test")
+//                .setPath("C:\\git\\file\\2021\\05\\31\\4b648c0b-6683-466c-991e-4776eb18a976");
+//
+//
+//        codeInputFileService.isUnZip(codeInputFile);
+//    }
 
-
-        codeInputFileService.checkUnZip(codeInputFile);
-    }
-
-    @Test
-    public void checkUnZip_NotExistFile_ExceptionThrown(){
-        CodeInputFile codeInputFile = new CodeInputFile()
-                .setFileName("4b648c0b-6683-466c-991e-4776eb18a976.zip")
-                .setGivenName("test")
-                .setPath("C:\\git\\file\\");
-
-
-        Assertions.assertThrows(FileExistsException.class, () -> {
-            codeInputFileService.checkUnZip(codeInputFile);
-        });
-    }
+//    @Test
+//    public void checkUnZip_NotExistFile_ExceptionThrown(){
+//        CodeInputFile codeInputFile = new CodeInputFile()
+//                .setFileName("4b648c0b-6683-466c-991e-4776eb18a976.zip")
+//                .setGivenName("test")
+//                .setPath("C:\\git\\file\\");
+//
+//
+//        Assertions.assertThrows(FileExistsException.class, () -> {
+//            codeInputFileService.isUnZip(codeInputFile);
+//        });
+//    }
 
     @Test
     public void fetchIOFiles_Success_NoAction(){

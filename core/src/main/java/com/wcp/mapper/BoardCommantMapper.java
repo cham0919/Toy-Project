@@ -9,5 +9,5 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface BoardCommantMapper extends GenericMapper<BoardCommantDto, BoardCommant>{
 
-    BoardCommantMapper INSTANCE = Mappers.getMapper(BoardCommantMapper.class);
+    BoardCommantMapper BOARD_COMMANT_MAPPER = Mappers.getMapper(BoardCommantMapper.class);
 }
