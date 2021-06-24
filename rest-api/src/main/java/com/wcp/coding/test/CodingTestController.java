@@ -58,6 +58,7 @@ public class CodingTestController {
                                             @PathVariable("postId") String postId)
     {
         try{
+            String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
             CodingTestDto dto = codingTestService.fetchById(postId);
             return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
         }catch (Throwable t){
@@ -80,7 +81,7 @@ public class CodingTestController {
         }
     }
 
-    @RequestMapping(value = "/page/range/{pageNm:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/range/{pageNm:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> fetchcodingTestPageList(HttpServletRequest req,
                                         HttpServletResponse res,
                                         @PathVariable("pageNm") String pageNm)
@@ -108,7 +109,7 @@ public class CodingTestController {
         }
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> updateCodingTest(HttpServletRequest req,
                                          HttpServletResponse res,
                                          @RequestBody CodingTestDto codingTestDto)
@@ -124,7 +125,7 @@ public class CodingTestController {
         }
     }
 
-    @RequestMapping(value = "/del/{postId:[0-9]+}", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> deleteCodingTest(HttpServletRequest req,
                                          HttpServletResponse res,
                                          @PathVariable("postId") String postId)
