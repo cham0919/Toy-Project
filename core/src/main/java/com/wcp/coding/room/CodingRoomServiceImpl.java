@@ -1,8 +1,9 @@
 package com.wcp.coding.room;
 
 
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.wcp.mapper.CodingRoomMapper;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
 import com.wcp.page.PageInfo;
@@ -12,19 +13,16 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.wcp.WCPTable.CodingRoomTable.PK;
-import static com.wcp.mapper.CodingRoomMapper.*;
-import static com.wcp.coding.room.QCodingRoom.codingRoom;
 import static com.wcp.coding.join.QCodingJoinUser.codingJoinUser;
+import static com.wcp.coding.room.QCodingRoom.codingRoom;
+import static com.wcp.coding.test.QCodingTest.codingTest;
+import static com.wcp.mapper.CodingRoomMapper.CODING_ROOM_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -66,9 +64,8 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : " + currentPage);
         }
-        List<CodingRoom> codingRooms = fetchByPage(Integer.valueOf(currentPage));
-        List<CodingRoomDto> dtos = parseCodingRoomDtos(codingRooms);
-        return dtos;
+        List<CodingRoomDto> codingRoomDtos = fetchByPage(Integer.valueOf(currentPage));
+        return codingRoomDtos;
     }
 
     @Override
@@ -83,11 +80,8 @@ public class CodingRoomServiceImpl implements CodingRoomService{
     }
 
     @Override
-    public List<CodingRoom> fetchByPage(int currentPage) {
-        Page<CodingRoom> codingRoomPage = codingRoomRepository
-                .findAll(PageRequest
-                        .of(currentPage - 1, PageCount.CODING_ROOM.getPostCount(), Sort.by(Sort.Direction.ASC, PK)));
-        return codingRoomPage.getContent();
+    public List<CodingRoomDto> fetchByPage(int currentPage) {
+        return codingRoomRepository.fetchByCurrentPage(currentPage);
     }
 
     @Override

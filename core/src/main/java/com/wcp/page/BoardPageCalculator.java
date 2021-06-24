@@ -20,28 +20,32 @@ public class BoardPageCalculator implements PageCalculator {
 
     @Override
     public PageInfo getPageList(PageInfo pageInfo){
-        pageInfo = calcEndPage(pageInfo);
-        log.info(pageInfo.toString());
-        pageInfo = calcStartPage(pageInfo);
+        calcEndPage(pageInfo);
+        calcStartPage(pageInfo);
+        calcTotalEndPage(pageInfo);
         log.info(pageInfo.toString());
         return pageInfo;
     }
 
-    private PageInfo calcEndPage(PageInfo pageInfo){
+    private void calcTotalEndPage(PageInfo pageInfo) {
+        int totalEndPage = (int)Math.ceil((double) pageInfo.getTotalPostCount()/pageInfo.getPostCount());
+        pageInfo.setTotalEndPage(totalEndPage);
+    }
+
+    private void calcEndPage(PageInfo pageInfo){
         int endPage = (int) ((Math.ceil(pageInfo.getCurrentPage() / (double)pageInfo.getPageCount()) * pageInfo.getPageCount()));
         int tmpEndPage = (int)(Math.ceil(pageInfo.getTotalPostCount()/ (double) pageInfo.getPostCount()));
 
         if( endPage > tmpEndPage ){ endPage =  tmpEndPage; }
 
-        return pageInfo.setEndPage(endPage);
+        pageInfo.setEndPage(endPage);
     }
 
-    private PageInfo calcStartPage(PageInfo pageInfo){
+    private void calcStartPage(PageInfo pageInfo){
         int startPage = (pageInfo.getEndPage() - pageInfo.getPageCount()) + 1;
         startPage = startPage <= 0 ? 1 : startPage;
         pageInfo.setStartPage(startPage);
 
         if( startPage > pageInfo.getEndPage() ){ pageInfo.setEndPage(startPage); }
-        return pageInfo;
     }
 }

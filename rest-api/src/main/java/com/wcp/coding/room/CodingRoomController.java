@@ -78,14 +78,17 @@ public class CodingRoomController {
     {
         try{
             List<CodingRoomDto> dtos = codingRoomService.fetchByPage(pageNm);
-            return new ResponseEntity<String>(gson.toJson(dtos), HttpStatus.OK);
+            PageInfo pageInfo = codingRoomService.fetchPageList(pageNm);
+            Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
+            stringObjectMap.put("post", dtos);
+            return new ResponseEntity<String>(gson.toJson(stringObjectMap), HttpStatus.OK);
         }catch (Throwable t){
             log.error(t.getMessage(),t);
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @RequestMapping(value = "/page/range/{pageNm:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/range/{pageNm:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> count(HttpServletRequest req,
                                         HttpServletResponse res,
                                         @PathVariable("pageNm") String pageNm)
@@ -113,7 +116,7 @@ public class CodingRoomController {
         }
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> update(HttpServletRequest req,
                                            HttpServletResponse res,
                                          @RequestBody CodingRoomDto dto)
@@ -127,7 +130,7 @@ public class CodingRoomController {
         }
     }
 
-    @RequestMapping(value = "/del", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> delete(HttpServletRequest req,
                                          HttpServletResponse res,
                                          @RequestBody CodingRoomDto codingRoomDto)
@@ -141,7 +144,7 @@ public class CodingRoomController {
         }
     }
 
-    @RequestMapping(value = "/del/{postId:[0-9]+}", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> delete(HttpServletRequest req,
                                          HttpServletResponse res,
                                          @PathVariable("postId") String postId)

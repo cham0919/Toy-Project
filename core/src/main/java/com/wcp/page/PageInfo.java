@@ -16,6 +16,7 @@ public class PageInfo {
 
     private int startPage;
     private int endPage;
+    private int totalEndPage;
     private int currentPage;
     private double totalPostCount;
 
@@ -30,6 +31,7 @@ public class PageInfo {
         Map<String, Object> map = new TreeMap<String, Object>();
         map.put("startPage", startPage);
         map.put("endPage", endPage);
+        map.put("totalEndPage", totalEndPage);
         return map;
     }
 

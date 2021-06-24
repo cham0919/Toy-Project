@@ -7,7 +7,7 @@ import java.util.List;
 public interface PageService<T, D> {
 
 
-    List<T> fetchByPage(int currentPage);
+    List<D> fetchByPage(int currentPage);
     List<D> fetchByPage(String currentPage);
     PageInfo fetchPageList(String currentPage);
 
