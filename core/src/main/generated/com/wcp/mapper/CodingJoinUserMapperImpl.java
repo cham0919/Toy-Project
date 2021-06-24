@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-06-20T07:28:05+0900",
+    date = "2021-06-24T02:11:18+0900",
     comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_231 (Oracle Corporation)"
 )
 @Component
@@ -147,16 +147,22 @@ public class CodingJoinUserMapperImpl implements CodingJoinUserMapper {
             return null;
         }
 
-        CodingRoomDto codingRoomDto = new CodingRoomDto();
+        Long key = null;
+        String title = null;
+        Long maxUser = null;
 
-        if ( codingRoom.getKey() != null ) {
-            codingRoomDto.setKey( String.valueOf( codingRoom.getKey() ) );
-        }
-        codingRoomDto.setTitle( codingRoom.getTitle() );
+        key = codingRoom.getKey();
+        title = codingRoom.getTitle();
+        maxUser = codingRoom.getMaxUser();
+
+        int joinUsersCount = 0;
+        int codingTestCount = 0;
+
+        CodingRoomDto codingRoomDto = new CodingRoomDto( key, title, maxUser, joinUsersCount, codingTestCount );
+
         codingRoomDto.setIntro( codingRoom.getIntro() );
         codingRoomDto.setSecret( codingRoom.isSecret() );
         codingRoomDto.setPassword( codingRoom.getPassword() );
-        codingRoomDto.setMaxUser( codingRoom.getMaxUser() );
         codingRoomDto.setRamdomKey( codingRoom.getRamdomKey() );
         codingRoomDto.setCreatedAt( codingRoom.getCreatedAt() );
         codingRoomDto.setCodingJoinUsers( codingJoinUserListToCodingJoinUserDtoList( codingRoom.getCodingJoinUsers() ) );
