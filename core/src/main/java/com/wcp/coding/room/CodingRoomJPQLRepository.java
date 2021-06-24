@@ -2,7 +2,7 @@ package com.wcp.coding.room;
 
 import java.util.List;
 
-public interface CodingRoomRepositoryCustom {
+public interface CodingRoomJPQLRepository {
 
     List<CodingRoomDto> fetchByCurrentPage(int currentPage);
 
