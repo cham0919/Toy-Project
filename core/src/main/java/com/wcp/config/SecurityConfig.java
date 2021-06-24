@@ -3,9 +3,11 @@ package com.wcp.config;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.wcp.auth.JWTAccessDeniedHandler;
 import com.wcp.auth.JwtAuthenticationFilter;
 import com.wcp.security.LoginFailHandler;
 import com.wcp.security.LoginSuccessHandler;
+import com.wcp.auth.JwtAuthenticationEntryPoint;
 import com.wcp.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final DataSource dataSource;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtAuthenticationEntryPoint jwtAuthEndPoint;
+	private final JWTAccessDeniedHandler jwtAccessDeniedHandler;
+
 
     @Value("${authenticationPropertiesPath}")
     private String authenticationPropertiesPath;
@@ -88,7 +93,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .permitAll()
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthEndPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler);
 
     }
 

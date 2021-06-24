@@ -89,6 +89,7 @@ public class JwtAuthenticationFilter implements Filter {
 
     private void setAuthentication(TokenDto dto) {
         if (isValidateToken(dto)) {
+
             JwtAuthentication authentication = new JwtAuthentication(dto);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
