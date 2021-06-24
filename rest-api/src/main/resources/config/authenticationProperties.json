@@ -1,5 +1,26 @@
 {
-  "/wcp/admin/**": [
+  "/wcp/signUp": [
+    "ROLE_ANONYMOUS",
+    "ROLE_MEMBER",
+    "ROLE_ADMIN"
+  ],
+  "/wcp/auth/check": [
+    "ROLE_ANONYMOUS",
+    "ROLE_MEMBER",
+    "ROLE_ADMIN"
+  ],
+  "/wcp/auth": [
+    "ROLE_ANONYMOUS",
+    "ROLE_MEMBER",
+    "ROLE_ADMIN"
+  ],
+  "/wcp/coding/room": [
+    "ROLE_ANONYMOUS",
+    "ROLE_MEMBER",
+    "ROLE_ADMIN"
+  ],
+  "/wcp/**": [
+    "ROLE_MEMBER",
     "ROLE_ADMIN"
   ]
 }
