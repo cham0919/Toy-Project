@@ -55,6 +55,20 @@ public class CodingTestServiceImpl implements CodingTestService{
         registerContent(codingTest, codeInputFile);
     }
 
+    @Override
+    public List<CodingTestDto> fetchByCurrentPage(String currentPage, String roomId, String userKey) {
+        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : "+ currentPage);
+        }
+        if (StringUtils.isEmpty(roomId) || !StringUtils.isNumeric(roomId)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check roomId : "+ roomId);
+        }
+        if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
+            throw new IllegalArgumentException("id should not be empty or String. Please Check userKey : "+ userKey);
+        }
+        return codingTestRepository.fetchByCurrentPage(Integer.valueOf(currentPage), Long.valueOf(roomId), Long.valueOf(userKey));
+    }
+
     public void registerContent(CodingTest codingTest, CodeInputFile codeInputFile){
         //CodeInputFile 등록
         codeInputFile.setCodingTest(codingTest);
@@ -86,19 +100,6 @@ public class CodingTestServiceImpl implements CodingTestService{
 
 
     @Override
-    public List<CodingTestDto> fetchByPage(String currentPage) {
-        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : "+ currentPage);
-        }
-        List<CodingTest> codingTests = fetchByPage(Integer.valueOf(currentPage));
-        List<CodingTestDto> dtos = new ArrayList<>();
-        codingTests.forEach(v -> {
-            dtos.add( CODING_TEST_MAPPER.toDto(v) );
-        });
-        return dtos;
-    }
-
-    @Override
     public PageInfo fetchPageList(String currentPage) {
         if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
             throw new IllegalArgumentException("currentPage should not be empty or String. Please Check currentPage : "+ currentPage);
@@ -107,14 +108,6 @@ public class CodingTestServiceImpl implements CodingTestService{
                 .setCurrentPage(Integer.valueOf(currentPage))
                 .setTotalPostCount(count());
         return pageCalculator.fetchPageList(pageInfo, PageCount.CODING_TEST);
-    }
-
-    @Override
-    public List<CodingTest> fetchByPage(int currentPage) {
-        Page<CodingTest> codingTestPage = codingTestRepository
-                .findAll(PageRequest
-                        .of(currentPage - 1, PageCount.CODING_TEST.getPostCount(), Sort.by(Sort.Direction.ASC, "key")));
-        return codingTestPage.getContent();
     }
 
 
