@@ -69,6 +69,14 @@ public class CodingRoom {
         return this;
     }
 
+    public int getJoinUsersCount(){
+        return codingJoinUsers.size();
+    }
+
+    public int getCodingTestCount(){
+        return codingTests.size();
+    }
+
     @Override
     public String toString() {
         return "CodingRoom{" +

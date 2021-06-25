@@ -24,25 +24,11 @@ public class CodingRoomDto {
     private Long maxUser;
     private String ramdomKey;
     private LocalDateTime createdAt;
-    private List<CodingJoinUserDto> codingJoinUsers = new ArrayList<>();
     private Long joinUsersCount;
-    private List<CodingTestDto> codingTests = new ArrayList<>();
     private Long codingTestCount;
 
 
     public CodingRoomDto() {
-    }
-
-    public CodingRoomDto setCodingJoinUsers(List<CodingJoinUserDto> codingJoinUsers) {
-        this.codingJoinUsers = codingJoinUsers;
-        this.joinUsersCount = Long.valueOf(codingJoinUsers.size());
-        return this;
-    }
-
-    public CodingRoomDto setCodingTests(List<CodingTestDto> codingTests) {
-        this.codingTests = codingTests;
-        this.codingTestCount = Long.valueOf(codingJoinUsers.size());
-        return this;
     }
 
     @QueryProjection
