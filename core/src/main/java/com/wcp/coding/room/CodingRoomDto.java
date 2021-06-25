@@ -1,5 +1,6 @@
 package com.wcp.coding.room;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.wcp.coding.test.CodingTestDto;
 import com.wcp.coding.join.CodingJoinUserDto;
 import lombok.Data;
@@ -23,7 +24,19 @@ public class CodingRoomDto {
     private Long maxUser;
     private String ramdomKey;
     private LocalDateTime createdAt;
-    private List<CodingJoinUserDto> codingJoinUsers = new ArrayList<>();
-    private List<CodingTestDto> codingTests = new ArrayList<>();
+    private Long joinUsersCount;
+    private Long codingTestCount;
 
+
+    public CodingRoomDto() {
+    }
+
+    @QueryProjection
+    public CodingRoomDto(Long key, String title, Long maxUser, Long joinUsersCount, Long codingTestCount) {
+        this.key = String.valueOf(key);
+        this.title = title;
+        this.maxUser = maxUser;
+        this.joinUsersCount = joinUsersCount;
+        this.codingTestCount = codingTestCount;
+    }
 }

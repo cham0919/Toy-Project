@@ -104,26 +104,26 @@ public class CodingTestServiceTest {
         assertNotNull(dto);
     }
 
-    @Test
-    public void fetchByPage_Success_NotNull() {
-        String currentPage = "1";
-
-        given(codingTestRepository.findAll(any(PageRequest.class)))
-                .willReturn(mock(Page.class));
-
-        List<CodingTestDto> codingTestDtos = codingTestService.fetchByPage(currentPage);
-
-        assertNotNull(codingTestDtos);
-    }
-
-    @Test
-    public void fetchByPage_IsNotNumericCurrentPage_ExceptionThrown() {
-        String currentPage = "A";
-
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            codingTestService.fetchByPage(currentPage);
-        });
-    }
+//    @Test
+//    public void fetchByPage_Success_NotNull() {
+//        String currentPage = "1";
+//
+//        given(codingTestRepository.findAll(any(PageRequest.class)))
+//                .willReturn(mock(Page.class));
+//
+//        List<CodingTestDto> codingTestDtos = codingTestService.fetchByPage(currentPage);
+//
+//        assertNotNull(codingTestDtos);
+//    }
+//
+//    @Test
+//    public void fetchByPage_IsNotNumericCurrentPage_ExceptionThrown() {
+//        String currentPage = "A";
+//
+//        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+//            codingTestService.fetchByPage(currentPage);
+//        });
+//    }
 
     @Test
     public void fetchPageList_Success_NotNull(){

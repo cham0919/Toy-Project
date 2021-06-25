@@ -24,8 +24,8 @@ public class MapperTest {
         assertEquals(entity.getMaxUser(), dto.getMaxUser());
         assertEquals(entity.getRamdomKey(), dto.getRamdomKey());
         assertEquals(entity.getTitle(), dto.getTitle());
-        assertEquals(entity.getCodingJoinUsers(), dto.getCodingJoinUsers());
-        assertEquals(entity.getCodingTests(), dto.getCodingTests());
+//        assertEquals(entity.getCodingJoinUsers(), dto.getCodingJoinUsers());
+//        assertEquals(entity.getCodingTests(), dto.getCodingTests());
         assertEquals(entity.getCreatedAt(), dto.getCreatedAt());
     }
 
@@ -41,8 +41,8 @@ public class MapperTest {
         assertEquals(entity.getMaxUser(), dto.getMaxUser());
         assertEquals(entity.getRamdomKey(), dto.getRamdomKey());
         assertEquals(entity.getTitle(), dto.getTitle());
-        assertEquals(entity.getCodingJoinUsers(), dto.getCodingJoinUsers());
-        assertEquals(entity.getCodingTests(), dto.getCodingTests());
+//        assertEquals(entity.getCodingJoinUsers(), dto.getCodingJoinUsers());
+//        assertEquals(entity.getCodingTests(), dto.getCodingTests());
         assertEquals(entity.getCreatedAt(), dto.getCreatedAt()); }
 
     @Test

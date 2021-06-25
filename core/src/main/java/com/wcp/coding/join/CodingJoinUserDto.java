@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class CodingJoinUserDto {
 
     private String key;
-    private CodingRoomDto codingRoom;
+    private CodingRoomDto codingRoomDto;
     private UserDto user;
     private String status;
     private String role;
