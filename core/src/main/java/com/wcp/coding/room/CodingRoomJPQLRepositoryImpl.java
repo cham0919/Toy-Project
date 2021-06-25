@@ -17,9 +17,9 @@ import static com.wcp.coding.test.QCodingTest.codingTest;
 
 @Repository
 @RequiredArgsConstructor
-public class CodingRoomRepositoryImpl implements CodingRoomJPQLRepository {
+public class CodingRoomJPQLRepositoryImpl implements CodingRoomJPQLRepository {
 
-    private final Logger log = LoggerFactory.getLogger(CodingRoomRepositoryImpl.class);
+    private final Logger log = LoggerFactory.getLogger(CodingRoomJPQLRepositoryImpl.class);
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -46,7 +46,17 @@ public class CodingRoomRepositoryImpl implements CodingRoomJPQLRepository {
                 .from(codingRoom)
                 .where(codingRoom.secret.eq(false))
                 .offset((currentPage - 1) * PageCount.CODING_ROOM.getPostCount())
-                .limit(PageCount.CODING_ROOM.getPostCount() * currentPage)
+                .limit(PageCount.CODING_ROOM.getPostCount())
                 .fetch();
+    }
+
+    @Override
+    public CodingRoom fetchByIdJoinUser(Long id) {
+        return queryFactory
+                .selectFrom(codingRoom)
+                .leftJoin(codingRoom.codingJoinUsers)
+                .fetchJoin()
+                .where(codingRoom.key.eq(id))
+                .fetchOne();
     }
 }

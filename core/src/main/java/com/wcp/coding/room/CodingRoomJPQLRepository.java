@@ -6,5 +6,7 @@ public interface CodingRoomJPQLRepository {
 
     List<CodingRoomDto> fetchByCurrentPage(int currentPage);
 
+    CodingRoom fetchByIdJoinUser(Long id);
+
 
 }

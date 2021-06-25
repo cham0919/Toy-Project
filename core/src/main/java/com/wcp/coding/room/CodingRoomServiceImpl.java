@@ -1,8 +1,6 @@
 package com.wcp.coding.room;
 
 
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wcp.page.PageCalculator;
 import com.wcp.page.PageCount;
@@ -19,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.wcp.coding.join.QCodingJoinUser.codingJoinUser;
 import static com.wcp.coding.room.QCodingRoom.codingRoom;
-import static com.wcp.coding.test.QCodingTest.codingTest;
 import static com.wcp.mapper.CodingRoomMapper.CODING_ROOM_MAPPER;
 
 @Service
@@ -96,10 +92,12 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
-        CodingRoom codingRoom = fetchById(Long.valueOf(id));
+//        CodingRoom codingRoom = fetchById(Long.valueOf(id));
+        CodingRoom codingRoom = codingRoomRepository.fetchByIdJoinUser(Long.valueOf(id));
         return CODING_ROOM_MAPPER.toDto(codingRoom);
     }
 
+    @Transactional(readOnly = true)
     public CodingRoom fetchById(Long id) {
         return codingRoomRepository.findById(id).get();
     }
