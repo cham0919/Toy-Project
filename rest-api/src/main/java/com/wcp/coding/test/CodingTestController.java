@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/wcp/coding/test")
+@RequestMapping(value = "/wcp/coding/room/{roomId:[0-9]+}/test")
 @RequiredArgsConstructor
 public class CodingTestController {
 
@@ -32,18 +32,39 @@ public class CodingTestController {
 
     private final CodingTestService codingTestService;
 
-    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.POST,
+
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    public ResponseEntity<String> fetchCodingTestByPage(HttpServletRequest req,
+                                                        HttpServletResponse res,
+                                                        @RequestParam String pageNm,
+                                                        @PathVariable("roomId") String roomId)
+    {
+        try{
+            String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
+            List<CodingTestDto> dtos = codingTestService.fetchByCurrentPage(pageNm, roomId, userKey);
+            PageInfo pageInfo = codingTestService.fetchPageList(pageNm);
+            Map<String, Object> respMap = pageInfo.parsePageRangeToMap();
+            respMap.put("post", dtos);
+            return new ResponseEntity<String>(gson.toJson(respMap), HttpStatus.OK);
+        }catch (Throwable t){
+            log.error(t.getMessage(), t);
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @RequestMapping(value = "/{testId:[0-9]+}", method = RequestMethod.POST,
             produces = "application/json; charset=utf-8",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> saveCodingTest(HttpServletRequest req,
                                        HttpServletResponse res,
-                                       @PathVariable("postId") String postId,
+                                       @PathVariable("testId") String testId,
                                        @ModelAttribute("formData") MultiPartDto multiPartDto)
     {
         try{
             String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
             multiPartDto.setUserKey(userKey)
-                    .setPostId(postId);
+                    .setPostId(testId);
             codingTestService.registerContent(multiPartDto);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){
@@ -52,14 +73,14 @@ public class CodingTestController {
         }
     }
 
-    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/{testId:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> fetchCodingTestById(HttpServletRequest req,
                                             HttpServletResponse res,
-                                            @PathVariable("postId") String postId)
+                                            @PathVariable("testId") String testId)
     {
         try{
             String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
-            CodingTestDto dto = codingTestService.fetchById(postId);
+            CodingTestDto dto = codingTestService.fetchById(testId);
             return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
         }catch (Throwable t){
             log.error(t.getMessage(), t);
@@ -67,34 +88,6 @@ public class CodingTestController {
         }
     }
 
-    @RequestMapping(value = "/page/{pageNm:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-    public ResponseEntity<String> fetchCodingTestByPage(HttpServletRequest req,
-                                              HttpServletResponse res,
-                                              @PathVariable("pageNm") String pageNm)
-    {
-        try{
-            List<CodingTestDto> codingTests = codingTestService.fetchByPage(pageNm);
-            return new ResponseEntity<String>(gson.toJson(codingTests), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(), t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @RequestMapping(value = "/range/{pageNm:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-    public ResponseEntity<String> fetchcodingTestPageList(HttpServletRequest req,
-                                        HttpServletResponse res,
-                                        @PathVariable("pageNm") String pageNm)
-    {
-        try{
-            PageInfo pageInfo = codingTestService.fetchPageList(pageNm);
-            Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
-            return new ResponseEntity<String>(gson.toJson(stringObjectMap),HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(), t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> fetchCodingTestAll(HttpServletRequest req,

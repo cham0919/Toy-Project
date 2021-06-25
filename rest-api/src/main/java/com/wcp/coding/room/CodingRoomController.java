@@ -29,18 +29,18 @@ public class CodingRoomController {
     private final CodingRoomService codingRoomService;
 
 
-    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-    public ResponseEntity<String> fetchAllPublicRoom(HttpServletRequest req,
-                                            HttpServletResponse res)
-    {
-        try{
-            List<CodingRoomDto> codingRoomDtos = codingRoomService.fetchAllPublicRoom();
-            return new ResponseEntity<String>(gson.toJson(codingRoomDtos), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+//    public ResponseEntity<String> fetchAllPublicRoom(HttpServletRequest req,
+//                                            HttpServletResponse res)
+//    {
+//        try{
+//            List<CodingRoomDto> codingRoomDtos = codingRoomService.fetchAllPublicRoom();
+//            return new ResponseEntity<String>(gson.toJson(codingRoomDtos), HttpStatus.OK);
+//        }catch (Throwable t){
+//            log.error(t.getMessage(),t);
+//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> save(HttpServletRequest req,
