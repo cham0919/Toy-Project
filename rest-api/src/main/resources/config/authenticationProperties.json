@@ -14,7 +14,7 @@
     "ROLE_MEMBER",
     "ROLE_ADMIN"
   ],
-  "/wcp/coding/room": [
+  "/wcp/coding/room/page/**": [
     "ROLE_ANONYMOUS",
     "ROLE_MEMBER",
     "ROLE_ADMIN"
