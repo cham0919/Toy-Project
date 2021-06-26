@@ -92,7 +92,6 @@ public class CodingRoomServiceImpl implements CodingRoomService{
         if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
             throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
         }
-//        CodingRoom codingRoom = fetchById(Long.valueOf(id));
         CodingRoom codingRoom = codingRoomRepository.fetchByIdJoinUser(Long.valueOf(id));
         return CODING_ROOM_MAPPER.toDto(codingRoom);
     }
