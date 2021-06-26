@@ -15,9 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -100,13 +97,16 @@ public class CodingTestServiceImpl implements CodingTestService{
 
 
     @Override
-    public PageInfo fetchPageList(String currentPage) {
+    public PageInfo fetchPageList(String currentPage, String roomId) {
         if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
             throw new IllegalArgumentException("currentPage should not be empty or String. Please Check currentPage : "+ currentPage);
         }
+        if (StringUtils.isEmpty(roomId) || !StringUtils.isNumeric(roomId)) {
+            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check roomId : "+ roomId);
+        }
         PageInfo pageInfo = PageInfo.of()
                 .setCurrentPage(Integer.valueOf(currentPage))
-                .setTotalPostCount(count());
+                .setTotalPostCount(fetchTestCount(Long.valueOf(roomId)));
         return pageCalculator.fetchPageList(pageInfo, PageCount.CODING_TEST);
     }
 
@@ -165,6 +165,11 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     private void deleteById(Long id) {
         codingTestRepository.deleteById(id);
+    }
+
+
+    public Long fetchTestCount(Long roomId) {
+        return codingTestRepository.countByCodingRoom_Key(roomId);
     }
 
     @Override

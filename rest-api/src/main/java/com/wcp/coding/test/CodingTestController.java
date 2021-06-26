@@ -42,7 +42,7 @@ public class CodingTestController {
         try{
             String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
             List<CodingTestDto> dtos = codingTestService.fetchByCurrentPage(pageNm, roomId, userKey);
-            PageInfo pageInfo = codingTestService.fetchPageList(pageNm);
+            PageInfo pageInfo = codingTestService.fetchPageList(pageNm, roomId);
             Map<String, Object> respMap = pageInfo.parsePageRangeToMap();
             respMap.put("post", dtos);
             return new ResponseEntity<String>(gson.toJson(respMap), HttpStatus.OK);
@@ -53,18 +53,18 @@ public class CodingTestController {
     }
 
 
-    @RequestMapping(value = "/{testId:[0-9]+}", method = RequestMethod.POST,
+    @RequestMapping(value = {"/", ""}, method = RequestMethod.POST,
             produces = "application/json; charset=utf-8",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> saveCodingTest(HttpServletRequest req,
                                        HttpServletResponse res,
-                                       @PathVariable("testId") String testId,
+                                       @PathVariable("roomId") String roomId,
                                        @ModelAttribute("formData") MultiPartDto multiPartDto)
     {
         try{
             String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
             multiPartDto.setUserKey(userKey)
-                    .setPostId(testId);
+                    .setPostId(roomId);
             codingTestService.registerContent(multiPartDto);
             return new ResponseEntity<String>(HttpStatus.OK);
         }catch (Throwable t){

@@ -12,6 +12,6 @@ public interface CodingTestService extends CRUDService<CodingTest,CodingTestDto>
 
     List<CodingTestDto> fetchByCurrentPage(String currentPage, String roomId, String userKey);
 
-    PageInfo fetchPageList(String currentPage);
+    PageInfo fetchPageList(String currentPage, String roomId);
 
 }
