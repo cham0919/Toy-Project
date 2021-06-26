@@ -8,12 +8,14 @@
 
 
 1. [Project 개요](#Project-개요) <br/>
-2. [주요 기술 및 기능][projectInfo_link] <br/>
-3. [DataBase][db_link] 
-4. [Restful API 설계][api_link] 
+2. [Restful API 설계](#Restful-API-설계)  <br/>
+3. [DataBase](#DataBase) <br/> 
+4. [주요 기술 및 기능 구현][projectInfo_link] <br/>
 
 
 
+
+![image](https://user-images.githubusercontent.com/61372486/123511707-e68b8b80-d6bd-11eb-8a3c-c74ef941867d.png)
 
 
 
@@ -60,42 +62,30 @@
 
 
 
+<br/><br/><br/>
+
+
+
+# Restful API 설계
+
+- [Restful API 설계 문서][api_link]
+
+
 
 <br/><br/><br/>
 
-### 회원 관리
 
----
+# DataBase
 
-- 필요 정보로 회원가입 및 로그인이 가능합니다
+-  [DataBase][db_link] 
 
-![image](https://user-images.githubusercontent.com/61372486/121095914-2df3ca00-c82c-11eb-8f47-c5a5e694ef97.png)
+![image](https://user-images.githubusercontent.com/61372486/120640893-f85a8400-c4ad-11eb-8d95-85bdd55c54c6.png)
 
-![image](https://user-images.githubusercontent.com/61372486/121095867-174d7300-c82c-11eb-832d-e4b7f3701b04.png)    
- 
- 
- <br/>
+<br/><br/><br/>
 
-### 코딩 방
+# 주요 기술 및 기능 구현
 
----
- - 개설되어 있는 코딩 방들을 검색할 수 있습니다 
- ![image](https://user-images.githubusercontent.com/61372486/121096046-63001c80-c82c-11eb-98a6-f513d0abfc1b.png)
- 
-
- <br/>
-
-
-### 코딩 테스트 
-
----
-
+-  [주요 기술 및 기능 구현][projectInfo_link] 
 
  
- <br/><br/>
-
-
-
-
-
 
