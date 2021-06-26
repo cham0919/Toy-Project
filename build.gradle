@@ -1,3 +1,11 @@
+def javaProjects = [project(':core'), project(':rest-api')]
+def javaVersion = 1.8
+
+allprojects {
+    group 'com.wcp'
+    version '0.0.1-SNAPSHOT'
+}
+
 buildscript {
     ext {
         springBootVersion = '2.4.2'
@@ -9,58 +17,65 @@ buildscript {
 
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
     }
 }
 
-allprojects {
-    group 'com.wcp'
-    version '0.0.1-SNAPSHOT'
-}
 
-
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
+configure(javaProjects) {
     repositories {
         mavenCentral()
     }
 
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    version = '1.0.0.SNAPSHOT'
+
+    targetCompatibility = javaVersion
+    sourceCompatibility = javaVersion
+
+    dependencyManagement {
+        imports {
+            mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        }
+        dependencies {
+            dependency  'com.google.code.gson:gson:2.8.5'
+            dependency 'org.apache.commons:commons-lang3:3.12.0'
+            dependency 'commons-io:commons-io:2.6'
+
+            dependency 'org.mapstruct:mapstruct:1.4.1.Final'
+            dependency 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+            dependency "org.mapstruct:mapstruct-processor:1.4.1.Final"
+
+            dependency 'io.jsonwebtoken:jjwt:0.9.1'
+        }
+    }
+
     dependencies {
-        implementation 'com.google.code.gson:gson:2.8.5'
         implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.apache.httpcomponents:httpcore:4.4.1'
-        implementation 'org.apache.httpcomponents:httpclient:4.5.13'
-
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        runtimeOnly 'mysql:mysql-connector-java'
-
-
-        implementation 'org.mapstruct:mapstruct:1.4.1.Final'
-        implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
-        implementation "org.projectlombok:lombok:1.18.16"
-
-        annotationProcessor "org.mapstruct:mapstruct-processor:1.4.1.Final"
-        annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
-        annotationProcessor "org.projectlombok:lombok:1.18.16"
-
-        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        implementation 'org.springframework.boot:spring-boot-devtools'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
         implementation 'org.springframework.boot:spring-boot-starter-security'
-        implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    }
-}
 
-project(':rest-api') {
-    dependencies {
-        compile project(':core')
+        implementation 'org.apache.httpcomponents:httpclient'
+
+        implementation 'org.mapstruct:mapstruct'
+        implementation 'org.projectlombok:lombok-mapstruct-binding'
+        implementation "org.projectlombok:lombok"
+
+        annotationProcessor "org.mapstruct:mapstruct-processor"
+        annotationProcessor "org.projectlombok:lombok-mapstruct-binding"
+        annotationProcessor "org.projectlombok:lombok"
+
+
+
+        implementation 'commons-io:commons-io'
+        implementation 'com.google.code.gson:gson'
     }
+
+    println('java projects tasks')
 }
 
 
