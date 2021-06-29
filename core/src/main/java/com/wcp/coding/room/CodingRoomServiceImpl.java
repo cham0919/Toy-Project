@@ -44,9 +44,6 @@ public class CodingRoomServiceImpl implements CodingRoomService{
     @Override
     @Transactional
     public CodingRoomDto save(CodingRoomDto dto, String userKey){
-        if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
-            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check userKey : "+ userKey);
-        }
         CodingRoom codingRoom = CODING_ROOM_MAPPER.toEntity(dto);
         User user = userRepository.getOne(Long.valueOf(userKey));
         codingRoom.setUser(user);
@@ -57,18 +54,12 @@ public class CodingRoomServiceImpl implements CodingRoomService{
 
     @Override
     public List<CodingRoomDto> fetchByPage(String currentPage) {
-        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check currentPage : " + currentPage);
-        }
         List<CodingRoomDto> codingRoomDtos = fetchByPage(Integer.valueOf(currentPage));
         return codingRoomDtos;
     }
 
     @Override
     public PageInfo fetchPageList(String currentPage){
-        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
-            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check currentPage : "+ currentPage);
-        }
         PageInfo pageInfo = PageInfo.of()
                 .setCurrentPage(Integer.valueOf(currentPage))
                 .setTotalPostCount(count());
@@ -89,9 +80,6 @@ public class CodingRoomServiceImpl implements CodingRoomService{
 
     @Override
     public CodingRoomDto fetchById(String id) {
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
         CodingRoom codingRoom = codingRoomRepository.fetchByIdJoinUser(Long.valueOf(id));
         return CODING_ROOM_MAPPER.toDto(codingRoom);
     }
@@ -117,11 +105,7 @@ public class CodingRoomServiceImpl implements CodingRoomService{
 
     @Transactional
     public CodingRoomDto update(CodingRoomDto dto) {
-        String id = dto.getKey();
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
-        CodingRoom fetchCodingRoom = fetchById(Long.valueOf(id));
+        CodingRoom fetchCodingRoom = fetchById(Long.valueOf(dto.getKey()));
         CODING_ROOM_MAPPER.updateFromDto(dto, fetchCodingRoom);
         return dto;
     }
@@ -136,9 +120,6 @@ public class CodingRoomServiceImpl implements CodingRoomService{
 
     @Override
     public void deleteById(String id){
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
         deleteById(Long.valueOf(id));
     }
 

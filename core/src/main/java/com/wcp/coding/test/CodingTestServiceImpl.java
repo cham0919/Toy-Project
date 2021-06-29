@@ -98,12 +98,6 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     @Override
     public PageInfo fetchPageList(String currentPage, String roomId) {
-        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
-            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check currentPage : "+ currentPage);
-        }
-        if (StringUtils.isEmpty(roomId) || !StringUtils.isNumeric(roomId)) {
-            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check roomId : "+ roomId);
-        }
         PageInfo pageInfo = PageInfo.of()
                 .setCurrentPage(Integer.valueOf(currentPage))
                 .setTotalPostCount(fetchTestCount(Long.valueOf(roomId)));
@@ -113,9 +107,6 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     @Override
     public CodingTestDto fetchById(String id){
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
         CodingTest codingTest = fetchById(Long.valueOf(id));
         return CODING_TEST_MAPPER.toDto(codingTest);
     }
@@ -139,11 +130,7 @@ public class CodingTestServiceImpl implements CodingTestService{
     @Override
     @Transactional
     public CodingTestDto update(CodingTestDto dto) {
-        String id = dto.getKey();
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
-        CodingTest codingTest = fetchByIdJoinUser(Long.valueOf(id), Long.valueOf(dto.getUserKey()));
+        CodingTest codingTest = fetchByIdJoinUser(Long.valueOf(dto.getKey()), Long.valueOf(dto.getUserKey()));
         CODING_TEST_MAPPER.updateFromDto(dto, codingTest);
         return dto;
     }
