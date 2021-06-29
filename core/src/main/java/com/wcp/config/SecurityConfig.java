@@ -10,6 +10,7 @@ import com.wcp.security.LoginSuccessHandler;
 import com.wcp.auth.JwtAuthenticationEntryPoint;
 import com.wcp.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final DataSource dataSource;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-	private final JwtAuthenticationEntryPoint jwtAuthEndPoint;
-	private final JWTAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthEndPoint;
+    private final JWTAccessDeniedHandler jwtAccessDeniedHandler;
 
 
     @Value("${authenticationPropertiesPath}")
@@ -101,18 +104,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private void applyAuthenticationConfig(HttpSecurity http) throws Exception {
-        URI uri = getClass().getResource(authenticationPropertiesPath).toURI();
-        File jsonFile = new File(uri);
-
-        FileReader reader = new FileReader(jsonFile);
+        InputStream input = getClass().getResourceAsStream(authenticationPropertiesPath);
         JsonObject authProperties;
-        try {
-            authProperties = new Gson().fromJson(reader, JsonObject.class);
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            reader.close();
-        }
+        authProperties = new Gson().fromJson(new InputStreamReader(input), JsonObject.class);
         for (Map.Entry<String, JsonElement> entry : authProperties.entrySet()) {
             String url = entry.getKey();
             if (entry.getValue().isJsonArray()) {
