@@ -1,8 +1,11 @@
-bootJar { enabled = false }
+
+bootJar {
+    enabled = true
+    archiveBaseName = 'wcp'
+}
 
 dependencies {
     compile project(':core')
-
     implementation 'org.apache.httpcomponents:httpcore'
 
 }
