@@ -1,11 +1,15 @@
-apply plugin: 'java'
 
-sourceCompatibility = 1.8
-
-bootJar { enabled = false }
-
-dependencies {
+bootJar {
+    enabled = true
+    archiveBaseName = 'wcp'
 }
 
+dependencies {
+    compile project(':core')
+    implementation 'org.apache.httpcomponents:httpcore'
+
+}
+
+println('build rest-api project')
 
 

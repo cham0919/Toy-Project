@@ -40,7 +40,7 @@ public class CodingTest {
     @Column(name = CodingTestTable.TITLE)
     private String title;
 
-    @Column(name = CodingTestTable.CONTENT)
+    @Column(name = CodingTestTable.CONTENT, length = 10000)
     private String content;
 
     @Column(name = CodingTestTable.LANGUAGE, nullable = false)

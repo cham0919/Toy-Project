@@ -128,13 +128,14 @@ public class CodingTestServiceTest {
     @Test
     public void fetchPageList_Success_NotNull(){
         String currentPage = "1";
+        String roomId = "1";
 
         given(codingTestRepository.count())
                 .willReturn(10L);
         given(pageCalculator.fetchPageList(any(PageInfo.class), any(PageCount.class)))
                 .willReturn(mock(PageInfo.class));
 
-        PageInfo pageInfo = codingTestService.fetchPageList(currentPage);
+        PageInfo pageInfo = codingTestService.fetchPageList(currentPage, roomId);
 
         assertNotNull(pageInfo);
     }
@@ -142,10 +143,11 @@ public class CodingTestServiceTest {
     @Test
     public void fetchPageList_IsNotNumericCurrentPage_ExceptionThrown(){
         String currentPage = "A";
+        String roomId = "1";
 
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            codingTestService.fetchPageList(currentPage);
+            codingTestService.fetchPageList(currentPage, roomId);
         });
     }
 
