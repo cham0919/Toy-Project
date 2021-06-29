@@ -22,6 +22,8 @@ buildscript {
 
 
 configure(javaProjects) {
+    project.buildDir = '/target'
+
     repositories {
         mavenCentral()
     }
@@ -68,8 +70,6 @@ configure(javaProjects) {
         annotationProcessor "org.mapstruct:mapstruct-processor"
         annotationProcessor "org.projectlombok:lombok-mapstruct-binding"
         annotationProcessor "org.projectlombok:lombok"
-
-
 
         implementation 'commons-io:commons-io'
         implementation 'com.google.code.gson:gson'
