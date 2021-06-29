@@ -52,7 +52,12 @@
 
 ---
 - 사용 기술
-  - React, Axios, JQuery, Spring Boot 2.4.2, Spring Security 
+  - 언어 :  Java jdk 1.8.0
+  - Back : Spring Boot 2.4.2, Spring Security
+  - Front : React, Axios, JQuery 
+  - ORM : Spring Data JPA, QueryDSL
+  - TEST : Junit5
+  
 - 사용 도구
    - 소프트웨어 개발 도구 : IntelliJ
    - 데이터베이스: MySQL 8.0.23
