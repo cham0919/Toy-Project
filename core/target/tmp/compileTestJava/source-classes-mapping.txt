@@ -1,0 +1,22 @@
+com/wcp/mapper/MapperTest.java
+ com.wcp.mapper.MapperTest
+com/wcp/common/http/HttpUtilsTest.java
+ com.wcp.common.http.HttpUtilsTest
+com/wcp/page/BoardPageCalculatorTest.java
+ com.wcp.page.BoardPageCalculatorTest
+DirtyTest.java
+ DirtyTest
+com/wcp/board/BoardServiceTest.java
+ com.wcp.board.BoardServiceTest
+com/wcp/coding/inputFile/InputFileServiceTest.java
+ com.wcp.coding.inputFile.InputFileServiceTest
+com/wcp/auth/AuthServiceTest.java
+ com.wcp.auth.AuthServiceTest
+com/wcp/auth/JwtTokenProviderTest.java
+ com.wcp.auth.JwtTokenProviderTest
+com/wcp/coding/test/CodingTestServiceTest.java
+ com.wcp.coding.test.CodingTestServiceTest
+com/wcp/coding/room/CodingRoomServiceTest.java
+ com.wcp.coding.room.CodingRoomServiceTest
+com/wcp/user/UserServiceTest.java
+ com.wcp.user.UserServiceTest
