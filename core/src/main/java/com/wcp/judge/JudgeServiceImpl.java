@@ -10,6 +10,7 @@ import com.wcp.common.Base64Utils;
 import com.wcp.common.file.FileUtils;
 import com.wcp.common.http.HttpRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,10 +47,7 @@ public class JudgeServiceImpl implements JudgeService {
 
 
     @Override
-    public List<JudegeResponseDto> createBatchedSubmission(JudgeRequestDto dto, String postId) throws Throwable {
-        if (StringUtils.isEmpty(postId) || !StringUtils.isNumeric(postId)) {
-            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check userKey : "+ postId);
-        }
+    public List<JudegeResponseDto> createBatchedSubmission(JudgeRequestDto dto, String postId) throws IOException {
         //TODO. fetchJoin으로 한번의 Select문 날리기
         CodingTest codingTest =  codingTestRepository.findById(Long.valueOf(postId)).get();
         File[] files =  codeInputFileService.fetchIOFilesById(codingTest.getCodeInputFile().getKey());
@@ -109,7 +109,7 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     @Override
-    public JudegeResponseDto getSubmission(String token) throws Throwable {
+    public JudegeResponseDto getSubmission(String token) throws IOException {
         HttpResponse resp =HttpRequest.of()
                 .post(getSubmissionUri(token))
                 .addHeader(Judge.TOKEN_KEY, Judge.TOKEN_VALUE)
@@ -125,7 +125,7 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     @Override
-    public List<JudegeResponseDto> createBatchedSubmission(String param) throws Throwable {
+    public List<JudegeResponseDto> createBatchedSubmission(String param) throws IOException {
         HttpResponse resp = HttpRequest.of()
                 .post(createBatchedSubmissionUri())
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

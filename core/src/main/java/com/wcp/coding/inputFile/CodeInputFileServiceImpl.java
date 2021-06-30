@@ -32,7 +32,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
 
     @Override
-    public CodeInputFile multiPartToEntity(MultipartFile file) throws Throwable {
+    public CodeInputFile multiPartToEntity(MultipartFile file) throws MimeTypeException, IOException {
         if (!isZipFile(file)) { throw new MimeTypeException("Upload is only possible as a zip file"); }
         File uploadFile = uploadFile(file);
         return new CodeInputFile().setGivenName(file.getOriginalFilename())
