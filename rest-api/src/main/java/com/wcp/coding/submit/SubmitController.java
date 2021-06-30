@@ -27,20 +27,13 @@ public class SubmitController {
 
     private final SubmitHistoryServiceImpl submitHistoryService;
 
-    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @PostMapping("/{postId:[0-9]+}")
     public ResponseEntity<String> registerSubmitHistory(HttpServletRequest req,
                                                 HttpServletResponse res,
                                                  @PathVariable("postId") String postId,
-                                                 @RequestBody SubmitHistoryDto dto)
-    {
-        try{
+                                                 @RequestBody SubmitHistoryDto dto) {
             String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
             dto = submitHistoryService.registerSubmitHistory(dto, postId, userKey);
             return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error("submission error",t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
-
 }

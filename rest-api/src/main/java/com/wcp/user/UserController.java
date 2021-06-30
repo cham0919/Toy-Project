@@ -33,75 +33,51 @@ public class UserController {
 
 
     // 회원가입
-    @RequestMapping(value = "/signUp", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @PostMapping("/signUp")
     public ResponseEntity<String> signUp(HttpServletRequest req,
-                                            HttpServletResponse res,
-                                         @RequestBody UserDto userDto)
-    {
-        try{
-            userDto = userService.signUp(userDto);
-            return new ResponseEntity<String>(gson.toJson(userDto), HttpStatus.OK);
-        }catch (Throwable t){
-            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                         HttpServletResponse res,
+                                         @RequestBody UserDto userDto) {
+        userDto = userService.signUp(userDto);
+        return new ResponseEntity<String>(gson.toJson(userDto), HttpStatus.OK);
     }
 
     // 회원탈퇴
-    @RequestMapping(value = "/user", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
+    @DeleteMapping("/user")
     public ResponseEntity<String> deactivateUser(HttpServletRequest req,
-                                         HttpServletResponse res,
-                                         Authentication authentication)
-    {
-        try{
-            String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
-            userService.deleteById(userKey);
-            return new ResponseEntity<String>(HttpStatus.OK);
-        }catch (Throwable t){
-            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                                 HttpServletResponse res,
+                                                 Authentication authentication) {
+        String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.deleteById(userKey);
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
     // 아이디 찾기
-    @RequestMapping(value = "/user/id", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @GetMapping("/user/id")
     public ResponseEntity<String> findId(HttpServletRequest req,
-                                     HttpServletResponse res)
-    {
-        try{
-            String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
-            UserDto dto = userService.fetchById(userKey);
-            return new ResponseEntity<String>(gson.toJson(dto.getId()), HttpStatus.OK);
-        }catch (Throwable t){
-            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                         HttpServletResponse res) {
+        String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDto dto = userService.fetchById(userKey);
+        return new ResponseEntity<String>(gson.toJson(dto.getId()), HttpStatus.OK);
     }
 
     // 비밀번호 수정
-    @RequestMapping(value = "/user/pw", method = RequestMethod.PATCH, produces = "application/json; charset=utf-8")
+    @PatchMapping("/user/pw")
     public ResponseEntity<String> findPW(HttpServletRequest req,
                                          HttpServletResponse res,
-                                         @RequestBody UserDto userDto)
-    {
-        try{
-            String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
-            userDto.setKey(userKey);
-            userService.update(userDto);
-            return new ResponseEntity<String>(HttpStatus.OK);
-        }catch (Throwable t){
-            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                         @RequestBody UserDto userDto) {
+        String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
+        userDto.setKey(userKey);
+        userService.update(userDto);
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
 
     // 회원정보 조회
-    @RequestMapping(value = "/user", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @GetMapping("/user")
     public ResponseEntity<String> findUser(HttpServletRequest req,
-                                         HttpServletResponse res){
-        try{
-            String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
-            UserDto dto = userService.fetchById(userKey);
-            return new ResponseEntity<String>(gson.toJson(dto),HttpStatus.OK);
-        }catch (Throwable t){
-            return new ResponseEntity<String>( HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                           HttpServletResponse res){
+        String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDto dto = userService.fetchById(userKey);
+        return new ResponseEntity<String>(gson.toJson(dto),HttpStatus.OK);
     }
 }
