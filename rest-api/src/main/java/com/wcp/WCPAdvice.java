@@ -1,7 +1,6 @@
 package com.wcp;
 
 import com.wcp.error.ErrorResponse;
-import org.apache.tika.mime.MimeTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,20 +23,20 @@ public class WCPAdvice {
                 = ErrorResponse
                 .create()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+                .message("key should not be empty or String. Please Check key");
 
         return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(LoginException.class)
     public ResponseEntity<ErrorResponse> loginException(LoginException e) {
-        log.error("Please check id and pw", e);
+        log.error(e.getMessage(), e);
 
         final ErrorResponse response
                 = ErrorResponse
                 .create()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+                .message(e.getMessage());
 
         return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -50,7 +49,7 @@ public class WCPAdvice {
                 = ErrorResponse
                 .create()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+                .message(t.getMessage());
 
         return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
