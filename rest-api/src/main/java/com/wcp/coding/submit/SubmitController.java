@@ -34,6 +34,6 @@ public class SubmitController {
                                                  @RequestBody SubmitHistoryDto dto) {
             String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
             dto = submitHistoryService.registerSubmitHistory(dto, postId, userKey);
-            return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
+            return new ResponseEntity(gson.toJson(dto), HttpStatus.OK);
     }
 }

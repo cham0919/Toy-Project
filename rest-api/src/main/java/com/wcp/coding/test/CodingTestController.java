@@ -45,7 +45,7 @@ public class CodingTestController {
         PageInfo pageInfo = codingTestService.fetchPageList(pageNm, roomId);
         Map<String, Object> respMap = pageInfo.parsePageRangeToMap();
         respMap.put("post", dtos);
-        return new ResponseEntity<String>(gson.toJson(respMap), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(respMap), HttpStatus.OK);
     }
 
 
@@ -58,7 +58,7 @@ public class CodingTestController {
         multiPartDto.setUserKey(userKey)
                 .setPostId(roomId);
         codingTestService.registerContent(multiPartDto);
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/{testId:[0-9]+}")
@@ -67,7 +67,7 @@ public class CodingTestController {
                                                       @PathVariable("testId") String testId) {
         String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
         CodingTestDto dto = codingTestService.fetchById(testId);
-        return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(dto), HttpStatus.OK);
     }
 
 
@@ -75,7 +75,7 @@ public class CodingTestController {
     public ResponseEntity<String> fetchCodingTestAll(HttpServletRequest req,
                                                      HttpServletResponse res) {
         List<CodingTestDto> codingTestDtos = codingTestService.fetchAll();
-        return new ResponseEntity<String>(gson.toJson(codingTestDtos), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(codingTestDtos), HttpStatus.OK);
     }
 
     @PutMapping("/{postId:[0-9]+}")
@@ -85,7 +85,7 @@ public class CodingTestController {
         String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
         codingTestDto.setUserKey(userKey);
         codingTestDto = codingTestService.update(codingTestDto);
-        return new ResponseEntity<String>(gson.toJson(codingTestDto), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(codingTestDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{postId:[0-9]+}")
@@ -93,13 +93,13 @@ public class CodingTestController {
                                                    HttpServletResponse res,
                                                    @PathVariable("postId") String postId) {
         codingTestService.deleteById(postId);
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/cnt")
     public ResponseEntity<String> codingTestCount(HttpServletRequest req,
                                                   HttpServletResponse res) {
         Long postCnt = codingTestService.count();
-        return new ResponseEntity<String>(String.valueOf(postCnt),HttpStatus.OK);
+        return new ResponseEntity(postCnt,HttpStatus.OK);
     }
 }

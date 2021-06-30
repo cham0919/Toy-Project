@@ -34,7 +34,7 @@ public class JudgeController {
                                                           @PathVariable("postId") String postId,
                                                           @RequestBody JudgeRequestDto dto) throws IOException {
         List<JudegeResponseDto> resps = judgeService.createBatchedSubmission(dto, postId);
-        return new ResponseEntity<String>(gson.toJson(resps), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(resps), HttpStatus.OK);
     }
 
     @GetMapping("/{token}/{postId:[0-9]+}")
@@ -42,6 +42,6 @@ public class JudgeController {
                                                 HttpServletResponse res,
                                                 @PathVariable("token") String token) throws IOException {
         JudegeResponseDto resp = judgeService.getSubmission(token);
-        return new ResponseEntity<String>(gson.toJson(resp), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(resp), HttpStatus.OK);
     }
 }

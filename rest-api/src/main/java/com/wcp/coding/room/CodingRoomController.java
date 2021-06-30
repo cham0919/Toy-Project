@@ -83,7 +83,7 @@ public class CodingRoomController {
                                          HttpServletResponse res,
                                          @RequestBody CodingRoomDto dto) {
         dto = codingRoomService.update(dto);
-        return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(dto), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
@@ -91,7 +91,7 @@ public class CodingRoomController {
                                          HttpServletResponse res,
                                          @RequestBody CodingRoomDto codingRoomDto) {
         codingRoomService.delete(codingRoomDto);
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @DeleteMapping("/{postId:[0-9]+}")
@@ -99,13 +99,13 @@ public class CodingRoomController {
                                          HttpServletResponse res,
                                          @PathVariable("postId") String postId) {
         codingRoomService.deleteById(postId);
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/cnt")
     public ResponseEntity<String> count(HttpServletRequest req,
                                         HttpServletResponse res) {
         Long postCnt = codingRoomService.count();
-        return new ResponseEntity<String>(String.valueOf(postCnt),HttpStatus.OK);
+        return new ResponseEntity(postCnt,HttpStatus.OK);
     }
 }

@@ -44,7 +44,7 @@ public class AuthController {
         String accessToken = authService.signIn(userDto, validateTokenCookie.getValue());
         ResponseCookie accessTokenCookie = authService.privideAccessToken(accessToken);
         res.addHeader("Set-Cookie", accessTokenCookie.toString());
-        return new ResponseEntity<String>(gson.toJson(userDto),HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(userDto),HttpStatus.OK);
     }
 
     @GetMapping("/check")
@@ -53,7 +53,7 @@ public class AuthController {
         Cookie accessTokenCookie = WebUtils.getCookie(req, ACCESSTOKEN.getToken());
         Map<String, Boolean> map = new HashMap();
         map.put("result", accessTokenCookie != null);
-        return new ResponseEntity<String>(gson.toJson(map), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(map), HttpStatus.OK);
     }
 
     @GetMapping("/logout")
@@ -61,6 +61,6 @@ public class AuthController {
                                          HttpServletResponse res) {
         ResponseCookie accessTokenCookie = authService.logout();
         res.addHeader("Set-Cookie", accessTokenCookie.toString());
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

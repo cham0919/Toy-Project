@@ -38,7 +38,7 @@ public class UserController {
                                          HttpServletResponse res,
                                          @RequestBody UserDto userDto) {
         userDto = userService.signUp(userDto);
-        return new ResponseEntity<String>(gson.toJson(userDto), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(userDto), HttpStatus.OK);
     }
 
     // 회원탈퇴
@@ -48,7 +48,7 @@ public class UserController {
                                                  Authentication authentication) {
         String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
         userService.deleteById(userKey);
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     // 아이디 찾기
@@ -57,7 +57,7 @@ public class UserController {
                                          HttpServletResponse res) {
         String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDto dto = userService.fetchById(userKey);
-        return new ResponseEntity<String>(gson.toJson(dto.getId()), HttpStatus.OK);
+        return new ResponseEntity(gson.toJson(dto.getId()), HttpStatus.OK);
     }
 
     // 비밀번호 수정
@@ -68,7 +68,7 @@ public class UserController {
         String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
         userDto.setKey(userKey);
         userService.update(userDto);
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 
