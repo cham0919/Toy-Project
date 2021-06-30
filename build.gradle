@@ -51,6 +51,8 @@ configure(javaProjects) {
             dependency "org.mapstruct:mapstruct-processor:1.4.1.Final"
 
             dependency 'io.jsonwebtoken:jjwt:0.9.1'
+
+            dependency 'org.apache.tika:tika-core:1.26'
         }
     }
 
@@ -73,6 +75,8 @@ configure(javaProjects) {
 
         implementation 'commons-io:commons-io'
         implementation 'com.google.code.gson:gson'
+        implementation 'org.apache.tika:tika-core'
+
     }
 
     println('java projects tasks')
