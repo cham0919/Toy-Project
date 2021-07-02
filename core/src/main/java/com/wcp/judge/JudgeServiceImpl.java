@@ -20,6 +20,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -126,20 +127,23 @@ public class JudgeServiceImpl implements JudgeService {
 
     @Override
     public List<JudegeResponseDto> createBatchedSubmission(String param) throws IOException {
-        HttpResponse resp = HttpRequest.of()
+        HttpResponse resp = getRespCreateBatchedSubmission(param);
+        //TODO. 상태코드에 따른 에러 분기 처리
+//        if(resp.getStatusLine().getStatusCode())
+        ResponseHandler<String> handler = new BasicResponseHandler();
+        String result =  handler.handleResponse(resp);
+
+        return gson.fromJson(result, new TypeToken<List<JudegeResponseDto>>() {}.getType());
+    }
+
+    private HttpResponse getRespCreateBatchedSubmission(String param) throws IOException {
+        return HttpRequest.of()
                 .post(createBatchedSubmissionUri())
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .addHeader(Judge.TOKEN_KEY, Judge.TOKEN_VALUE)
                 .addHeader(Judge.HOST_KEY,  Judge.HOST_VALUE)
                 .setEntity(new StringEntity(param))
                 .execute();
-
-//        if(resp.getStatusLine().getStatusCode())
-        //TODO. 상태코드에 따른 에러 분기 처리
-        ResponseHandler<String> handler = new BasicResponseHandler();
-        String result =  handler.handleResponse(resp);
-
-        return gson.fromJson(result, new TypeToken<List<JudegeResponseDto>>() {}.getType());
     }
 
     @Override
