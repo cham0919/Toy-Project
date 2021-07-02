@@ -26,13 +26,5 @@ public abstract class CodingRoomMapper implements GenericMapper<CodingRoomDto, C
             codingRoom.setUser(null);
         }
     }
-
-//    @Override
-//    @Mappings(
-//            @Mapping(source = "", target = "language"),
-//    )
-//    public CodingRoomDto toDto(CodingRoom codingRoom) {
-//        return null;
-//    }
 }
 
