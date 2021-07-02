@@ -8,9 +8,7 @@ import com.wcp.auth.JwtAuthenticationFilter;
 import com.wcp.security.LoginFailHandler;
 import com.wcp.security.LoginSuccessHandler;
 import com.wcp.auth.JwtAuthenticationEntryPoint;
-import com.wcp.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,11 +26,8 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,22 +70,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    public void configure(WebSecurity web) throws Exception
-    {
-        // static 디렉터리의 하위 파일 목록은 인증 무시 ( = 항상통과 )
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .httpBasic().disable() // rest api 만을 고려하여 기본 설정은 해제하겠습니다.
+        http.httpBasic().disable()
                 .csrf().disable()
                 .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         applyAuthenticationConfig(http);
-
 
         http.authorizeRequests()
                 .anyRequest()
@@ -105,32 +96,48 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void applyAuthenticationConfig(HttpSecurity http) throws Exception {
         InputStream input = getClass().getResourceAsStream(authenticationPropertiesPath);
-        JsonObject authProperties;
-        authProperties = new Gson().fromJson(new InputStreamReader(input), JsonObject.class);
+        JsonObject authProperties = toJsonObject(input);
+
         for (Map.Entry<String, JsonElement> entry : authProperties.entrySet()) {
-            String url = entry.getKey();
-            if (entry.getValue().isJsonArray()) {
-                List<String> roleList = new ArrayList<String>();
-                for (JsonElement role : entry.getValue().getAsJsonArray()) {
-                    roleList.add(role.getAsString());
-                }
-                http.authorizeRequests().antMatchers(url).hasAnyAuthority(roleList.toArray(new String[0]));
-            } else if (entry.getValue().isJsonObject()) {
-                JsonObject roleMap = entry.getValue().getAsJsonObject();
-                for (Map.Entry<String, JsonElement> roleEntry : roleMap.entrySet()) {
-                    HttpMethod httpMethod = HttpMethod.valueOf(roleEntry.getKey().toUpperCase());
-                    List<String> roleList = new ArrayList<>();
-                    for (JsonElement role : roleEntry.getValue().getAsJsonArray()) {
-                        roleList.add(role.getAsString());
-                    }
-                    http.authorizeRequests().antMatchers(httpMethod, url).hasAnyAuthority(roleList.toArray(new String[0]));
-                }
-            } else {
-                throw new RuntimeException("Invalid format! Only JsonArray and JsonObject will be accepted");
-            }
+            applyAccessAuths(http, entry);
         }
     }
 
+    private void applyAccessAuths(HttpSecurity http, Map.Entry<String, JsonElement> entry) throws Exception {
+        String url = entry.getKey();
+        if (entry.getValue().isJsonArray()) {
+            applyUrlAccessAuths(entry, http.authorizeRequests().antMatchers(url));
+        } else if (entry.getValue().isJsonObject()) {
+            applyUrlAndMethodAccessAuths(http, entry, url);
+        } else {
+            throw new RuntimeException("Invalid format! Only JsonArray and JsonObject will be accepted");
+        }
+    }
+
+    private void applyUrlAndMethodAccessAuths(HttpSecurity http, Map.Entry<String, JsonElement> entry, String url) throws Exception {
+        JsonObject roleMap = entry.getValue().getAsJsonObject();
+        for (Map.Entry<String, JsonElement> roleEntry : roleMap.entrySet()) {
+            applyUrlAndMethodAccessAuth(http, url, roleEntry);
+        }
+    }
+
+    private void applyUrlAndMethodAccessAuth(HttpSecurity http, String url, Map.Entry<String, JsonElement> roleEntry) throws Exception {
+        HttpMethod httpMethod = HttpMethod.valueOf(roleEntry.getKey().toUpperCase());
+        applyUrlAccessAuths(roleEntry, http.authorizeRequests().antMatchers(httpMethod, url));
+    }
+
+
+    private void applyUrlAccessAuths(Map.Entry<String, JsonElement> entry, ExpressionUrlAuthorizationConfigurer<HttpSecurity>.AuthorizedUrl authorizedUrl) {
+        List<String> roleList = new ArrayList<>();
+        entry.getValue().getAsJsonArray()
+                .forEach(role -> roleList.add(role.getAsString()));
+
+        authorizedUrl.hasAnyAuthority(roleList.toArray(new String[0]));
+    }
+
+    private JsonObject toJsonObject(InputStream input) {
+        return new Gson().fromJson(new InputStreamReader(input), JsonObject.class);
+    }
 
 
 }
