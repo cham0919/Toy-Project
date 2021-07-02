@@ -4,6 +4,6 @@ public interface PageCalculator {
 
     PageInfo fetchPageList(PageInfo pageInfo, PageCount pageCount);
 
-    PageInfo getPageList(PageInfo pageInfo);
+    PageInfo fetchPageList(PageInfo pageInfo);
 
 }
