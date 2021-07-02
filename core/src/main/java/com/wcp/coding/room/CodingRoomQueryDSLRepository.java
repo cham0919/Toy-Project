@@ -8,5 +8,7 @@ public interface CodingRoomJPQLRepository {
 
     CodingRoom fetchByIdJoinUser(Long id);
 
+    List<CodingRoom> fetchAllPublicRoom();
+
 
 }

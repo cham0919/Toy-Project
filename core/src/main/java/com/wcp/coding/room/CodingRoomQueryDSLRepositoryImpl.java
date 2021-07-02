@@ -22,6 +22,28 @@ public class CodingRoomJPQLRepositoryImpl implements CodingRoomJPQLRepository {
     private final Logger log = LoggerFactory.getLogger(CodingRoomJPQLRepositoryImpl.class);
     private final JPAQueryFactory queryFactory;
 
+
+    @Override
+    public CodingRoom fetchByIdJoinUser(Long id) {
+        return queryFactory
+                .selectFrom(codingRoom)
+                .leftJoin(codingRoom.codingJoinUsers)
+                .fetchJoin()
+                .where(codingRoom.key.eq(id))
+                .fetchOne();
+    }
+
+    @Override
+    public List<CodingRoom> fetchAllPublicRoom(){
+        List<CodingRoom> codingRooms = queryFactory
+                .selectFrom(codingRoom)
+                .leftJoin(codingRoom.codingJoinUsers)
+                .fetchJoin()
+                .where(codingRoom.secret.eq(false))
+                .fetch();
+        return codingRooms;
+    }
+
     @Override
     public List<CodingRoomDto> fetchByCurrentPage(int currentPage) {
         return queryFactory
@@ -48,15 +70,5 @@ public class CodingRoomJPQLRepositoryImpl implements CodingRoomJPQLRepository {
                 .offset((currentPage - 1) * PageCount.CODING_ROOM.getPostCount())
                 .limit(PageCount.CODING_ROOM.getPostCount())
                 .fetch();
-    }
-
-    @Override
-    public CodingRoom fetchByIdJoinUser(Long id) {
-        return queryFactory
-                .selectFrom(codingRoom)
-                .leftJoin(codingRoom.codingJoinUsers)
-                .fetchJoin()
-                .where(codingRoom.key.eq(id))
-                .fetchOne();
     }
 }
