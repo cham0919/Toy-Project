@@ -17,9 +17,9 @@ import static com.wcp.coding.test.QCodingTest.codingTest;
 
 @Repository
 @RequiredArgsConstructor
-public class CodingRoomJPQLRepositoryImpl implements CodingRoomJPQLRepository {
+public class CodingRoomQueryDSLRepositoryImpl implements CodingRoomQueryDSLRepository {
 
-    private final Logger log = LoggerFactory.getLogger(CodingRoomJPQLRepositoryImpl.class);
+    private final Logger log = LoggerFactory.getLogger(CodingRoomQueryDSLRepositoryImpl.class);
     private final JPAQueryFactory queryFactory;
 
 
