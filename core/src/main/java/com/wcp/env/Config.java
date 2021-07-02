@@ -5,8 +5,7 @@ import java.util.Properties;
 public class Config {
 
     public static Properties getAllProperties() {
-        Environment environment = getEnvironment();
-        return environment.getAllProperties();
+        return getEnvironment().getAllProperties();
     }
 
     public static Environment getEnvironment() {
@@ -14,7 +13,6 @@ public class Config {
     }
 
     public static String getProperty(String key) {
-//		logger.debug(key+":"+getAllProperties().getProperty(key));
         return getAllProperties().getProperty(key);
     }
 
