@@ -15,6 +15,21 @@ public class WCPAdvice {
 
     private final Logger log = LoggerFactory.getLogger(WCPAdvice.class);
 
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<ErrorResponse> throwable(Throwable t) {
+        log.error(t.getMessage(), t);
+
+        final ErrorResponse response
+                = ErrorResponse
+                .create()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(t.getMessage());
+
+        return new ResponseEntity<ErrorResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
     @ExceptionHandler(NumberFormatException.class)
     public ResponseEntity<ErrorResponse> numberFormatException(NumberFormatException e) {
         log.error("key should not be empty or String. Please Check key", e);
@@ -40,18 +55,4 @@ public class WCPAdvice {
 
         return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<ErrorResponse> throwable(Throwable t) {
-        log.error(t.getMessage(), t);
-
-        final ErrorResponse response
-                = ErrorResponse
-                .create()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(t.getMessage());
-
-        return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
 }
