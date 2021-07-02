@@ -3,6 +3,7 @@ package com.wcp.common.file;
 import com.wcp.common.Closer;
 import com.wcp.common.DateUtils;
 import org.apache.commons.codec.Charsets;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
@@ -174,5 +175,10 @@ public final class FileUtils {
     public static boolean checkMimeType(MultipartFile file, MimeType mimeType) throws IOException {
         String type = tika.detect(file.getBytes());
         return mimeType.equalsIgnoreValue(type);
+    }
+
+    public static boolean isPropertiesFile(File file){
+        String extension = FilenameUtils.getExtension(file.getName());
+        return FileExtension.PROPERTIES.equalsIgnoreValue(extension);
     }
 }
