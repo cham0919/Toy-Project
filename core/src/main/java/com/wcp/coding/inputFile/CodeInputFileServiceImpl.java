@@ -6,7 +6,6 @@ import com.wcp.env.Config;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,7 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
 
     @Override
-    public CodeInputFile multiPartToEntity(MultipartFile file) throws Throwable {
+    public CodeInputFile multiPartToEntity(MultipartFile file) throws MimeTypeException, IOException {
         if (!isZipFile(file)) { throw new MimeTypeException("Upload is only possible as a zip file"); }
         File uploadFile = uploadFile(file);
         return new CodeInputFile().setGivenName(file.getOriginalFilename())
@@ -49,13 +47,22 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
     private File uploadFile(MultipartFile file) throws IOException {
         String randomFileKey = UUID.randomUUID().toString();
-        String fileName = randomFileKey + FilenameUtils.EXTENSION_SEPARATOR + FilenameUtils.getExtension(file.getOriginalFilename());
-        File uploadFile = new File(FileUtils.resourceDirToday(Config.getProperty("com.wcp.default.dir")),
-                randomFileKey);
-        if(!uploadFile.exists()){ uploadFile.mkdirs(); }
+        String fileName = changeRandomFileName(randomFileKey, file.getOriginalFilename());
+        File uploadFile = createDayDir(randomFileKey);
         uploadFile = new File(uploadFile, fileName);
         file.transferTo(uploadFile);
         return uploadFile;
+    }
+
+    private File createDayDir(String randomFileKey) {
+        File dirFile = new File(FileUtils.resourceDirToday(Config.getProperty("com.wcp.default.dir")),
+                randomFileKey);
+        if(!dirFile.exists()){ dirFile.mkdirs(); }
+        return dirFile;
+    }
+
+    private String changeRandomFileName(String randomFileKey, String fileName) {
+        return randomFileKey + FilenameUtils.EXTENSION_SEPARATOR + FilenameUtils.getExtension(fileName);
     }
 
     @Override
@@ -89,16 +96,13 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
     @Override
     public File[] fetchIOFiles(File dir){
-        return dir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                String extension = FilenameUtils.getExtension(name);
-                if(IN.equalsIgnoreValue(extension)
-                        || OUT.equalsIgnoreValue(extension)){
-                    return true;
-                }
-                return false;
+        return dir.listFiles((d, n) -> {
+            String extension = FilenameUtils.getExtension(n);
+            if(IN.equalsIgnoreValue(extension)
+                    || OUT.equalsIgnoreValue(extension)){
+                return true;
             }
+            return false;
         });
     }
 
@@ -111,9 +115,6 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
     @Override
     public CodeInputFileDto fetchById(String id) {
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
         CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
         return CODE_INPUT_FILE_MAPPER.toDto(codeInputFile);
     }
@@ -136,9 +137,6 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
     @Transactional
     public CodeInputFileDto update(CodeInputFileDto dto) {
         String id = dto.getKey();
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
         CodeInputFile codeInputFile = fetchById(Long.valueOf(id));
         CODE_INPUT_FILE_MAPPER.updateFromDto(dto, codeInputFile);
         return dto;
@@ -153,9 +151,6 @@ public class CodeInputFileServiceImpl implements CodeInputFileService{
 
     @Override
     public void deleteById(String id){
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
         deleteById(Long.valueOf(id));
     }
 

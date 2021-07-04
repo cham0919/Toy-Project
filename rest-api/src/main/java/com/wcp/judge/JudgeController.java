@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = "/wcp/coding/api")
 @RequiredArgsConstructor
 public class JudgeController {
@@ -27,34 +28,20 @@ public class JudgeController {
 
     private final JudgeService judgeService;
 
-    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-    @ResponseBody
+    @PostMapping("/{postId:[0-9]+}")
     public ResponseEntity<String> createBatchedSubmission(HttpServletRequest req,
                                                           HttpServletResponse res,
                                                           @PathVariable("postId") String postId,
-                                                          @RequestBody JudgeRequestDto dto)
-    {
-        try{
-            List<JudegeResponseDto> resps = judgeService.createBatchedSubmission(dto, postId);
-            return new ResponseEntity<String>(gson.toJson(resps), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error("submission error",t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                                          @RequestBody JudgeRequestDto dto) throws IOException {
+        List<JudegeResponseDto> resps = judgeService.createBatchedSubmission(dto, postId);
+        return new ResponseEntity(gson.toJson(resps), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{token}/{postId:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-    @ResponseBody
+    @GetMapping("/{token}/{postId:[0-9]+}")
     public ResponseEntity<String> getSubmission(HttpServletRequest req,
                                                 HttpServletResponse res,
-                                                @PathVariable("token") String token)
-    {
-        try{
-            JudegeResponseDto resp = judgeService.getSubmission(token);
-            return new ResponseEntity<String>(gson.toJson(resp), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error("submission error",t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                                @PathVariable("token") String token) throws IOException {
+        JudegeResponseDto resp = judgeService.getSubmission(token);
+        return new ResponseEntity(gson.toJson(resp), HttpStatus.OK);
     }
 }

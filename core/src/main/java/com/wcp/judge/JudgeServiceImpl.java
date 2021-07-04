@@ -10,6 +10,7 @@ import com.wcp.common.Base64Utils;
 import com.wcp.common.file.FileUtils;
 import com.wcp.common.http.HttpRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
@@ -19,11 +20,14 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,10 +48,7 @@ public class JudgeServiceImpl implements JudgeService {
 
 
     @Override
-    public List<JudegeResponseDto> createBatchedSubmission(JudgeRequestDto dto, String postId) throws Throwable {
-        if (StringUtils.isEmpty(postId) || !StringUtils.isNumeric(postId)) {
-            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check userKey : "+ postId);
-        }
+    public List<JudegeResponseDto> createBatchedSubmission(JudgeRequestDto dto, String postId) throws IOException {
         //TODO. fetchJoin으로 한번의 Select문 날리기
         CodingTest codingTest =  codingTestRepository.findById(Long.valueOf(postId)).get();
         File[] files =  codeInputFileService.fetchIOFilesById(codingTest.getCodeInputFile().getKey());
@@ -109,7 +110,7 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     @Override
-    public JudegeResponseDto getSubmission(String token) throws Throwable {
+    public JudegeResponseDto getSubmission(String token) throws IOException {
         HttpResponse resp =HttpRequest.of()
                 .post(getSubmissionUri(token))
                 .addHeader(Judge.TOKEN_KEY, Judge.TOKEN_VALUE)
@@ -125,21 +126,24 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     @Override
-    public List<JudegeResponseDto> createBatchedSubmission(String param) throws Throwable {
-        HttpResponse resp = HttpRequest.of()
+    public List<JudegeResponseDto> createBatchedSubmission(String param) throws IOException {
+        HttpResponse resp = getRespCreateBatchedSubmission(param);
+        //TODO. 상태코드에 따른 에러 분기 처리
+//        if(resp.getStatusLine().getStatusCode())
+        ResponseHandler<String> handler = new BasicResponseHandler();
+        String result =  handler.handleResponse(resp);
+
+        return gson.fromJson(result, new TypeToken<List<JudegeResponseDto>>() {}.getType());
+    }
+
+    private HttpResponse getRespCreateBatchedSubmission(String param) throws IOException {
+        return HttpRequest.of()
                 .post(createBatchedSubmissionUri())
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .addHeader(Judge.TOKEN_KEY, Judge.TOKEN_VALUE)
                 .addHeader(Judge.HOST_KEY,  Judge.HOST_VALUE)
                 .setEntity(new StringEntity(param))
                 .execute();
-
-//        if(resp.getStatusLine().getStatusCode())
-        //TODO. 상태코드에 따른 에러 분기 처리
-        ResponseHandler<String> handler = new BasicResponseHandler();
-        String result =  handler.handleResponse(resp);
-
-        return gson.fromJson(result, new TypeToken<List<JudegeResponseDto>>() {}.getType());
     }
 
     @Override

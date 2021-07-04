@@ -29,23 +29,13 @@ public class SubmitHistoryServiceImpl implements SubmitHistoryService{
     @Override
     @Transactional
     public SubmitHistoryDto registerSubmitHistory(SubmitHistoryDto dto, String postId, String userKey){
-        if (StringUtils.isEmpty(postId) || !StringUtils.isNumeric(postId)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check postId : "+ postId);
-        }
         SubmitHistory submitHistory = SubmitHistoryMapper.SUBMIT_HISTORY_MAPPER.toEntity(dto);
-        User user = userRepository.getOne(verifyKey(userKey));
+        User user = userRepository.getOne(Long.valueOf(userKey));
         CodingTest codingTest =  codingTestRepository.getOne(Long.valueOf(postId));
         submitHistory.setUser(user)
                 .setCodingTest(codingTest);
         submitHistoryRepository.save(submitHistory);
         return dto;
-    }
-
-    public Long verifyKey(String key){
-        if (StringUtils.isEmpty(key) || !StringUtils.isNumeric(key)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check key : "+ key);
-        }
-        return Long.valueOf(key);
     }
 
     @Override
@@ -57,9 +47,6 @@ public class SubmitHistoryServiceImpl implements SubmitHistoryService{
 
     @Override
     public SubmitHistoryDto fetchById(String id) {
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check id : "+ id);
-        }
         SubmitHistory entity = submitHistoryRepository.findById(Long.valueOf(id)).get();
         return SubmitHistoryMapper.SUBMIT_HISTORY_MAPPER.toDto(entity);
     }
@@ -79,11 +66,7 @@ public class SubmitHistoryServiceImpl implements SubmitHistoryService{
     @Override
     @Transactional
     public SubmitHistoryDto update(SubmitHistoryDto dto) {
-        String id = dto.getKey();
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
-        SubmitHistory entity = submitHistoryRepository.findById(Long.valueOf(id)).get();
+        SubmitHistory entity = submitHistoryRepository.findById(Long.valueOf(dto.getKey())).get();
         SubmitHistoryMapper.SUBMIT_HISTORY_MAPPER.updateFromDto(dto, entity);
         return dto;
     }
@@ -97,9 +80,6 @@ public class SubmitHistoryServiceImpl implements SubmitHistoryService{
 
     @Override
     public void deleteById(String id) {
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
         submitHistoryRepository.deleteById(Long.valueOf(id));
     }
 

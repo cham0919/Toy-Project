@@ -43,9 +43,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto fetchById(String userKey) {
-//        if (StringUtils.isEmpty(userKey) || !StringUtils.isNumeric(userKey)) {
-//            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ userKey);
-//        }
         User user = fetchById(Long.valueOf(userKey));
         return USER_MAPPER.toDto(user);
     }
@@ -66,11 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(UserDto dto) {
-        String id = dto.getKey();
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
-        User user = fetchById(Long.valueOf(id));
+        User user = fetchById(Long.valueOf(dto.getKey()));
         USER_MAPPER.updateFromDto(dto, user);
         return dto;
     }
@@ -85,9 +78,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(String id) {
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
         deleteById(Long.valueOf(id));
     }
 

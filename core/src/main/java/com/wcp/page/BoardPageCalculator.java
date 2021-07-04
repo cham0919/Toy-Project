@@ -2,9 +2,9 @@ package com.wcp.page;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class BoardPageCalculator implements PageCalculator {
 
     private final Logger log = LoggerFactory.getLogger(BoardPageCalculator.class);
@@ -15,15 +15,15 @@ public class BoardPageCalculator implements PageCalculator {
         pageInfo.setPageCount(pageCount.getPageCount())
                 .setPostCount(pageCount.getPostCount());
         log.debug(pageInfo.toString());
-        return getPageList(pageInfo);
+        return fetchPageList(pageInfo);
     }
 
     @Override
-    public PageInfo getPageList(PageInfo pageInfo){
+    public PageInfo fetchPageList(PageInfo pageInfo){
         calcEndPage(pageInfo);
         calcStartPage(pageInfo);
         calcTotalEndPage(pageInfo);
-        log.info(pageInfo.toString());
+        log.debug(pageInfo.toString());
         return pageInfo;
     }
 

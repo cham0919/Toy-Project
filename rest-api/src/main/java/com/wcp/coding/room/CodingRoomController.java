@@ -29,145 +29,84 @@ public class CodingRoomController {
     private final CodingRoomService codingRoomService;
 
 
-//    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-//    public ResponseEntity<String> fetchAllPublicRoom(HttpServletRequest req,
-//                                            HttpServletResponse res)
-//    {
-//        try{
-//            List<CodingRoomDto> codingRoomDtos = codingRoomService.fetchAllPublicRoom();
-//            return new ResponseEntity<String>(gson.toJson(codingRoomDtos), HttpStatus.OK);
-//        }catch (Throwable t){
-//            log.error(t.getMessage(),t);
-//            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-    @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @PostMapping({"", "/"})
     public ResponseEntity<String> save(HttpServletRequest req,
-                                            HttpServletResponse res,
-                                            @RequestBody CodingRoomDto codingRoomDto)
-    {
-        try{
-            String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
-            codingRoomDto = codingRoomService.save(codingRoomDto, userKey);
-            return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                       HttpServletResponse res,
+                                       @RequestBody CodingRoomDto codingRoomDto) {
+        String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
+        codingRoomDto = codingRoomService.save(codingRoomDto, userKey);
+        return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+
+    @GetMapping("/{postId:[0-9]+}")
     public ResponseEntity<String> fetchById(HttpServletRequest req,
                                             HttpServletResponse res,
-                                            @PathVariable("postId") String postId)
-    {
-        try{
-            CodingRoomDto codingRoomDto = codingRoomService.fetchById(postId);
-            return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                            @PathVariable("postId") String postId) {
+        CodingRoomDto codingRoomDto = codingRoomService.fetchById(postId);
+        return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/page/{pageNm:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+
+    @GetMapping("/page/{pageNm:[0-9]+}")
     public ResponseEntity<String> fetchByPage(HttpServletRequest req,
-                                            HttpServletResponse res,
-                                            @PathVariable("pageNm") String pageNm)
-    {
-        try{
-            List<CodingRoomDto> dtos = codingRoomService.fetchByPage(pageNm);
-            PageInfo pageInfo = codingRoomService.fetchPageList(pageNm);
-            Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
-            stringObjectMap.put("post", dtos);
-            return new ResponseEntity<String>(gson.toJson(stringObjectMap), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                              HttpServletResponse res,
+                                              @PathVariable("pageNm") String pageNm) {
+        List<CodingRoomDto> dtos = codingRoomService.fetchByPage(pageNm);
+        PageInfo pageInfo = codingRoomService.fetchPageList(pageNm);
+        Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
+        stringObjectMap.put("post", dtos);
+        return new ResponseEntity<String>(gson.toJson(stringObjectMap), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/range/{pageNm:[0-9]+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+
+    @GetMapping("/range/{pageNm:[0-9]+}")
     public ResponseEntity<String> count(HttpServletRequest req,
                                         HttpServletResponse res,
-                                        @PathVariable("pageNm") String pageNm)
-    {
-        try{
-            PageInfo pageInfo = codingRoomService.fetchPageList(pageNm);
-            Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
-            return new ResponseEntity<String>(gson.toJson(stringObjectMap),HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                        @PathVariable("pageNm") String pageNm) {
+        PageInfo pageInfo = codingRoomService.fetchPageList(pageNm);
+        Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
+        return new ResponseEntity<String>(gson.toJson(stringObjectMap),HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+
+    @GetMapping("/all")
     public ResponseEntity<String> fetchAll(HttpServletRequest req,
-                                              HttpServletResponse res)
-    {
-        try{
-            List<CodingRoomDto> dtos = codingRoomService.fetchAll();
-            return new ResponseEntity<String>(gson.toJson(dtos), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                           HttpServletResponse res) {
+        List<CodingRoomDto> dtos = codingRoomService.fetchAll();
+        return new ResponseEntity<String>(gson.toJson(dtos), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
+
+    @PutMapping("/{postId:[0-9]+}")
     public ResponseEntity<String> update(HttpServletRequest req,
-                                           HttpServletResponse res,
-                                         @RequestBody CodingRoomDto dto)
-    {
-        try{
-            dto = codingRoomService.update(dto);
-            return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                         HttpServletResponse res,
+                                         @RequestBody CodingRoomDto dto) {
+        dto = codingRoomService.update(dto);
+        return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     public ResponseEntity<String> delete(HttpServletRequest req,
                                          HttpServletResponse res,
-                                         @RequestBody CodingRoomDto codingRoomDto)
-    {
-        try{
-            codingRoomService.delete(codingRoomDto);
-            return new ResponseEntity<String>(HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                         @RequestBody CodingRoomDto codingRoomDto) {
+        codingRoomService.delete(codingRoomDto);
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{postId:[0-9]+}", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
+    @DeleteMapping("/{postId:[0-9]+}")
     public ResponseEntity<String> delete(HttpServletRequest req,
                                          HttpServletResponse res,
-                                         @PathVariable("postId") String postId)
-    {
-        try{
-            codingRoomService.deleteById(postId);
-            return new ResponseEntity<String>(HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                         @PathVariable("postId") String postId) {
+        codingRoomService.deleteById(postId);
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/cnt", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-    public ResponseEntity<String> count(HttpServletRequest req,
-                                         HttpServletResponse res)
-    {
-        try{
-            Long postCnt = codingRoomService.count();
-            return new ResponseEntity<String>(String.valueOf(postCnt),HttpStatus.OK);
-        }catch (Throwable t){
-            log.error(t.getMessage(),t);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/cnt")
+    public ResponseEntity<Long> count(HttpServletRequest req,
+                                        HttpServletResponse res) {
+        log.info("");
+        Long postCnt = codingRoomService.count();
+        return new ResponseEntity<Long>(postCnt,HttpStatus.OK);
     }
 }

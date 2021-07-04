@@ -16,46 +16,27 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-//public class JwtAuthenticationFilter extends OncePerRequestFilter {
 public class JwtAuthenticationFilter implements Filter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
     private final AnonymousAuthentication anonymousAuthentication;
 
-    /*@Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 쿠키 JWT 를 받아옵니다.
-        Cookie accessTokenCookie = WebUtils.getCookie(request, "accessToken");
-        Cookie validateTokenCookie = WebUtils.getCookie(request, "validateToken");
-
-        if (!hasCookie(validateTokenCookie)) {
-            applyValidateTokenCookie(response);
-        } else if (hasCookie(accessTokenCookie)) {
-            TokenDto dto = createTokenDto(accessTokenCookie, validateTokenCookie);
-            setAuthentication(dto);
-        } else {
-            setAnonymousAuthentication();
-        }
-        filterChain.doFilter(request, response);
-    }*/
-
-
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-        // 쿠키 JWT 를 받아옵니다.
-        Cookie accessTokenCookie = WebUtils.getCookie(request, "accessToken");
-        Cookie validateTokenCookie = WebUtils.getCookie(request, "validateToken");
 
-        if (!hasCookie(validateTokenCookie)) {
+        Cookie accessTokenCookie = WebUtils.getCookie(request, Token.ACCESSTOKEN.getToken());
+        Cookie validateTokenCookie = WebUtils.getCookie(request, Token.VALIDATETOKEN.getToken());
+
+        if (!hasCookie(validateTokenCookie)) { // 최초 요청 판별 여부
             applyValidateTokenCookie(response);
-        } else if (hasCookie(accessTokenCookie)) {
+        } else if (hasCookie(accessTokenCookie)) { // 로그인 유저 판별 여부
             TokenDto dto = createTokenDto(accessTokenCookie, validateTokenCookie);
             setAuthentication(dto);
         } else {
-            setAnonymousAuthentication();
+            setAnonymousAuthentication(); // 익명 권한 부여
         }
         chain.doFilter(req, res);
     }
@@ -74,11 +55,11 @@ public class JwtAuthenticationFilter implements Filter {
 
     private void applyValidateTokenCookie(HttpServletResponse response) {
         ResponseCookie validateTokenCookie = ResponseCookie.from("validateToken", String.valueOf(UUID.randomUUID()))
-//                .sameSite("La")
                 .httpOnly(true)
                 .path("/wcp")
                 .build();
         response.addHeader("Set-Cookie", validateTokenCookie.toString());
+        setAnonymousAuthentication();
     }
 
     private void filter(ServletRequest request, ServletResponse response)
@@ -104,6 +85,4 @@ public class JwtAuthenticationFilter implements Filter {
     private void setAnonymousAuthentication() {
         SecurityContextHolder.getContext().setAuthentication(anonymousAuthentication);
     }
-
-
 }

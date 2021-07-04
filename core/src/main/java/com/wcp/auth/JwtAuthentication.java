@@ -11,12 +11,12 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class JwtAuthentication implements Authentication {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthentication.class);
 
 	private final String accessToken;
-	private String key;
-	private String role;
+	private final String key;
+	private final String role;
 	private boolean isAuthenticated;
 
 	public JwtAuthentication(TokenDto dto) {
@@ -30,9 +30,12 @@ public class JwtAuthentication implements Authentication {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		logger.debug("Getting authorities");
 		if (isAuthenticated) {
-				return Collections.singletonList(new SimpleGrantedAuthority(role));
+			return Collections.singletonList(new SimpleGrantedAuthority(role));
+		} else {
+			return Collections.singletonList(
+					new SimpleGrantedAuthority(Role.ANONYMOUS.getValue())
+			);
 		}
-		return Collections.singletonList(new SimpleGrantedAuthority(Role.ANONYMOUS.getValue()));
 	}
 
 	@Override

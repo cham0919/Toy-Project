@@ -12,6 +12,7 @@ import com.wcp.user.User;
 import com.wcp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.mime.MimeTypeException;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +42,11 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     @Override
     @Transactional
-    public void registerContent(MultiPartDto multiPartDto) throws Throwable {
+    public void registerContent(MultiPartDto multiPartDto) throws IOException, MimeTypeException{
         CodingTest codingTest = CODING_TEST_MAPPER.toEntity(multiPartDto);
         MultipartFile file = multiPartDto.getFile();
         if (file == null || file.isEmpty()) {
-            log.error("Only one file must be attached.");
-            throw new FileUploadException();
+            throw new FileUploadException("Only one file must be attached.");
         }
         CodeInputFile codeInputFile = codeInputFileService.multiPartToEntity(file);
         registerCodingTest(codingTest, multiPartDto.getPostId(), multiPartDto.getUserKey());
@@ -98,12 +99,6 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     @Override
     public PageInfo fetchPageList(String currentPage, String roomId) {
-        if (StringUtils.isEmpty(currentPage) || !StringUtils.isNumeric(currentPage)) {
-            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check currentPage : "+ currentPage);
-        }
-        if (StringUtils.isEmpty(roomId) || !StringUtils.isNumeric(roomId)) {
-            throw new IllegalArgumentException("currentPage should not be empty or String. Please Check roomId : "+ roomId);
-        }
         PageInfo pageInfo = PageInfo.of()
                 .setCurrentPage(Integer.valueOf(currentPage))
                 .setTotalPostCount(fetchTestCount(Long.valueOf(roomId)));
@@ -113,9 +108,6 @@ public class CodingTestServiceImpl implements CodingTestService{
 
     @Override
     public CodingTestDto fetchById(String id){
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
         CodingTest codingTest = fetchById(Long.valueOf(id));
         return CODING_TEST_MAPPER.toDto(codingTest);
     }
@@ -139,11 +131,7 @@ public class CodingTestServiceImpl implements CodingTestService{
     @Override
     @Transactional
     public CodingTestDto update(CodingTestDto dto) {
-        String id = dto.getKey();
-        if (StringUtils.isEmpty(id) || !StringUtils.isNumeric(id)) {
-            throw new IllegalArgumentException("id should not be empty or String. Please Check Id : "+ id);
-        }
-        CodingTest codingTest = fetchByIdJoinUser(Long.valueOf(id), Long.valueOf(dto.getUserKey()));
+        CodingTest codingTest = fetchByIdJoinUser(Long.valueOf(dto.getKey()), Long.valueOf(dto.getUserKey()));
         CODING_TEST_MAPPER.updateFromDto(dto, codingTest);
         return dto;
     }

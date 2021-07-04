@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardPageCalculatorTest {
@@ -27,7 +26,7 @@ public class BoardPageCalculatorTest {
 
     @Test
     public void getPageList_Success_NotNull(){
-        pageCalculator.getPageList(pageInfoTest);
+        pageCalculator.fetchPageList(pageInfoTest);
 
         assertNotNull(pageInfoTest.getEndPage());
         assertNotNull(pageInfoTest.getStartPage());
@@ -38,7 +37,7 @@ public class BoardPageCalculatorTest {
         PageInfo pageInfoTest = PageInfo.of()
                 .setCurrentPage(-100)
                 .setTotalPostCount(-10);
-        pageCalculator.getPageList(pageInfoTest);
+        pageCalculator.fetchPageList(pageInfoTest);
 
         assertEquals(pageInfoTest.getEndPage(), 1);
         assertEquals(pageInfoTest.getStartPage(), 1);
