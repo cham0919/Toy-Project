@@ -14,7 +14,7 @@ public class PropertiesEnvironment implements Environment{
 
     private final Logger log = LoggerFactory.getLogger(PropertiesEnvironment.class);
 
-    public Properties props = new Properties();
+    private Properties props = new Properties();
     private final String config = "/config";
 
 
