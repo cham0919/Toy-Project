@@ -10,7 +10,7 @@
 1. [Project 개요](#Project-개요) <br/>
 2. [Restful API 설계](#Restful-API-설계)  <br/>
 3. [DataBase](#DataBase) <br/> 
-4. [주요 기술 및 기능 구현][projectInfo_link] <br/>
+4. [주요 기술 및 기능 구현](#주요-기술-및-기능-구현) <br/>
 
 
 

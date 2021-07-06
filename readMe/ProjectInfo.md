@@ -505,9 +505,435 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   
  ## 코딩 테스트 게시판 관리
   
+  <br/>
+  
+ ### Controller
+ 
+  - RestController 사용
+  - Restful한 Api 구현
+  - 요청, 응답시, dto 적극 사용
+  - 생성자 bean 주입 사용
+  
+  
+ 
+ <br/>
+ 
+ #### 생성자 bean 주입에 대한 블로그글 참조
+ 
+ [![Velog's GitHub stats](https://velog-readme-stats.vercel.app/api?name=cham&color=dark&slug=Spring-Field와-Constructor-Injection)](https://velog.io/@cham/Spring-Field%EC%99%80-Constructor-Injection)
+ 
+ <br/>
+
+ #### 이점
+
+ - Restful한 api로 의도하는 역할 명확히 파악 가능
+ - Dto 사용으로 불필요한 다수의 Param 응집 가능
+ - Json 응답으로 명확한 데이터 전달 가능
+ - 생성자 주입으로 순환 참조 및 불변성 보장
+
+
+ <br/>
+ 
+ **CodingRoomController.class**
+ 
+ ```java
+
+@RestController
+@RequestMapping(value = "/wcp/coding/room")
+@RequiredArgsConstructor
+public class CodingRoomController {
+
+    private final Logger log = LoggerFactory.getLogger(CodingRoomController.class);
+    private final Gson gson = new GsonBuilder().setPrettyPrinting()
+            .disableHtmlEscaping()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+            .create();
+    private final CodingRoomService codingRoomService;
+
+    // 게시글 저장
+    @PostMapping({"", "/"})
+    public ResponseEntity<String> save(HttpServletRequest req,
+                                       HttpServletResponse res,
+                                       @RequestBody CodingRoomDto codingRoomDto) {
+        String userKey = SecurityContextHolder.getContext().getAuthentication().getName();
+        codingRoomDto = codingRoomService.save(codingRoomDto, userKey);
+        return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
+    }
+
+    // 한 게시글 조회
+    @GetMapping("/{postId:[0-9]+}")
+    public ResponseEntity<String> fetchById(HttpServletRequest req,
+                                            HttpServletResponse res,
+                                            @PathVariable("postId") String postId) {
+        CodingRoomDto codingRoomDto = codingRoomService.fetchById(postId);
+        return new ResponseEntity<String>(gson.toJson(codingRoomDto), HttpStatus.OK);
+    }
+
+    // 한 페이징 조회
+    @GetMapping("/page/{pageNm:[0-9]+}")
+    public ResponseEntity<String> fetchByPage(HttpServletRequest req,
+                                              HttpServletResponse res,
+                                              @PathVariable("pageNm") String pageNm) {
+        List<CodingRoomDto> dtos = codingRoomService.fetchByPage(pageNm);
+        PageInfo pageInfo = codingRoomService.fetchPageList(pageNm);
+        Map<String, Object> stringObjectMap = pageInfo.parsePageRangeToMap();
+        stringObjectMap.put("post", dtos);
+        return new ResponseEntity<String>(gson.toJson(stringObjectMap), HttpStatus.OK);
+    }
+
+    // 게시글 수정
+    @PutMapping("/{postId:[0-9]+}")
+    public ResponseEntity<String> update(HttpServletRequest req,
+                                         HttpServletResponse res,
+                                         @RequestBody CodingRoomDto dto) {
+        dto = codingRoomService.update(dto);
+        return new ResponseEntity<String>(gson.toJson(dto), HttpStatus.OK);
+    }
+    
+    // 게시글 삭제
+    @DeleteMapping("/{postId:[0-9]+}")
+    public ResponseEntity<String> delete(HttpServletRequest req,
+                                         HttpServletResponse res,
+                                         @PathVariable("postId") String postId) {
+        codingRoomService.deleteById(postId);
+        return new ResponseEntity<String>(HttpStatus.OK);
+    }
+
+```
+
+ 
+ <br/><br/>
+ 
+ ### ExceptionHandler
+ 
+ - ExceptionHandler는 ```@ControllerAdvice``` 통해 일괄 처리
+ 
+ <br/>
+ 
+ #### 이점
+ 
+ -  Exception처리를 한 곳에 모아 보다 간결해진 Controller 구현 가능
+ - 중복된 예외처리를 없애 차후 관리 용이
+ 
+ <br/>
+ 
+ **WCPAdvice.class**
+ 
+ ```java
+@RestControllerAdvice
+public class WCPAdvice {
+
+    private final Logger log = LoggerFactory.getLogger(WCPAdvice.class);
+
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<ErrorResponse> throwable(Throwable t) {
+        log.error(t.getMessage(), t);
+
+        final ErrorResponse response
+                = ErrorResponse
+                .create()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(t.getMessage());
+
+        return new ResponseEntity<ErrorResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+  ...
+}
+```
+
+ <br/><br/>
+ 
+ ### Service
+ 
+ - Service 로직 시작과 끝에 MapStruct 사용한 dto, entity 매핑 사용
+ 
+ 
+ <br/>
+ 
+ #### Entity와 Dto 구분에 대한 블로그글 참조
+ 
+ [![Velog's GitHub stats](https://velog-readme-stats.vercel.app/api?name=cham&color=dark&slug=Java-Entity와-Dto를-구분하자)](https://velog.io/@cham/Java-Entity%EC%99%80-Dto%EB%A5%BC-%EA%B5%AC%EB%B6%84%ED%95%98%EC%9E%90)
+ 
+ <br/>
+
+ #### 이점
+
+ - View와 Model 의존성 낮춤
+ - Entity와 Dto 역할 분담 및 관리 용이
+ - View에서는 Dto만 사용함으로 필요 data들만 구현 가능 
+
+
+ <br/>
+ 
+ **CodingRoomServiceImpl.class**
+ 
+ ```java
+
+@Service
+@RequiredArgsConstructor
+public class CodingRoomServiceImpl implements CodingRoomService{
+
+    private final Logger log = LoggerFactory.getLogger(CodingRoomServiceImpl.class);
+    private final CodingRoomRepository codingRoomRepository;
+    private final UserRepository userRepository;
+    private final PageCalculator pageCalculator;
+
+    // 한 페이징 게시글 조회
+    @Override
+    public List<CodingRoomDto> fetchByPage(String currentPage) {
+        return fetchByPage(Integer.parseInt(currentPage));
+    }
+
+    // 게시글 저장
+    @Override
+    public CodingRoomDto save(CodingRoomDto dto, String userKey){
+        CodingRoom codingRoom = CODING_ROOM_MAPPER.toEntity(dto);
+        User user = getOneUserToProxy(Long.valueOf(userKey));
+        codingRoom.setUser(user);
+        codingRoom = save(codingRoom);
+        return CODING_ROOM_MAPPER.toDto(codingRoom);
+    }
+
+    // 페이지 목록 수 가져오기
+    @Override
+    public PageInfo fetchPageList(String currentPage){
+        PageInfo pageInfo = PageInfo.of()
+                .setCurrentPage(Integer.parseInt(currentPage))
+                .setTotalPostCount(count());
+        return pageCalculator.fetchPageList(pageInfo, PageCount.CODING_ROOM);
+    }
+
+  
+    // 한 게시글 조회
+    @Override
+    public CodingRoomDto fetchById(String id) {
+        CodingRoom codingRoom = codingRoomRepository.fetchByIdJoinUser(Long.valueOf(id));
+        return CODING_ROOM_MAPPER.toDto(codingRoom);
+    }
+
+    // 게시글 업데이트
+    @Override
+    public CodingRoomDto update(CodingRoomDto dto) {
+        CodingRoom fetchCodingRoom = fetchById(Long.valueOf(dto.getKey()));
+        CODING_ROOM_MAPPER.updateFromDto(dto, fetchCodingRoom);
+        return dto;
+    }
+
+    // 게시글 삭제
+    @Override
+    public CodingRoomDto delete(CodingRoomDto dto) {
+        CodingRoom codingRoom = CODING_ROOM_MAPPER.toEntity(dto);
+        codingRoomRepository.delete(codingRoom);
+        return dto;
+    }
+
+   ...
+}
+```
+ <br/><br/>
+ 
+ ### Repository
+ 
+ - Spring Data JPA와 JPQL 사용
+ - JQPL용 Repository 별도 구현
+ - 간단한 쿼리는 Spring Data JPA에서 제공하는 Method Query 사용하나, 서브쿼리 및 복잡한 쿼리 구현은 JPQL 사용
+ 
+ <br/>
+ 
+ #### 이점
+ 
+ - JPA 사용으로 객체지향적으로 설계 및 개발 가능
+ - Entity 참조 쿼리 설계이기에 컴파일 에러 발견으로 안전성 향상
+ 
+ <br/>
+ 
+ ![image](https://user-images.githubusercontent.com/61372486/124629433-65ea3d80-debc-11eb-8c18-bb4fd922c813.png)
+
+ <br/>
+ 
+ **CodingRoomQueryDSLRepositoryImpl.class**
+ 
+ ```java
+@Repository
+@RequiredArgsConstructor
+public class CodingRoomQueryDSLRepositoryImpl implements CodingRoomQueryDSLRepository {
+
+    private final Logger log = LoggerFactory.getLogger(CodingRoomQueryDSLRepositoryImpl.class);
+    private final JPAQueryFactory queryFactory;
+
+
+    @Override
+    public CodingRoom fetchByIdJoinUser(Long id) {
+        return queryFactory
+                .selectFrom(codingRoom)
+                .leftJoin(codingRoom.codingJoinUsers)
+                .fetchJoin()
+                .where(codingRoom.key.eq(id))
+                .fetchOne();
+    }
+
+    @Override
+    public List<CodingRoom> fetchAllPublicRoom(){
+        List<CodingRoom> codingRooms = queryFactory
+                .selectFrom(codingRoom)
+                .leftJoin(codingRoom.codingJoinUsers)
+                .fetchJoin()
+                .where(codingRoom.secret.eq(false))
+                .fetch();
+        return codingRooms;
+    }
+
+...
+```
+
+ - QueryDSL용 Repository
+ 
+ <br/><br/>
+ 
+ ### Paging
+ 
+ - Page 계산 담당하는 Component로 별개 구현
+ 
+ <br/>
+ 
+ #### 이점
+ 
+ - 페이징 사용할 시, 중복된 코드 제거
+ - PageInfo 내 필요 data 사용으로 Service에서는 Page 내부 구현 알 필요없이 일관성있게 사용 가능
+
+ <br/>
+ 
+ **BoardPageCalculator.class**
+ 
+ ```java
+@Component
+public class BoardPageCalculator implements PageCalculator {
+
+    private final Logger log = LoggerFactory.getLogger(BoardPageCalculator.class);
+
+    
+    @Override
+    public PageInfo fetchPageList(PageInfo pageInfo, PageCount pageCount){
+        pageInfo.setPageCount(pageCount.getPageCount())
+                .setPostCount(pageCount.getPostCount());
+        log.debug(pageInfo.toString());
+        return fetchPageList(pageInfo);
+    }
+    
+    // 페이지 목록 시작, 끝 범위 계산
+    @Override
+    public PageInfo fetchPageList(PageInfo pageInfo){
+        calcEndPage(pageInfo);
+        calcStartPage(pageInfo);
+        calcTotalEndPage(pageInfo);
+        log.debug(pageInfo.toString());
+        return pageInfo;
+    }
+
+    private void calcTotalEndPage(PageInfo pageInfo) {
+        int totalEndPage = (int)Math.ceil((double) pageInfo.getTotalPostCount()/pageInfo.getPostCount());
+        pageInfo.setTotalEndPage(totalEndPage);
+    }
+
+    private void calcEndPage(PageInfo pageInfo){
+        int endPage = (int) ((Math.ceil(pageInfo.getCurrentPage() / (double)pageInfo.getPageCount()) * pageInfo.getPageCount()));
+        int tmpEndPage = (int)(Math.ceil(pageInfo.getTotalPostCount()/ (double) pageInfo.getPostCount()));
+
+        if( endPage > tmpEndPage ){ endPage =  tmpEndPage; }
+
+        pageInfo.setEndPage(endPage);
+    }
+
+    private void calcStartPage(PageInfo pageInfo){
+        int startPage = (pageInfo.getEndPage() - pageInfo.getPageCount()) + 1;
+        startPage = startPage <= 0 ? 1 : startPage;
+        pageInfo.setStartPage(startPage);
+
+        if( startPage > pageInfo.getEndPage() ){ pageInfo.setEndPage(startPage); }
+    }
+}
+
+```
+
+
+ <br/>
+ 
+ **CodingRoomQueryDSLRepositoryImpl.class**
+ 
+ ```java
+    ...
+@Override
+    public List<CodingRoomDto> fetchByCurrentPage(int currentPage) {
+        return queryFactory
+                .select(new QCodingRoomDto(
+                                codingRoom.key,
+                                codingRoom.title,
+                                codingRoom.maxUser,
+                                ExpressionUtils.as(
+                                        JPAExpressions
+                                                .select(codingJoinUser.count())
+                                                .from(codingJoinUser)
+                                                .where(codingRoom.key.eq(codingJoinUser.codingRoom.key)),
+                                        "joinUsersCount"),
+                                ExpressionUtils.as(
+                                        JPAExpressions
+                                                .select(codingTest.count())
+                                                .from(codingTest)
+                                                .where(codingRoom.key.eq(codingTest.codingRoom.key)),
+                                        "codingTestCount")
+                        )
+                )
+                .from(codingRoom)
+                .where(codingRoom.secret.eq(false))
+                .offset((currentPage - 1) * PageCount.CODING_ROOM.getPostCount())
+                .limit(PageCount.CODING_ROOM.getPostCount())
+                .fetch();
+    }
+    ...
+```
+
+ - QueryDSL로 Paging Query 구현
+ - Paging과 FetchJoin 동시 사용 불가로 인해 서브 쿼리와 필요 컬럼만 조회하는 쿼리 구현해 사용
+
+
+  
  <br/><br/>
   
  ## 코딩 테스트 채점 관리
  
+ - 샌드박스 구현 난이도 및 보안, 안정성 문제로 컴파일 환경 제공해주는 Judge0 API 사용
+ - 사용자 코드 제출 시, Judge0 API과 연계하여 정답 여부, 효율성 Data 관리
+ - API 연계 시, 가시성 및 유연성 위해 HttpRequest Method Chaining 형태로 Custom해 사용
+ 
+ 
+ <br/>
+ 
+ #### 이점
+
+ - API 사용으로 컴파일 환경 보안 및 안정성 향상
+ - Custom한 HttpRequest 사용으로 상황에 맞게 사용할 수 있는 유연성 증가 및 가시성 확보
+ 
+ <br/>
+ 
+ **JudgeServiceImpl.class**
+ 
+ ```java
+
+    ...
+
+    private HttpResponse getRespCreateBatchedSubmission(String param) throws IOException {
+        return HttpRequest.of()
+                .post(createBatchedSubmissionUri())
+                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .addHeader(Judge.TOKEN_KEY, Judge.TOKEN_VALUE)
+                .addHeader(Judge.HOST_KEY,  Judge.HOST_VALUE)
+                .setEntity(new StringEntity(param))
+                .execute();
+    }
+
+    ...
+```
  
 
