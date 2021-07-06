@@ -1,6 +1,6 @@
 
 
-# Toy-Project(WebCompiler-Project) - 업데이트 중
+# Toy-Project(WebCompiler-Project)
 
 [projectInfo_link]: readMe/ProjectInfo.md
 [db_link]: readMe/DataBase.md
