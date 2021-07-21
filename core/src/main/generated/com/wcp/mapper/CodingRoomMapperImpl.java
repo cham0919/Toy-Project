@@ -7,87 +7,87 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-06-29T23:22:04+0900",
+    date = "2021-07-07T10:25:16+0900",
     comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_231 (Oracle Corporation)"
 )
 @Component
 public class CodingRoomMapperImpl extends CodingRoomMapper {
 
     @Override
-    public CodingRoomDto toDto(CodingRoom e) {
-        disconnectProxy( e );
+    public CodingRoomDto toDto(CodingRoom arg0) {
+        disconnectProxy( arg0 );
 
-        if ( e == null ) {
+        if ( arg0 == null ) {
             return null;
         }
 
         CodingRoomDto codingRoomDto = new CodingRoomDto();
 
-        if ( e.getKey() != null ) {
-            codingRoomDto.setKey( String.valueOf( e.getKey() ) );
+        if ( arg0.getKey() != null ) {
+            codingRoomDto.setKey( String.valueOf( arg0.getKey() ) );
         }
-        codingRoomDto.setTitle( e.getTitle() );
-        codingRoomDto.setIntro( e.getIntro() );
-        codingRoomDto.setSecret( e.isSecret() );
-        codingRoomDto.setPassword( e.getPassword() );
-        codingRoomDto.setMaxUser( e.getMaxUser() );
-        codingRoomDto.setRamdomKey( e.getRamdomKey() );
-        codingRoomDto.setCreatedAt( e.getCreatedAt() );
-        codingRoomDto.setJoinUsersCount( (long) e.getJoinUsersCount() );
-        codingRoomDto.setCodingTestCount( (long) e.getCodingTestCount() );
+        codingRoomDto.setTitle( arg0.getTitle() );
+        codingRoomDto.setIntro( arg0.getIntro() );
+        codingRoomDto.setSecret( arg0.isSecret() );
+        codingRoomDto.setPassword( arg0.getPassword() );
+        codingRoomDto.setMaxUser( arg0.getMaxUser() );
+        codingRoomDto.setRamdomKey( arg0.getRamdomKey() );
+        codingRoomDto.setCreatedAt( arg0.getCreatedAt() );
+        codingRoomDto.setJoinUsersCount( (long) arg0.getJoinUsersCount() );
+        codingRoomDto.setCodingTestCount( (long) arg0.getCodingTestCount() );
 
         return codingRoomDto;
     }
 
     @Override
-    public CodingRoom toEntity(CodingRoomDto d) {
-        if ( d == null ) {
+    public CodingRoom toEntity(CodingRoomDto arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
         CodingRoom codingRoom = new CodingRoom();
 
-        if ( d.getKey() != null ) {
-            codingRoom.setKey( Long.parseLong( d.getKey() ) );
+        if ( arg0.getKey() != null ) {
+            codingRoom.setKey( Long.parseLong( arg0.getKey() ) );
         }
-        codingRoom.setTitle( d.getTitle() );
-        codingRoom.setIntro( d.getIntro() );
-        codingRoom.setSecret( d.isSecret() );
-        codingRoom.setPassword( d.getPassword() );
-        codingRoom.setMaxUser( d.getMaxUser() );
-        codingRoom.setRamdomKey( d.getRamdomKey() );
-        codingRoom.setCreatedAt( d.getCreatedAt() );
+        codingRoom.setTitle( arg0.getTitle() );
+        codingRoom.setIntro( arg0.getIntro() );
+        codingRoom.setSecret( arg0.isSecret() );
+        codingRoom.setPassword( arg0.getPassword() );
+        codingRoom.setMaxUser( arg0.getMaxUser() );
+        codingRoom.setRamdomKey( arg0.getRamdomKey() );
+        codingRoom.setCreatedAt( arg0.getCreatedAt() );
 
         return codingRoom;
     }
 
     @Override
-    public void updateFromDto(CodingRoomDto dto, CodingRoom entity) {
-        if ( dto == null ) {
+    public void updateFromDto(CodingRoomDto arg0, CodingRoom arg1) {
+        if ( arg0 == null ) {
             return;
         }
 
-        if ( dto.getKey() != null ) {
-            entity.setKey( Long.parseLong( dto.getKey() ) );
+        if ( arg0.getKey() != null ) {
+            arg1.setKey( Long.parseLong( arg0.getKey() ) );
         }
-        if ( dto.getTitle() != null ) {
-            entity.setTitle( dto.getTitle() );
+        if ( arg0.getTitle() != null ) {
+            arg1.setTitle( arg0.getTitle() );
         }
-        if ( dto.getIntro() != null ) {
-            entity.setIntro( dto.getIntro() );
+        if ( arg0.getIntro() != null ) {
+            arg1.setIntro( arg0.getIntro() );
         }
-        entity.setSecret( dto.isSecret() );
-        if ( dto.getPassword() != null ) {
-            entity.setPassword( dto.getPassword() );
+        arg1.setSecret( arg0.isSecret() );
+        if ( arg0.getPassword() != null ) {
+            arg1.setPassword( arg0.getPassword() );
         }
-        if ( dto.getMaxUser() != null ) {
-            entity.setMaxUser( dto.getMaxUser() );
+        if ( arg0.getMaxUser() != null ) {
+            arg1.setMaxUser( arg0.getMaxUser() );
         }
-        if ( dto.getRamdomKey() != null ) {
-            entity.setRamdomKey( dto.getRamdomKey() );
+        if ( arg0.getRamdomKey() != null ) {
+            arg1.setRamdomKey( arg0.getRamdomKey() );
         }
-        if ( dto.getCreatedAt() != null ) {
-            entity.setCreatedAt( dto.getCreatedAt() );
+        if ( arg0.getCreatedAt() != null ) {
+            arg1.setCreatedAt( arg0.getCreatedAt() );
         }
     }
 }
